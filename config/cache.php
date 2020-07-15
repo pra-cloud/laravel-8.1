@@ -13,8 +13,7 @@ return [
     | using this caching library. This connection is used when another is
     | not explicitly specified when executing a given caching function.
     |
-    | Supported: "apc", "array", "database", "file",
-    |            "memcached", "redis", "dynamodb"
+    | Supported: "apc", "array", "database", "file", "memcached", "redis"
     |
     */
 
@@ -39,13 +38,12 @@ return [
 
         'array' => [
             'driver' => 'array',
-            'serialize' => false,
         ],
 
         'database' => [
             'driver' => 'database',
-            'table' => 'cache',
-            'connection' => null,
+            'table' => env('CACHE_DATABASE_TABLE', 'cache'),
+            'connection' => env('CACHE_DATABASE_CONNECTION', null),
         ],
 
         'file' => [
@@ -74,16 +72,7 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'cache',
-        ],
-
-        'dynamodb' => [
-            'driver' => 'dynamodb',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'table' => env('DYNAMODB_CACHE_TABLE', 'cache'),
-            'endpoint' => env('DYNAMODB_ENDPOINT'),
+            'connection' => env('CACHE_REDIS_CONNECTION', 'default'),
         ],
 
     ],
@@ -99,6 +88,9 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
+    'prefix' => env(
+        'CACHE_PREFIX',
+        Str::slug(env('APP_NAME', 'lumen'), '_').'_cache'
+    ),
 
 ];
