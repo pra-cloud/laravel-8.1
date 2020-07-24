@@ -25,10 +25,10 @@ $router->group([ 'prefix' => '/tenant-module' ], function () use ($router) {
 // TENANT ROUTES
 $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
 
-    $router->post('create', 'TenantController@create');
-    $router->post('update', 'TenantController@update');
-    $router->get('list', 'TenantController@list');
-    $router->get('show/{id}', 'TenantController@show');
-    $router->post('delete', 'TenantController@delete');
+    $router->post('/create', 'TenantController@create');
+    $router->post('/update', 'TenantController@update');
+    $router->get('/list', 'TenantController@list');
+    $router->get('/show/{id}', 'TenantController@show');
+    $router->post('/delete', 'TenantController@delete');
     
 });
