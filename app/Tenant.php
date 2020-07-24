@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Tenant extends Model
 {
     protected $fillable = [
-        'domain', 'name', 'status', 'plan_expiry_date', 'payment_failed_tries', 'email', 'mobile','country', 'city', 'tenant_plan_id', 'mobile'
+        'domain', 'name', 'status', 'plan_expiry_date', 'payment_failed_tries', 'email', 'mobile','country', 'city', 'saas_plan_id', 'mobile'
     ];
+
+    protected $with = ['tenantBillingDetail'];
 
     /**
      * One to one relation between 
@@ -18,4 +20,5 @@ class Tenant extends Model
     {
         return $this->hasOne(TenantBillingDetail::class);
     }
+
 }
