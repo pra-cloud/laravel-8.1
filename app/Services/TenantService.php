@@ -1,12 +1,14 @@
 <?php 
 namespace App\Services;
 
+use App\Traits\ApiResponseTrait;
 use App\Tenant;
 use App\TenantBillingDetail;
 use Illuminate\Support\Facades\Validator;
 
 class TenantService
 {
+    use ApiResponseTrait;
     /**
      * Save Tenant Details and
      * Tenant Billing Details related to Tenant
@@ -40,7 +42,7 @@ class TenantService
         ],$message);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->errors()->all()]);
+            return $this->errorResponse($validator->errors()->all());
         }
 
         $tenant_details = [
@@ -58,21 +60,21 @@ class TenantService
 
         $tenant = Tenant::create($tenant_details);
 
-        $tenant_billing_details = [
-            'tenant_id'             => $tenant->id,
-            'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
-            'billing_email'         => $attributes['tenant_billing_detail']['billing_email'],
-            'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
-            'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
-            'tax_type_id'           => $attributes['tenant_billing_detail']['tax_type_id'],
-            'tax_id'                => $attributes['tenant_billing_detail']['tax_id'],
-        ];
-
-        TenantBillingDetail::create($tenant_billing_details);
-
-        $message = 'Tenant has been created successfully.';
-
-        return response()->json(['tenant_id' => $tenant->id, 'success' => true, 'message' => $message]);
+        if ($tenant) {
+            $tenant_billing_details = [
+                'tenant_id'             => $tenant->id,
+                'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
+                'billing_email'         => $attributes['tenant_billing_detail']['billing_email'],
+                'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
+                'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
+                'tax_type_id'           => $attributes['tenant_billing_detail']['tax_type_id'],
+                'tax_id'                => $attributes['tenant_billing_detail']['tax_id'],
+            ];
+    
+            TenantBillingDetail::create($tenant_billing_details);
+    
+            return $this->successResponse('Tenant has been created successfully.', [ 'tenant_id' => $tenant->id ]);
+        }
     }
 
     /**
@@ -108,13 +110,10 @@ class TenantService
         ],$message);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->errors()->all()]);
+            return $this->errorResponse($validator->errors()->all());
         }
 
-        $tenant = Tenant::find($attributes['tenant_id']);
-        if (!$tenant) {
-            return response()->json(['success' => false, 'error' => 'Tenant not found.']);
-        }
+        $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
         $tenant->domain                 = $attributes['domain'];
         $tenant->name                   = $attributes['name'];
@@ -137,9 +136,7 @@ class TenantService
 
         $tenant->tenantBillingDetail->save();
 
-        $message = 'Tenant has been updated successfully.';
-
-        return response()->json(['success' => true, 'message' => $message]);
+        return $this->successResponse('Tenant has been updated successfully.');
     }
 
     /**
@@ -149,7 +146,7 @@ class TenantService
     public function fetchAll(array $attributes = null)
     {
         $tenants = Tenant::get();
-        return response()->json(['success' => true, 'message' => 'List of Tenants','data' => $tenants]);
+        return $this->successResponse(null, $tenants);
     }
 
     /**
@@ -158,12 +155,8 @@ class TenantService
      */
     public function fetch($id)
     {
-        $tenant = Tenant::where('id', $id)->first();
-        
-        if(!$tenant)
-            return response()->json(['success' => true, 'message' => 'View Tenant Details','data' => 'Tenant not found']);
-
-        return response()->json(['success' => true, 'message' => 'View Tenant Details','data' => $tenant]);
+        $tenant = Tenant::findOrFail($id);
+        return $this->successResponse(null, $tenant);
     }
 
     /**
@@ -173,7 +166,7 @@ class TenantService
     public function destroy($id)
     {
         Tenant::find($id)->delete();
-        return response()->json(['success' => true, 'message' => 'Tenant has been deleted successfully.']);
+        return $this->successResponse('Tenant has been deleted successfully.');
     }
 }
  ?>
