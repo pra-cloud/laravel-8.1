@@ -22,7 +22,7 @@ class CreateTenantsTable extends Migration
             $table->string('city', 45);
             $table->string('country', 45);
             $table->tinyInteger('status');
-            $table->foreignId('tenant_plan_id')->constrained()->onDelete('cascade');
+            $table->foreignId('saas_plan_id');
             $table->date('plan_expiry_date');
             $table->tinyInteger('payment_failed_tries');
             $table->timestamps();
