@@ -12,10 +12,10 @@ class TenantController extends Controller
     private $TENANT_SERVICE;
     private $TENANT_BILLING_DETAIL_SERVICE;
 
-    public function __construct(TenantService $TENANT_SERVICE, TenantBillingDetailService $TENANT_BILLING_DETAIL_SERVICE)
+    public function __construct(TenantService $tenant_service, TenantBillingDetailService $tenant_billing_detail_service)
     {
-        $this->TENANT_SERVICE = $TENANT_SERVICE;
-        $this->TENANT_BILLING_DETAIL_SERVICE = $TENANT_BILLING_DETAIL_SERVICE;
+        $this->TENANT_SERVICE = $tenant_service;
+        $this->TENANT_BILLING_DETAIL_SERVICE = $tenant_billing_detail_service;
     }
     
     /**
@@ -25,7 +25,8 @@ class TenantController extends Controller
     public function create(Request $request)
     {
         $attributes = $request->all();
-        return $this->TENANT_SERVICE->save($attributes);
+        $response = $this->TENANT_SERVICE->save($attributes);
+        return $response;
     }
 
     /**
@@ -35,7 +36,8 @@ class TenantController extends Controller
     public function update(Request $request)
     {
         $attributes = $request->all();
-        return $this->TENANT_SERVICE->update($attributes);
+        $response = $this->TENANT_SERVICE->update($attributes);
+        return $response;
     }
 
     /**
@@ -44,7 +46,8 @@ class TenantController extends Controller
      */
     public function list()
     {
-        return $this->TENANT_SERVICE->fetchAll();
+        $response = $this->TENANT_SERVICE->fetchAll();
+        return $response;
     }
 
     /**
@@ -53,7 +56,8 @@ class TenantController extends Controller
      */
     public function show($id)
     {
-        return $this->TENANT_SERVICE->fetch($id);
+        $response = $this->TENANT_SERVICE->fetch($id);
+        return $response;
     }
 
     /**
@@ -62,8 +66,9 @@ class TenantController extends Controller
      */
     public function delete(Request $request)
     {   
-        $this->TENANT_BILLING_DETAIL_SERVICE->destroyTenantBillingDetail($request->id);
-        return $this->TENANT_SERVICE->destroyTenant($request->id);
+        $this->TENANT_BILLING_DETAIL_SERVICE->destroy($request->id);
+        $response = $this->TENANT_SERVICE->destroy($request->id);
+        return $response;
     }
 
 }
