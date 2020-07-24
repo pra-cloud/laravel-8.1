@@ -9,7 +9,7 @@ class TenantBillingDetailService
      * Destroy billing detail
      * Related to Tenant
      */
-    public function destroyTenantBillingDetail($id)
+    public function destroy($id)
     {
         TenantBillingDetail::where('tenant_id',$id)->delete();
     }
