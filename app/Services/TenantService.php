@@ -5,6 +5,8 @@ use App\Traits\ApiResponse;
 use App\Tenant;
 use App\TenantBillingDetail;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\WithoutSpace;
+use App\Rules\Domain;
 
 class TenantService
 {
@@ -15,15 +17,8 @@ class TenantService
      */
     public function save(array $attributes)
     {
-        Validator::extend('without_spaces', function ($attr, $value) {
-            return preg_match('/^\S*$/u', $value);
-        });
-        $message = [
-            'domain.without_spaces' => 'The :attribute must be without spaces.',
-        ];
-
         $validator = Validator::make($attributes, [
-            'domain'                => 'required|without_spaces|unique:tenants,domain',
+            'domain'                => ['required','unique:tenants,domain', new WithoutSpace,new Domain],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -39,7 +34,7 @@ class TenantService
             'tenant_billing_detail.billing_address' => 'required',
             'tenant_billing_detail.tax_type_id'     => 'required',
             'tenant_billing_detail.tax_id'          => 'required',
-        ],$message);
+        ]);
 
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors()->all());
@@ -83,15 +78,8 @@ class TenantService
      */
     public function update(array $attributes)
     {
-        Validator::extend('without_spaces', function ($attr, $value) {
-            return preg_match('/^\S*$/u', $value);
-        });
-        $message = [
-            'domain.without_spaces' => 'The :attribute must be without spaces.',
-        ];
-
         $validator = Validator::make($attributes, [
-            'domain'                => 'required|without_spaces|unique:tenants,domain,'.$attributes['tenant_id'],
+            'domain'                => ['required','without_spaces',new WithoutSpace,new Domain,'unique:tenants,domain,'.$attributes['tenant_id']],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -107,7 +95,7 @@ class TenantService
             'tenant_billing_detail.billing_address' => 'required',
             'tenant_billing_detail.tax_type_id'     => 'required',
             'tenant_billing_detail.tax_id'          => 'required',
-        ],$message);
+        ]);
 
         if ($validator->fails()) {
             return $this->errorResponse($validator->errors()->all());
