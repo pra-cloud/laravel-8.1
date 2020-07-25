@@ -5,7 +5,6 @@ use App\Traits\ApiResponse;
 use App\Tenant;
 use App\TenantBillingDetail;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\WithoutSpace;
 use App\Rules\Domain;
 
 class TenantService
@@ -18,7 +17,7 @@ class TenantService
     public function save(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'                => ['required','unique:tenants,domain', new WithoutSpace,new Domain],
+            'domain'                => ['required','unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -27,7 +26,6 @@ class TenantService
             'status'                => 'required',
             'saas_plan_id'          => 'required',
             'plan_expiry_date'      => 'required|date',
-            'payment_failed_tries'  => 'required',
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
@@ -50,7 +48,6 @@ class TenantService
             'status'                => $attributes['status'],
             'saas_plan_id'          => $attributes['saas_plan_id'],
             'plan_expiry_date'      => $attributes['plan_expiry_date'],
-            'payment_failed_tries'  => $attributes['payment_failed_tries'],
         ];
 
         $tenant = Tenant::create($tenant_details);
@@ -79,7 +76,7 @@ class TenantService
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'                => ['required','without_spaces',new WithoutSpace,new Domain,'unique:tenants,domain,'.$attributes['tenant_id']],
+            'domain'                => ['required', new Domain, 'unique:tenants,'.$attributes['tenant_id']],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -88,7 +85,6 @@ class TenantService
             'status'                => 'required',
             'saas_plan_id'          => 'required',
             'plan_expiry_date'      => 'required|date',
-            'payment_failed_tries'  => 'required',
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
@@ -111,7 +107,6 @@ class TenantService
         $tenant->status                 = $attributes['status'];
         $tenant->saas_plan_id           = $attributes['saas_plan_id'];
         $tenant->plan_expiry_date       = $attributes['plan_expiry_date'];
-        $tenant->payment_failed_tries   = $attributes['payment_failed_tries'];
 
         $tenant->save();
 

@@ -25,7 +25,7 @@ class Domain implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match('/[A-Z0-9].com/i', $value);
+        return preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/', $value);
     }
 
     /**
@@ -35,6 +35,6 @@ class Domain implements Rule
      */
     public function message()
     {
-        return 'The :attribute must be valid.';
+        return 'The :attribute is not a valid domain.';
     }
 }
