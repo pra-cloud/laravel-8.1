@@ -17,12 +17,16 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-// TENANT MODULE ROUTES
+/**
+ * Tenant Module Routes
+ */
 $router->group([ 'prefix' => '/tenant-module' ], function () use ($router) {
     
 });
 
-// TENANT ROUTES
+/**
+ * Tenant Routes
+ */
 $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
 
     $router->post('/create', 'TenantController@create');
@@ -30,5 +34,18 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->get('/list', 'TenantController@list');
     $router->get('/show/{id}', 'TenantController@show');
     $router->post('/delete', 'TenantController@delete');
+    
+});
+
+/**
+ * SAAS Plan Routes
+ */
+$router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
+
+    $router->post('/create', 'SaasPlanController@create');
+    $router->post('/update', 'SaasPlanController@update');
+    $router->get('/list', 'SaasPlanController@list');
+    $router->get('/show/{id}', 'SaasPlanController@show');
+    $router->post('/delete', 'SaasPlanController@delete');
     
 });
