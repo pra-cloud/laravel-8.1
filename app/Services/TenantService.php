@@ -1,14 +1,14 @@
 <?php 
 namespace App\Services;
 
-use App\Traits\ApiResponseTrait;
+use App\Traits\ApiResponse;
 use App\Tenant;
 use App\TenantBillingDetail;
 use Illuminate\Support\Facades\Validator;
 
 class TenantService
 {
-    use ApiResponseTrait;
+    use ApiResponse;
     /**
      * Save Tenant Details and
      * Tenant Billing Details related to Tenant

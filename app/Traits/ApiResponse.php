@@ -1,7 +1,7 @@
 <?php
 namespace App\Traits;
 
-trait ApiResponseTrait
+trait ApiResponse
 {
     public function successResponse($message = null, $data = [])
     {
