@@ -17,7 +17,7 @@ class TenantController extends Controller
         $this->TENANT_SERVICE = $tenant_service;
         $this->TENANT_BILLING_DETAIL_SERVICE = $tenant_billing_detail_service;
     }
-    
+
     /**
      * Create Tenant
      * with Tenant Billing Detail
@@ -54,9 +54,9 @@ class TenantController extends Controller
      * View Tenant Details
      * with Tenant Billing Detail
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        $response = $this->TENANT_SERVICE->fetch($id);
+        $response = $this->TENANT_SERVICE->fetch($request->all());
         return $response;
     }
 
@@ -65,7 +65,7 @@ class TenantController extends Controller
      * with Tenant Billing Detail
      */
     public function delete(Request $request)
-    {   
+    {
         $this->TENANT_BILLING_DETAIL_SERVICE->destroy($request->id);
         $response = $this->TENANT_SERVICE->destroy($request->id);
         return $response;

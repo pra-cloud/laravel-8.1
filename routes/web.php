@@ -21,7 +21,7 @@ $router->get('/', function () use ($router) {
  * Tenant Module Routes
  */
 $router->group([ 'prefix' => '/tenant-module' ], function () use ($router) {
-    
+
 });
 
 /**
@@ -32,9 +32,9 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->post('/create', 'TenantController@create');
     $router->post('/update', 'TenantController@update');
     $router->get('/list', 'TenantController@list');
-    $router->get('/show/{id}', 'TenantController@show');
+    $router->get('/show', 'TenantController@show');
     $router->post('/delete', 'TenantController@delete');
-    
+
 });
 
 /**
@@ -47,5 +47,5 @@ $router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
     $router->get('/list', 'SaasPlanController@list');
     $router->get('/show/{id}', 'SaasPlanController@show');
     $router->post('/delete', 'SaasPlanController@delete');
-    
+
 });
