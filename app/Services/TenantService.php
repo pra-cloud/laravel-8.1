@@ -1,15 +1,13 @@
-<?php 
+<?php
 namespace App\Services;
 
-use App\Traits\ApiResponse;
 use App\Tenant;
 use App\TenantBillingDetail;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\Domain;
 
-class TenantService
+class TenantService extends BaseService
 {
-    use ApiResponse;
     /**
      * Save Tenant Details and
      * Tenant Billing Details related to Tenant
@@ -62,9 +60,9 @@ class TenantService
                 'tax_type_id'           => $attributes['tenant_billing_detail']['tax_type_id'],
                 'tax_id'                => $attributes['tenant_billing_detail']['tax_id'],
             ];
-    
+
             TenantBillingDetail::create($tenant_billing_details);
-    
+
             return $this->successResponse('Tenant has been created successfully.', [ 'tenant_id' => $tenant->id ]);
         }
     }
@@ -136,10 +134,14 @@ class TenantService
      * Fetch Tenant Details
      * with Tenant Billing Details
      */
-    public function fetch($id)
+    public function fetch(array $attributes)
     {
-        $tenant = Tenant::findOrFail($id);
-        return $this->successResponse(null, $tenant);
+        try {
+            $tenant = Tenant::where($attributes)->firstOrFail();
+            return $this->successResponse(null, $tenant);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
     }
 
     /**

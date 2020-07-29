@@ -1,13 +1,11 @@
-<?php 
+<?php
 namespace App\Services;
 
-use App\Traits\ApiResponse;
 use App\SaasPlan;
 use Illuminate\Support\Facades\Validator;
 
-class SaasPlanService
+class SaasPlanService extends BaseService
 {
-    use ApiResponse;
     /**
      * Save SAAS Plan Details
      */
@@ -64,7 +62,7 @@ class SaasPlanService
         $saas_plan->status = $attributes['status'];
 
         $saas_plan->save();
-        
+
         return $this->successResponse('SAAS Plan has been updated successfully.');
     }
 
