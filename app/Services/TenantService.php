@@ -74,7 +74,7 @@ class TenantService extends BaseService
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'                => ['required', new Domain, 'unique:tenants,'.$attributes['tenant_id']],
+            'domain'                => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',

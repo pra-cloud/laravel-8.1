@@ -14,7 +14,7 @@ class SaasPlanController extends Controller
     {
         $this->SAAS_PLAN_SERVICE = $saas_plan_service;
     }
-    
+
     /**
      * Create SAAS Plan
      */
@@ -47,9 +47,9 @@ class SaasPlanController extends Controller
     /**
      * View SAAS Plan Details
      */
-    public function show($id)
+    public function view(Request $request)
     {
-        $response = $this->SAAS_PLAN_SERVICE->fetch($id);
+        $response = $this->SAAS_PLAN_SERVICE->fetch($request->all());
         return $response;
     }
 
@@ -57,8 +57,8 @@ class SaasPlanController extends Controller
      * Delete SAAS Plan
      */
     public function delete(Request $request)
-    {   
+    {
         $response = $this->SAAS_PLAN_SERVICE->destroy($request->id);
         return $response;
-    }    
+    }
 }

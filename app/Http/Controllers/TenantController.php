@@ -54,7 +54,7 @@ class TenantController extends Controller
      * View Tenant Details
      * with Tenant Billing Detail
      */
-    public function show(Request $request)
+    public function view(Request $request)
     {
         $response = $this->TENANT_SERVICE->fetch($request->all());
         return $response;

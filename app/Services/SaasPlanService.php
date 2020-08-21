@@ -43,7 +43,7 @@ class SaasPlanService extends BaseService
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'name' => 'required|unique:saas_plans,name,'.$attributes['id'],
+            'name' => 'required|unique:saas_plans,id,'.$attributes['id'],
             'modules' => 'required',
             'amount'  => 'required',
             'status'  => 'required',
@@ -71,16 +71,16 @@ class SaasPlanService extends BaseService
      */
     public function fetchAll(array $attributes = null)
     {
-        $saas_plans = SaasPlan::get();
+        $saas_plans = SaasPlan::where($attributes)->get();
         return $this->successResponse(null, $saas_plans);
     }
 
     /**
      * Fetch SAAS Plan Details
      */
-    public function fetch($id)
+    public function fetch(array $attributes)
     {
-        $sass_plan = SaasPlan::findOrFail($id);
+        $sass_plan = SaasPlan::where($attributes)->firstOrFail();
         return $this->successResponse(null, $sass_plan);
     }
 
@@ -89,8 +89,12 @@ class SaasPlanService extends BaseService
      */
     public function destroy($id)
     {
-        SaasPlan::find($id)->delete();
-        return $this->successResponse('SAAS Plan has been deleted successfully.');
+        try {
+            SaasPlan::findOrFail($id)->delete();
+            return $this->successResponse('SAAS Plan has been deleted successfully.');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
     }
 }
  ?>
