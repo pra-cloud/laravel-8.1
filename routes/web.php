@@ -14,7 +14,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return "Tenant Service : " . $router->app->version();
+    return "Tenant Service Dev: " . $router->app->version();
 });
 
 /**
