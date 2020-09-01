@@ -33,8 +33,10 @@ class SaasPlanService extends BaseService
         $saas_plan = SaasPlan::create($saas_plan_details);
 
         if ($saas_plan) {
-            return $this->successResponse('SAAS Plan has been created successfully.');
+            return $this->successResponse('SAAS Plan has been created successfully.', $saas_plan);
         }
+
+        return $this->errorResponse('Error creating SAAS Plan');
     }
 
     /**
@@ -63,7 +65,10 @@ class SaasPlanService extends BaseService
 
         $saas_plan->save();
 
-        return $this->successResponse('SAAS Plan has been updated successfully.');
+        if ($saas_plan->wasChanged())
+            return $this->successResponse('SAAS Plan has been updated successfully.');
+        else
+            return $this->errorResponse('Error updating SAAS Plan.');
     }
 
     /**
@@ -80,8 +85,11 @@ class SaasPlanService extends BaseService
      */
     public function fetch(array $attributes)
     {
-        $sass_plan = SaasPlan::where($attributes)->firstOrFail();
-        return $this->successResponse(null, $sass_plan);
+        $saas_plan = SaasPlan::where($attributes)->first();
+        if ($saas_plan)
+            return $this->successResponse(null, $saas_plan);
+        else
+            return $this->errorResponse(null);
     }
 
     /**
@@ -95,6 +103,15 @@ class SaasPlanService extends BaseService
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }
+    }
+
+    public function listPlanBillingCycle()
+    {
+        return [
+            'monthly' => 'Monthly',
+            'quaterly' => 'Quaterly',
+            'yearly' => 'Yearly',
+        ];
     }
 }
  ?>

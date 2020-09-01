@@ -12,14 +12,14 @@ class CreateTenantModulesTable extends Migration
      * @return void
      */
     public function up()
-    { 
+    {
         Schema::create('tenant_modules', function (Blueprint $table) {
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
-            $table->integer('module_id')->unsigned();
+            $table->integer('saas_module_id')->unsigned();
             $table->integer('module_limit')->unsigned();
             $table->timestamps();
-            
-            $table->index(['tenant_id', 'module_id']);
+
+            $table->index(['tenant_id', 'saas_module_id']);
         });
     }
 

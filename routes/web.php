@@ -47,5 +47,5 @@ $router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
     $router->get('/list', 'SaasPlanController@list');
     $router->get('/view', 'SaasPlanController@view');
     $router->post('/delete', 'SaasPlanController@delete');
-
+    $router->get('/list-billing-cycles', 'SaasPlanController@listPlanBillingCycle');
 });

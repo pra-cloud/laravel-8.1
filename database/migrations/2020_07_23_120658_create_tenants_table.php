@@ -23,6 +23,7 @@ class CreateTenantsTable extends Migration
             $table->string('country', 45);
             $table->tinyInteger('status');
             $table->foreignId('saas_plan_id');
+            $table->string('plan_billing_cycle', 10);
             $table->date('plan_expiry_date');
             $table->tinyInteger('payment_failed_tries')->default(0);
             $table->timestamps();

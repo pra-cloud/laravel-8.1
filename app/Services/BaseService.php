@@ -1,10 +1,9 @@
 <?php
 namespace App\Services;
 
-use App\Traits\ApiResponse;
+use App\Traits\ServiceResponse;
 
 abstract class BaseService
 {
-    use ApiResponse;
-
+    use ServiceResponse;
 }

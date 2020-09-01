@@ -22,7 +22,8 @@ class SaasPlanController extends Controller
     {
         $attributes = $request->all();
         $response = $this->SAAS_PLAN_SERVICE->save($attributes);
-        return $response;
+
+        return $this->processServiceResponse($response);
     }
 
     /**
@@ -32,7 +33,8 @@ class SaasPlanController extends Controller
     {
         $attributes = $request->all();
         $response = $this->SAAS_PLAN_SERVICE->update($attributes);
-        return $response;
+
+        return $this->processServiceResponse($response);
     }
 
     /**
@@ -41,7 +43,7 @@ class SaasPlanController extends Controller
     public function list()
     {
         $response = $this->SAAS_PLAN_SERVICE->fetchAll();
-        return $response;
+        return $this->processServiceResponse($response);
     }
 
     /**
@@ -50,7 +52,7 @@ class SaasPlanController extends Controller
     public function view(Request $request)
     {
         $response = $this->SAAS_PLAN_SERVICE->fetch($request->all());
-        return $response;
+        return $this->processServiceResponse($response);
     }
 
     /**
@@ -59,6 +61,16 @@ class SaasPlanController extends Controller
     public function delete(Request $request)
     {
         $response = $this->SAAS_PLAN_SERVICE->destroy($request->id);
+        return $this->processServiceResponse($response);
+    }
+
+    /**
+     * List plan billing cycle
+     */
+    public function listPlanBillingCycle(Request $request)
+    {
+        $response = $this->SAAS_PLAN_SERVICE->listPlanBillingCycle();
         return $response;
     }
+
 }
