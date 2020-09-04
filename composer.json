@@ -8,6 +8,7 @@
         "php": "^7.2.5",
         "flipbox/lumen-generator": "^7.0",
         "laravel/lumen-framework": "^7.0",
+        "hyperzodtech/hyperzod-service-functions": "dev-master",
         "laravelista/lumen-vendor-publish": "7.0"
     },
     "require-dev": {
@@ -40,5 +41,11 @@
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ]
-    }
+    },
+    "repositories": [
+        {
+          "type": "path",
+          "url": "../service-functions-package"
+        }
+    ]
 }
