@@ -96,7 +96,7 @@ $app->configure('app');
 // $app->register(App\Providers\EventServiceProvider::class);
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
-
+$app->register(Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctionsServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

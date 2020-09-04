@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use Hyperzod\HyperzodServiceFunctions\ServiceResponseTrait;
+use Hyperzod\HyperzodServiceFunctions\Traits\ServiceResponseTrait;
 
 abstract class BaseService
 {
