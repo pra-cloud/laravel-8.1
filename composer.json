@@ -8,7 +8,7 @@
         "php": "^7.2.5",
         "flipbox/lumen-generator": "^7.0",
         "guzzlehttp/guzzle": "^7.0",
-        "hyperzodtech/hyperzod-service-functions": "dev-master",
+        "hyperzodtech/hyperzod-service-functions": "master",
         "laravel/lumen-framework": "^7.0",
         "laravelista/lumen-vendor-publish": "7.0"
     },
@@ -45,8 +45,8 @@
     },
     "repositories": [
         {
-          "type": "path",
-          "url": "https://bitbucket.org/hyperzodtech/service-functions-package/"
+          "type": "git",
+          "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git"
         }
     ]
 }

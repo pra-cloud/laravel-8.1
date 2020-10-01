@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce6313f26747bc866f2e52012837b1e3",
+    "content-hash": "b6f0fbd9e7a91848cb8ca6ed117f6006",
     "packages": [
         {
             "name": "brick/math",
@@ -640,10 +640,10 @@
         {
             "name": "hyperzodtech/hyperzod-service-functions",
             "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../service-functions-package",
-                "reference": "593e1f55e760763096093eb22f5a01d587d4b44d"
+            "source": {
+                "type": "git",
+                "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
+                "reference": "8f2a60d52a8018fd38b712bf7188619dfc09f06a"
             },
             "require": {
                 "illuminate/support": "*",
@@ -693,7 +693,8 @@
             "keywords": [
                 "hyperzod-service-functions",
                 "hyperzodtech"
-            ]
+            ],
+            "time": "2020-09-28T08:43:21+00:00"
         },
         {
             "name": "illuminate/auth",
@@ -6490,9 +6491,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "hyperzodtech/hyperzod-service-functions": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
