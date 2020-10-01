@@ -46,7 +46,7 @@
     "repositories": [
         {
           "type": "path",
-          "url": "../service-functions-package"
+          "url": "https://bitbucket.org/hyperzodtech/service-functions-package/"
         }
     ]
 }
