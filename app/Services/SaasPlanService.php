@@ -63,10 +63,8 @@ class SaasPlanService extends BaseService
         $saas_plan->amount = $attributes['amount'];
         $saas_plan->status = $attributes['status'];
 
-        $saas_plan->save();
-
-        if ($saas_plan->wasChanged())
-            return $this->successResponse('SAAS Plan has been updated successfully.');
+        if ($saas_plan->save())
+            return $this->successResponse('SAAS Plan has been updated successfully.', $saas_plan);
         else
             return $this->errorResponse('Error updating SAAS Plan.');
     }
