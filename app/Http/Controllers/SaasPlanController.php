@@ -73,7 +73,7 @@ class SaasPlanController extends Controller
     public function listPlanBillingCycle(Request $request)
     {
         $response = $this->SAAS_PLAN_SERVICE->listPlanBillingCycle();
-        return $response;
+        return $this->successResponse(null, $response);
     }
 
 }
