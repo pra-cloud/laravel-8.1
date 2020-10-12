@@ -179,9 +179,12 @@ class TenantService extends BaseService
      */
     public function destroy($id)
     {
-        $tenant = Tenant::find($id)->delete();
+        $tenant = Tenant::find($id);
 
-        if ($tenant) {
+        if (!$tenant)
+            return $this->errorResponse('Cannot find tenant.');
+
+        if ($tenant->delete()) {
             TenantBillingDetail::where('tenant_id', $id)->delete();
             return $this->successResponse('Tenant has been deleted successfully.');
         }
