@@ -87,7 +87,7 @@ class TenantService extends BaseService
                 $tenant_module->save();
             }
 
-            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
+            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant->first() ]);
         }
 
         return $this->errorResponse('Error creating tenant.');
