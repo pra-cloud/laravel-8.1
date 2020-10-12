@@ -66,7 +66,6 @@ class TenantController extends Controller
      */
     public function delete(Request $request)
     {
-        $this->TENANT_BILLING_DETAIL_SERVICE->destroy($request->id);
         $response = $this->TENANT_SERVICE->destroy($request->id);
         return $this->processServiceResponse($response);
     }

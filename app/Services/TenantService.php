@@ -87,7 +87,7 @@ class TenantService extends BaseService
                 $tenant_module->save();
             }
 
-            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
+            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant->first() ]);
         }
 
         return $this->errorResponse('Error creating tenant.');
@@ -179,10 +179,15 @@ class TenantService extends BaseService
      */
     public function destroy($id)
     {
-        $tenant = Tenant::find($id)->delete();
+        $tenant = Tenant::find($id);
 
-        if ($tenant)
+        if (!$tenant)
+            return $this->errorResponse('Cannot find tenant.');
+
+        if ($tenant->delete()) {
+            TenantBillingDetail::where('tenant_id', $id)->delete();
             return $this->successResponse('Tenant has been deleted successfully.');
+        }
         else
             return $this->errorResponse('Cannot delete tenant.');
     }
