@@ -87,7 +87,7 @@ class TenantService extends BaseService
                 $tenant_module->save();
             }
 
-            return $this->successResponse('Tenant has been created successfully.', [ 'tenant_id' => $tenant->id ]);
+            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
         }
 
         return $this->errorResponse('Error creating tenant.');
@@ -143,8 +143,8 @@ class TenantService extends BaseService
         $tenant->tenantBillingDetail->tax_id              = $attributes['tenant_billing_detail']['tax_id'];
         $tenant->tenantBillingDetail->save();
 
-        if ($tenant->wasChanged())
-            return $this->successResponse('Tenant has been updated successfully');
+        if ($tenant)
+            return $this->successResponse('Tenant has been updated successfully', [ 'tenant' => $tenant ]);
         else
             return $this->errorResponse('Error updating SAAS Plan.');
     }
