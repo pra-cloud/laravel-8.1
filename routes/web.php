@@ -34,7 +34,7 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->get('/list', 'TenantController@list');
     $router->get('/view', 'TenantController@view');
     $router->post('/delete', 'TenantController@delete');
-
+    $router->post('/images', 'TenantController@updateImages');
 });
 
 /**

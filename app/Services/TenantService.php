@@ -207,5 +207,29 @@ class TenantService extends BaseService
 
         return $plan_expiry_date->toDateString();
     }
+
+    public function updateImages(array $attributes)
+    {
+        $validator = Validator::make($attributes, [
+            'tenant_id' => 'required',
+            'logo_url' => 'nullable|url',
+            'favicon_url' => 'nullable|url',
+        ]);
+
+        if ($validator->fails())
+            return $this->errorResponse($validator->errors()->all());
+
+        $tenant = Tenant::findOrFail($attributes['tenant_id']);
+
+        if (isset($attributes['logo_url']))
+            $tenant->logo_url = $attributes['logo_url'];
+
+        if (isset($attributes['favicon_url']))
+            $tenant->favicon_url = $attributes['favicon_url'];
+
+        $tenant->save();
+
+        return $this->successResponse("Tenant images updated successfully.", $tenant);
+    }
 }
  ?>

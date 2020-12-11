@@ -70,4 +70,10 @@ class TenantController extends Controller
         return $this->processServiceResponse($response);
     }
 
+    public function updateImages(Request $request)
+    {
+        $response = $this->TENANT_SERVICE->updateImages($request->all());
+        return $response;
+    }
+
 }
