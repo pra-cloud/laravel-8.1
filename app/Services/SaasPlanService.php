@@ -45,7 +45,8 @@ class SaasPlanService extends BaseService
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'name' => 'required|unique:saas_plans,id,'.$attributes['id'],
+            'name' => 'required',
+            'id' => 'required',
             'modules' => 'required',
             'amount'  => 'required',
             'status'  => 'required',
