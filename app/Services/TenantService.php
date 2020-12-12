@@ -25,6 +25,7 @@ class TenantService extends BaseService
     {
         $validator = Validator::make($attributes, [
             'domain'                => ['required','unique:tenants', new Domain],
+            'admin_domain'          => ['required','unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -51,6 +52,7 @@ class TenantService extends BaseService
 
         $tenant_details = [
             'domain'                => $attributes['domain'],
+            'admin_domain'          => $attributes['admin_domain'],
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
             'mobile'                => $attributes['mobile'],
@@ -87,7 +89,7 @@ class TenantService extends BaseService
                 $tenant_module->save();
             }
 
-            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant->first() ]);
+            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
         }
 
         return $this->errorResponse('Error creating tenant.');
@@ -101,6 +103,7 @@ class TenantService extends BaseService
     {
         $validator = Validator::make($attributes, [
             'domain'                => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
+            'admin_domain'          => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -125,6 +128,7 @@ class TenantService extends BaseService
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
         $tenant->domain                 = $attributes['domain'];
+        $tenant->admin_domain           = $attributes['admin_domain'];
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
         $tenant->mobile                 = $attributes['mobile'];
@@ -171,6 +175,28 @@ class TenantService extends BaseService
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }
+    }
+
+    public function getTenantIdByAdminDomain($attributes)
+    {
+        $validator = Validator::make($attributes, [
+            'admin_domain'          => ['required', new Domain],
+        ]);
+
+        if ($validator->fails())
+            return $this->errorResponse($validator->errors()->all());
+
+        $tenant = Tenant::setEagerLoads([])->select('id')->where('admin_domain', $attributes['admin_domain'])->first();
+
+        if (!$tenant)
+            return $this->errorResponse("Tenant not found");
+
+        return $this->successResponse(null, ['tenant_id' => $tenant->id]);
+    }
+
+    public function isValidDomain($domain)
+    {
+        return preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/', $domain);
     }
 
     /**
