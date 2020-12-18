@@ -212,10 +212,8 @@ class TenantService extends BaseService
         if (!$tenant)
             return $this->errorResponse('Cannot find tenant.');
 
-        if ($tenant->delete()) {
-            TenantBillingDetail::where('tenant_id', $id)->delete();
+        if ($tenant->delete())
             return $this->successResponse('Tenant has been deleted successfully.');
-        }
         else
             return $this->errorResponse('Cannot delete tenant.');
     }
