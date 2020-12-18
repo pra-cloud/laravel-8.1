@@ -64,9 +64,12 @@ class TenantService extends BaseService
             'plan_billing_cycle'      => $attributes['plan_billing_cycle'],
         ];
 
-        $tenant = Tenant::create($tenant_details);
+        $tenant = null;
 
-        if ($tenant) {
+        \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
+
+            $tenant = Tenant::create($tenant_details);
+
             $tenant_billing_details = [
                 'tenant_id'             => $tenant->id,
                 'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
@@ -89,10 +92,9 @@ class TenantService extends BaseService
                 $tenant_module->save();
             }
 
-            return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
-        }
+        });
 
-        return $this->errorResponse('Error creating tenant.');
+        return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
     }
 
     /**
