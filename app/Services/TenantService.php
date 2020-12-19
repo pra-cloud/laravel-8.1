@@ -179,6 +179,12 @@ class TenantService extends BaseService
         }
     }
 
+    public function fetchTenantStatus(array $attributes)
+    {
+        $tenant = Tenant::select('status')->where($attributes)->first();
+        return $this->successResponse(null, $tenant);
+    }
+
     public function getTenantIdByAdminDomain($attributes)
     {
         $validator = Validator::make($attributes, [

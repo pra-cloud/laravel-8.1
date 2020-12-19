@@ -28,11 +28,11 @@ $router->group([ 'prefix' => '/tenant-module' ], function () use ($router) {
  * Tenant Routes
  */
 $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
-
     $router->post('/create', 'TenantController@create');
     $router->post('/update', 'TenantController@update');
     $router->get('/list', 'TenantController@list');
     $router->get('/view', 'TenantController@view');
+    $router->get('/status', 'TenantController@fetchTenantStatus');
     $router->get('/getTenantIdByAdminDomain', 'TenantController@getTenantIdByAdminDomain');
     $router->post('/delete', 'TenantController@delete');
     $router->post('/images', 'TenantController@updateImages');
@@ -42,7 +42,6 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
  * SAAS Plan Routes
  */
 $router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
-
     $router->post('/create', 'SaasPlanController@create');
     $router->post('/update', 'SaasPlanController@update');
     $router->get('/list', 'SaasPlanController@list');
@@ -56,4 +55,9 @@ $router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
  */
 $router->group(['prefix' => '/saas-module'], function () use ($router){
     $router->get('list', 'SaasModuleController@list');
+});
+
+
+$router->group(['prefix' => '/settings'], function () use ($router){
+    $router->post('/update-currency', 'SettingController@updateCurrency');
 });
