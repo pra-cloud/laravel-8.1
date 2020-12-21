@@ -60,4 +60,8 @@ $router->group(['prefix' => '/saas-module'], function () use ($router){
 
 $router->group(['prefix' => '/settings'], function () use ($router){
     $router->post('/update-currency', 'SettingController@updateCurrency');
+    $router->post('/update-delivery-settings', 'TenantSettingsController@updateDeliverySettings');
+    $router->get('/fetch-delivery-settings', 'TenantSettingsController@fetchDeliverySettings');
 });
+
+
