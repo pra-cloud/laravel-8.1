@@ -73,7 +73,7 @@ $app->configure('app');
 */
 
 // $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
+////     \Hyperzod\HyperzodServiceFunctions\Http\Middleware\HasTenantId::class
 // ]);
 
 // $app->routeMiddleware([
