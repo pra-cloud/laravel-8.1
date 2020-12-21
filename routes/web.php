@@ -60,8 +60,12 @@ $router->group(['prefix' => '/saas-module'], function () use ($router){
 
 $router->group(['prefix' => '/settings'], function () use ($router){
     $router->post('/update-currency', 'SettingController@updateCurrency');
-    $router->post('/update-delivery-settings', 'TenantSettingsController@updateDeliverySettings');
-    $router->get('/fetch-delivery-settings', 'TenantSettingsController@fetchDeliverySettings');
+    $router->post('/update-delivery-calculation', 'TenantSettingsController@updateDeliveryCalculations');
+    $router->get('/fetch-delivery-calculation', 'TenantSettingsController@fetchDeliveryCalculations');
+    $router->post('/update-delivery-fee-source', 'TenantSettingsController@updateDeliveryFeeSource');
+    $router->get('/fetch-delivery-fee-source', 'TenantSettingsController@fetchDeliveryFeeSource');
+    $router->post('/update-flat-delivery-fee', 'TenantSettingsController@updateFlatDeliveryFee');
+    $router->get('/fetch-flat-delivery-fee', 'TenantSettingsController@fetchFlatDeliveryFee');
 });
 
 

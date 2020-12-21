@@ -4,6 +4,8 @@
     <list default="true" id="012db19e-9422-4e7c-b39f-ecf61fbedb94" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TenantSettingsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TenantSettingsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +177,7 @@
       <option name="presentableId" value="Default" />
       <updated>1602489936178</updated>
       <workItem from="1602489937278" duration="7187000" />
-      <workItem from="1608536764099" duration="2346000" />
+      <workItem from="1608536764099" duration="6006000" />
     </task>
     <servers />
   </component>

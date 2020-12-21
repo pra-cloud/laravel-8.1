@@ -10,7 +10,7 @@ class TenantSettingsController extends Controller
     use SettingsServiceTrait;
 
 
-    public function updateDeliverySettings(Request $request)
+    public function updateDeliveryCalculations(Request $request)
     {
 
 
@@ -19,22 +19,22 @@ class TenantSettingsController extends Controller
             $this->validate($request, [
 
                 'tenant_id' => "required",
-                'user_id' => "required",
-                'user_type' => "required|in:admin,tenant,merchant,customer,driver",
-                'setting_key' => "required",
-                'setting_value' => "required"
+                "setting_value" => "required"
 
             ]);
 
+            $setting_key="tenant_delivery_calculation_method";
+            $setting_tag="tenant_delivery_settings";
+            $user_type="tenant";
 
             $response = $this->updateSetting(
 
-                "tenant_delivery_calculation_method",
+                $setting_key,
                 $request->post("setting_value"),
                 $request->post("tenant_id"),
-                $request->post("user_id"),
-                $request->post("user_type"),
-                $request->post("setting_tag")
+                null,
+                $user_type,
+                $setting_tag
             );
 
 
@@ -47,7 +47,7 @@ class TenantSettingsController extends Controller
     }
 
 
-    public function fetchDeliverySettings(Request $request)
+    public function fetchDeliveryCalculations(Request $request)
     {
 
 
@@ -56,18 +56,19 @@ class TenantSettingsController extends Controller
             $this->validate($request, [
 
                 'tenant_id' => "required",
-                'user_id' => "required",
-                'user_type' => "required|in:admin,tenant,merchant,customer,driver",
-                'setting_key' => "required",
 
             ]);
 
+            $setting_key="tenant_delivery_calculation_method";
+            $setting_tag="tenant_delivery_settings";
+            $user_type="tenant";
+
             $response = $this->settingsByKey(
 
-                $request->post("setting_key"),
+                $setting_key,
                 $request->post("tenant_id"),
-                $request->post("user_id"),
-                $request->post("user_type")
+                null,
+                $user_type
 
             );
 
@@ -80,6 +81,151 @@ class TenantSettingsController extends Controller
         }
     }
 
+
+
+    public function updateDeliveryFeeSource(Request $request)
+    {
+
+
+        try {
+
+            $this->validate($request, [
+
+                'tenant_id' => "required",
+                "setting_value" => "required"
+
+            ]);
+
+            $setting_key="tenant_delivery_fee_source";
+            $setting_tag="tenant_delivery_settings";
+            $user_type="tenant";
+
+            $response = $this->updateSetting(
+
+                $setting_key,
+                $request->post("setting_value"),
+                $request->post("tenant_id"),
+                null,
+                $user_type,
+                $setting_tag
+            );
+
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+
+    public function fetchDeliveryFeeSource(Request $request)
+    {
+
+
+        try {
+
+            $this->validate($request, [
+
+                'tenant_id' => "required",
+
+            ]);
+
+            $setting_key="tenant_delivery_fee_source";
+            $setting_tag="tenant_delivery_settings";
+            $user_type="tenant";
+
+            $response = $this->settingsByKey(
+
+                $setting_key,
+                $request->post("tenant_id"),
+                null,
+                $user_type
+
+            );
+
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+
+
+    public function updateFlatDeliveryFee(Request $request)
+    {
+
+
+        try {
+
+            $this->validate($request, [
+
+                'tenant_id' => "required",
+                "setting_value" => "required"
+
+            ]);
+
+            $setting_key="tenant_delivery_fee_flat";
+            $setting_tag="tenant_delivery_settings";
+            $user_type="tenant";
+
+            $response = $this->updateSetting(
+
+                $setting_key,
+                $request->post("setting_value"),
+                $request->post("tenant_id"),
+                null,
+                $user_type,
+                $setting_tag
+            );
+
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+
+    public function fetchFlatDeliveryFee(Request $request)
+    {
+
+
+        try {
+
+            $this->validate($request, [
+
+                'tenant_id' => "required",
+
+            ]);
+
+            $setting_key="tenant_delivery_fee_flat";
+            $setting_tag="tenant_delivery_settings";
+            $user_type="tenant";
+
+            $response = $this->settingsByKey(
+
+                $setting_key,
+                $request->post("tenant_id"),
+                null,
+                $user_type
+
+            );
+
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
 
     public function updateCurrency(Request $request)
     {
