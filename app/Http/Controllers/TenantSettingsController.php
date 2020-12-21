@@ -17,18 +17,15 @@ class TenantSettingsController extends Controller
         try {
 
             $this->validate($request, [
-
                 'tenant_id' => "required",
                 "setting_value" => "required"
-
             ]);
 
-            $setting_key="tenant_delivery_calculation_method";
-            $setting_tag="tenant_delivery_settings";
-            $user_type="tenant";
+            $setting_key = "tenant_delivery_calculation_method";
+            $setting_tag = "tenant_delivery_settings";
+            $user_type = "tenant";
 
             $response = $this->updateSetting(
-
                 $setting_key,
                 $request->post("setting_value"),
                 $request->post("tenant_id"),
@@ -54,22 +51,18 @@ class TenantSettingsController extends Controller
         try {
 
             $this->validate($request, [
-
                 'tenant_id' => "required",
-
             ]);
 
-            $setting_key="tenant_delivery_calculation_method";
-            $setting_tag="tenant_delivery_settings";
-            $user_type="tenant";
+            $setting_key = "tenant_delivery_calculation_method";
+            $setting_tag = "tenant_delivery_settings";
+            $user_type = "tenant";
 
             $response = $this->settingsByKey(
-
                 $setting_key,
                 $request->post("tenant_id"),
                 null,
                 $user_type
-
             );
 
 
@@ -82,7 +75,6 @@ class TenantSettingsController extends Controller
     }
 
 
-
     public function updateDeliveryFeeSource(Request $request)
     {
 
@@ -90,18 +82,15 @@ class TenantSettingsController extends Controller
         try {
 
             $this->validate($request, [
-
                 'tenant_id' => "required",
                 "setting_value" => "required"
-
             ]);
 
-            $setting_key="tenant_delivery_fee_source";
-            $setting_tag="tenant_delivery_settings";
-            $user_type="tenant";
+            $setting_key = "tenant_delivery_fee_source";
+            $setting_tag = "tenant_delivery_settings";
+            $user_type = "tenant";
 
             $response = $this->updateSetting(
-
                 $setting_key,
                 $request->post("setting_value"),
                 $request->post("tenant_id"),
@@ -127,22 +116,18 @@ class TenantSettingsController extends Controller
         try {
 
             $this->validate($request, [
-
                 'tenant_id' => "required",
-
             ]);
 
-            $setting_key="tenant_delivery_fee_source";
-            $setting_tag="tenant_delivery_settings";
-            $user_type="tenant";
+            $setting_key = "tenant_delivery_fee_source";
+            $setting_tag = "tenant_delivery_settings";
+            $user_type = "tenant";
 
             $response = $this->settingsByKey(
-
                 $setting_key,
                 $request->post("tenant_id"),
                 null,
                 $user_type
-
             );
 
 
@@ -155,7 +140,6 @@ class TenantSettingsController extends Controller
     }
 
 
-
     public function updateFlatDeliveryFee(Request $request)
     {
 
@@ -163,18 +147,15 @@ class TenantSettingsController extends Controller
         try {
 
             $this->validate($request, [
-
                 'tenant_id' => "required",
                 "setting_value" => "required"
-
             ]);
 
-            $setting_key="tenant_delivery_fee_flat";
-            $setting_tag="tenant_delivery_settings";
-            $user_type="tenant";
+            $setting_key = "tenant_delivery_fee_flat";
+            $setting_tag = "tenant_delivery_settings";
+            $user_type = "tenant";
 
             $response = $this->updateSetting(
-
                 $setting_key,
                 $request->post("setting_value"),
                 $request->post("tenant_id"),
@@ -200,22 +181,18 @@ class TenantSettingsController extends Controller
         try {
 
             $this->validate($request, [
-
                 'tenant_id' => "required",
-
             ]);
 
-            $setting_key="tenant_delivery_fee_flat";
-            $setting_tag="tenant_delivery_settings";
-            $user_type="tenant";
+            $setting_key = "tenant_delivery_fee_flat";
+            $setting_tag = "tenant_delivery_settings";
+            $user_type = "tenant";
 
             $response = $this->settingsByKey(
-
                 $setting_key,
                 $request->post("tenant_id"),
                 null,
                 $user_type
-
             );
 
 
