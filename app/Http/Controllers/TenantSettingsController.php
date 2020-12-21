@@ -29,11 +29,12 @@ class TenantSettingsController extends Controller
 
             $response = $this->updateSetting(
 
-                $request->post("setting_key"),
+                "tenant_delivery_calculation_method",
                 $request->post("setting_value"),
                 $request->post("tenant_id"),
                 $request->post("user_id"),
-                $request->post("user_type")
+                $request->post("user_type"),
+                $request->post("setting_tag")
             );
 
 
