@@ -16,7 +16,7 @@ class TenantSettingsController extends Controller
 
         try {
 
-            $this->validate($request,[
+            $this->validate($request, [
 
                 'tenant_id' => "required",
                 'user_id' => "required",
@@ -27,8 +27,7 @@ class TenantSettingsController extends Controller
             ]);
 
 
-
-            $response=$this->updateSetting(
+            $response = $this->updateSetting(
 
                 $request->post("setting_key"),
                 $request->post("setting_value"),
@@ -40,24 +39,11 @@ class TenantSettingsController extends Controller
 
             return response()->json($response);
 
-//            $request_to_be_sent = new \Illuminate\Http\Request();
-//            $request_to_be_sent->query->add([
-//                'tenant_id' => $request->post("tenant_id"),
-//                'user_id' => $request->post("user_id"),
-//                'user_type' => $request->Post("user_type"),
-//                'setting_key' => $request->post("setting_key"),
-//                'setting_value' => $request->post("setting_value")
-//            ]);
-
-
-            return $this->consumeService('setting', $request, 'POST', '/create');
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-
 
 
     public function fetchDeliverySettings(Request $request)
@@ -66,7 +52,7 @@ class TenantSettingsController extends Controller
 
         try {
 
-            $this->validate($request,[
+            $this->validate($request, [
 
                 'tenant_id' => "required",
                 'user_id' => "required",
@@ -75,7 +61,7 @@ class TenantSettingsController extends Controller
 
             ]);
 
-            $response=$this->settingsByKey(
+            $response = $this->settingsByKey(
 
                 $request->post("setting_key"),
                 $request->post("tenant_id"),
@@ -87,10 +73,15 @@ class TenantSettingsController extends Controller
 
             return response()->json($response);
 
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 
             return $this->errorResponse(null, $e->getMessage());
         }
     }
 
+
+    public function updateCurrency(Request $request)
+    {
+
+    }
 }

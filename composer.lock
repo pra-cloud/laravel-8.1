@@ -761,7 +761,7 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "71ac1f5676c9f8fa6acbaba01b5b2b79406450a2"
+                "reference": "88cdbbb6086814bcb0fac57d54a8afbafaf70810"
             },
             "require": {
                 "illuminate/support": "*",
@@ -813,7 +813,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2020-12-20T16:01:25+00:00"
+            "time": "2020-12-21T07:40:46+00:00"
         },
         {
             "name": "illuminate/auth",
