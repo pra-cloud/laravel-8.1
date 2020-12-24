@@ -21,7 +21,7 @@ class SaasPlanController extends Controller
      */
     public function create(Request $request)
     {
-        $this->hasPermission('saas_plan_create');
+        //$this->hasPermission('saas_plan_create');
 
         $attributes = $request->all();
         $response = $this->SAAS_PLAN_SERVICE->save($attributes);
