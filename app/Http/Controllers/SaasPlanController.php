@@ -12,7 +12,6 @@ class SaasPlanController extends Controller
 
     public function __construct(SaasPlanService $saas_plan_service)
     {
-        $this->middleware('hyper-auth', [ 'except' => [ 'view'] ]);
         $this->SAAS_PLAN_SERVICE = $saas_plan_service;
     }
 
