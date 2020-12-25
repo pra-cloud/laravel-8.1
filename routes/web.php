@@ -58,14 +58,14 @@ $router->group(['prefix' => '/saas-module'], function () use ($router){
 });
 
 
-$router->group(['prefix' => '/settings'], function () use ($router){
+$router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router){
     $router->post('/update-currency', 'SettingController@updateCurrency');
-    $router->post('/update-delivery-calculation', 'TenantSettingsController@updateDeliveryCalculations');
-    $router->get('/fetch-delivery-calculation', 'TenantSettingsController@fetchDeliveryCalculations');
-    $router->post('/update-delivery-fee-source', 'TenantSettingsController@updateDeliveryFeeSource');
-    $router->get('/fetch-delivery-fee-source', 'TenantSettingsController@fetchDeliveryFeeSource');
-    $router->post('/update-flat-delivery-fee', 'TenantSettingsController@updateFlatDeliveryFee');
-    $router->get('/fetch-flat-delivery-fee', 'TenantSettingsController@fetchFlatDeliveryFee');
+    $router->post('/update-delivery-calculation', 'DeliverySettingsController@updateDeliveryCalculations');
+    $router->get('/fetch-delivery-calculation', 'DeliverySettingsController@fetchDeliveryCalculations');
+    $router->post('/update-delivery-fee-source', 'DeliverySettingsController@updateDeliveryFeeSource');
+    $router->get('/fetch-delivery-fee-source', 'DeliverySettingsController@fetchDeliveryFeeSource');
+    $router->post('/update-flat-delivery-fee', 'DeliverySettingsController@updateFlatDeliveryFee');
+    $router->get('/fetch-flat-delivery-fee', 'DeliverySettingsController@fetchFlatDeliveryFee');
 });
 
 
