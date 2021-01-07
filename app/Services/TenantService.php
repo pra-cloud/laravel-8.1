@@ -206,7 +206,24 @@ class TenantService extends BaseService
         $tenant = Tenant::setEagerLoads([])->select('id')->where('admin_domain', $attributes['admin_domain'])->first();
 
         if (!$tenant)
-            return $this->errorResponse("Tenant not found");
+            return $this->errorResponse("Tenant not found by this admin domain");
+
+        return $this->successResponse(null, ['tenant_id' => $tenant->id]);
+    }
+
+    public function getTenantIdByDomain($attributes)
+    {
+        $validator = Validator::make($attributes, [
+            'domain'          => ['required', new Domain],
+        ]);
+
+        if ($validator->fails())
+            return $this->errorResponse($validator->errors()->all());
+
+        $tenant = Tenant::setEagerLoads([])->select('id')->where('domain', $attributes['domain'])->first();
+
+        if (!$tenant)
+            return $this->errorResponse("Tenant not found by this domain");
 
         return $this->successResponse(null, ['tenant_id' => $tenant->id]);
     }

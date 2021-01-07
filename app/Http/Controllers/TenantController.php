@@ -82,6 +82,12 @@ class TenantController extends Controller
         return $response;
     }
 
+    public function getTenantIdByDomain(Request $request)
+    {
+        $response = $this->TENANT_SERVICE->getTenantIdByDomain($request->all());
+        return $response;
+    }
+
     public function fetchTenantStatus(Request $request)
     {
         $response = $this->TENANT_SERVICE->fetchTenantStatus($request->all());
