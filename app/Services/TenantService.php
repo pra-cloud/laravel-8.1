@@ -171,6 +171,15 @@ class TenantService extends BaseService
      */
     public function fetch(array $attributes)
     {
+        $validator = Validator::make($attributes, [
+            'id' => ['nullable'],
+        ]);
+
+        if ($validator->fails())
+            return $this->errorResponse($validator->errors()->all());
+
+        $attributes = $validator->validated();
+
         try {
             $tenant = Tenant::where($attributes)->firstOrFail();
             return $this->successResponse(null, $tenant);
