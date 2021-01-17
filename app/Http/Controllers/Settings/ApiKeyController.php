@@ -10,9 +10,8 @@ class ApiKeyController extends Controller
 {
     use SettingsServiceTrait;
 
-    public function updategmap(Request $request)
+    public function updateGmapApiKey(Request $request)
     {
-        // dd($request);
         try {
 
             $this->validate($request, [

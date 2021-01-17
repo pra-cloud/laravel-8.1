@@ -24,9 +24,9 @@ class DeliverySettingsController extends Controller
 
             $response = $this->updateSetting(
                 $setting_key,
-                $request->post("setting_value"),
+                $request->input("setting_value"),
                 $setting_tag,
-                $request->post("tenant_id"),
+                $request->input("tenant_id"),
                 null,
             );
 
@@ -49,9 +49,9 @@ class DeliverySettingsController extends Controller
             $setting_key = "tenant_delivery_calculation_method";
             $setting_tag = "tenant_delivery_settings";
 
-            $response = $this->settingsByKey(
+            return $response = $this->settingsByKey(
                 $setting_key,
-                $request->post("tenant_id"),
+                $request->input("tenant_id"),
                 null,
             );
 
@@ -78,9 +78,9 @@ class DeliverySettingsController extends Controller
 
             $response = $this->updateSetting(
                 $setting_key,
-                $request->post("setting_value"),
+                $request->input("setting_value"),
                 $setting_tag,
-                $request->post("tenant_id"),
+                $request->input("tenant_id"),
                 null,
             );
 
@@ -106,7 +106,7 @@ class DeliverySettingsController extends Controller
 
             $response = $this->settingsByKey(
                 $setting_key,
-                $request->post("tenant_id"),
+                $request->input("tenant_id"),
                 null,
             );
 
@@ -134,9 +134,9 @@ class DeliverySettingsController extends Controller
 
             $response = $this->updateSetting(
                 $setting_key,
-                $request->post("setting_value"),
+                $request->input("setting_value"),
                 $setting_tag,
-                $request->post("tenant_id"),
+                $request->input("tenant_id"),
                 null,
             );
 
@@ -163,7 +163,7 @@ class DeliverySettingsController extends Controller
 
             $response = $this->settingsByKey(
                 $setting_key,
-                $request->post("tenant_id"),
+                $request->input("tenant_id"),
                 null,
             );
 
