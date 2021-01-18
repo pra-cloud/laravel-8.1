@@ -38,4 +38,30 @@ class ApiKeyController extends Controller
         }
     }
 
+    public function fetchGmapApiKey(Request $request)
+    {
+        try {
+
+            $this->validate($request, [
+                'tenant_id' => "required",
+            ]);
+
+            $setting_key = "gmap_api_key";
+            $setting_tag = "api_key";
+            $user_type = "tenant";
+
+            $response = $this->settingsByKey(
+                $setting_key,
+                $request->input("tenant_id"),
+                null,
+            );
+            // dd($response);
+            return $this->processServiceResponse($response);
+
+        } catch (\Exception $e) {
+
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
 }

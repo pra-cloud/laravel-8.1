@@ -67,7 +67,8 @@ $router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function ()
     $router->get('/fetch-delivery-fee-source', 'DeliverySettingsController@fetchDeliveryFeeSource');
     $router->post('/update-flat-delivery-fee', 'DeliverySettingsController@updateFlatDeliveryFee');
     $router->get('/fetch-flat-delivery-fee', 'DeliverySettingsController@fetchFlatDeliveryFee');
-    $router->post('/apikey/gmap', 'ApiKeyController@updateGmapApiKey');
+    $router->post('/apikey/update-gmap', 'ApiKeyController@updateGmapApiKey');
+    $router->get('/apikey/fetch-gmap', 'ApiKeyController@fetchGmapApiKey');
 });
 
 
