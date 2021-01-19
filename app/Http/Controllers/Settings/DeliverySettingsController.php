@@ -5,31 +5,26 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 use Illuminate\Http\Request;
+use App\Services;
+use App\Services\SettingsRepository;
+use App\Tenant;
 
 class DeliverySettingsController extends Controller
 {
     use SettingsServiceTrait;
+    private $SETTINGS_REPOSITORY;
 
+    function __construct(SettingsRepository $settings_repository)
+    {
+        $this->SETTINGS_REPOSITORY = $settings_repository;
+    }
+
+    // Delivery Settings
     public function updateDeliveryCalculations(Request $request)
     {
         try {
-
-            $this->validate($request, [
-                'tenant_id' => "required",
-                "setting_value" => "required",
-            ]);
-
-            $setting_key = "tenant_delivery_calculation_method";
-            $setting_tag = "tenant_delivery_settings";
-
-            $response = $this->updateSetting(
-                $setting_key,
-                $request->input("setting_value"),
-                $setting_tag,
-                $request->input("tenant_id"),
-                null,
-            );
-
+            
+            $response = $this->SETTINGS_REPOSITORY->updateDeliveryCalculations($request->all());
             return $this->processServiceResponse($response, "Delivery calculation method setting updated.");
 
         } catch (\Exception $e) {
@@ -42,19 +37,7 @@ class DeliverySettingsController extends Controller
     {
         try {
 
-            $this->validate($request, [
-                'tenant_id' => "required",
-            ]);
-
-            $setting_key = "tenant_delivery_calculation_method";
-            $setting_tag = "tenant_delivery_settings";
-
-            return $response = $this->settingsByKey(
-                $setting_key,
-                $request->input("tenant_id"),
-                null,
-            );
-
+            $response = $this->SETTINGS_REPOSITORY->fetchDeliveryCalculations($request->all());
             return $this->processServiceResponse($response);
 
         } catch (\Exception $e) {
@@ -67,23 +50,7 @@ class DeliverySettingsController extends Controller
     {
         try {
 
-            $this->validate($request, [
-                'tenant_id' => "required",
-                "setting_value" => "required",
-            ]);
-
-            $setting_key = "tenant_delivery_fee_source";
-            $setting_tag = "tenant_delivery_settings";
-            $user_type = "tenant";
-
-            $response = $this->updateSetting(
-                $setting_key,
-                $request->input("setting_value"),
-                $setting_tag,
-                $request->input("tenant_id"),
-                null,
-            );
-
+            $response = $this->SETTINGS_REPOSITORY->updateDeliveryCalculations($request->all());
             return $this->processServiceResponse($response, "Delivery fee source setting updated.");
 
         } catch (\Exception $e) {
@@ -96,20 +63,7 @@ class DeliverySettingsController extends Controller
     {
         try {
 
-            $this->validate($request, [
-                'tenant_id' => "required",
-            ]);
-
-            $setting_key = "tenant_delivery_fee_source";
-            $setting_tag = "tenant_delivery_settings";
-            $user_type = "tenant";
-
-            $response = $this->settingsByKey(
-                $setting_key,
-                $request->input("tenant_id"),
-                null,
-            );
-
+            $response = $this->SETTINGS_REPOSITORY->fetchDeliveryFeeSource($request->all());
             return $this->processServiceResponse($response);
 
         } catch (\Exception $e) {
@@ -120,26 +74,9 @@ class DeliverySettingsController extends Controller
 
     public function updateFlatDeliveryFee(Request $request)
     {
-
         try {
 
-            $this->validate($request, [
-                'tenant_id' => "required",
-                "setting_value" => "required",
-            ]);
-
-            $setting_key = "tenant_delivery_fee_flat";
-            $setting_tag = "tenant_delivery_settings";
-            $user_type = "tenant";
-
-            $response = $this->updateSetting(
-                $setting_key,
-                $request->input("setting_value"),
-                $setting_tag,
-                $request->input("tenant_id"),
-                null,
-            );
-
+            $response = $this->SETTINGS_REPOSITORY->updateFlatDeliveryFee($request->all());
             return $this->processServiceResponse($response, "Flat delivery fee setting updated.");
 
         } catch (\Exception $e) {
@@ -150,23 +87,9 @@ class DeliverySettingsController extends Controller
 
     public function fetchFlatDeliveryFee(Request $request)
     {
-
         try {
 
-            $this->validate($request, [
-                'tenant_id' => "required",
-            ]);
-
-            $setting_key = "tenant_delivery_fee_flat";
-            $setting_tag = "tenant_delivery_settings";
-            $user_type = "tenant";
-
-            $response = $this->settingsByKey(
-                $setting_key,
-                $request->input("tenant_id"),
-                null,
-            );
-
+            $response = $this->SETTINGS_REPOSITORY->fetchDeliveryFeeSource($request->all());
             return $this->processServiceResponse($response);
 
         } catch (\Exception $e) {
@@ -177,6 +100,7 @@ class DeliverySettingsController extends Controller
 
     public function updateCurrency(Request $request)
     {
+
 
     }
 }

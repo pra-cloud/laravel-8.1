@@ -58,7 +58,9 @@ $router->group(['prefix' => '/saas-module'], function () use ($router){
     $router->get('list', 'SaasModuleController@list');
 });
 
-
+/**
+ * Settings Routes
+ */
 $router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router){
     $router->post('/currency', 'SettingController@updateCurrency');
 
