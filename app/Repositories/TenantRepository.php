@@ -1,21 +1,21 @@
 <?php
-namespace App\Services;
+namespace App\Repositories;
 
 use App\Tenant;
 use App\TenantBillingDetail;
 use App\TenantModule;
-use App\Services\SaasPlanService;
+use App\Repositories\SaasPlanRepository;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\Domain;
 use Carbon\Carbon;
 
-class TenantService extends BaseService
+class TenantRepository extends BaseRepository
 {
-    private $SAAS_PLAN_SERVICE;
+    private $SAAS_PLAN_REPOSITORY;
 
-    function __construct(SaasPlanService $saasPlanService)
+    function __construct(SaasPlanRepository $saasPlanRepository)
     {
-        $this->SAAS_PLAN_SERVICE = $saasPlanService;
+        $this->SAAS_PLAN_REPOSITORY = $saasPlanRepository;
     }
     /**
      * Save Tenant Details and
@@ -82,7 +82,7 @@ class TenantService extends BaseService
 
             TenantBillingDetail::create($tenant_billing_details);
 
-            $saas_plan = $this->SAAS_PLAN_SERVICE->fetch([ 'id' => $tenant->saas_plan_id ]);
+            $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
 
             foreach ($saas_plan['data']['modules'] as $module) {
                 $tenant_module = new TenantModule();

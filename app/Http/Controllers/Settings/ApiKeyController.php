@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 use Illuminate\Http\Request;
-use App\Services\SettingsRepository;
+use App\Repositories\SettingsRepository;
 
 class ApiKeyController extends Controller
 {

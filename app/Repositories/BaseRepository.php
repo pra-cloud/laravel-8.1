@@ -1,10 +1,10 @@
 <?php
-namespace App\Services;
+namespace App\Repositories;
 
 use Hyperzod\HyperzodServiceFunctions\Traits\ServiceResponseTrait;
 use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 
-abstract class BaseService
+abstract class BaseRepository
 {
     use ServiceResponseTrait, SettingsServiceTrait;
 }

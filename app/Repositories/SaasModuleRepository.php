@@ -1,12 +1,11 @@
 <?php
 
 
-namespace App\Services;
-
+namespace App\Repositories;
 
 use App\SaasModule;
 
-class SaasModuleService extends BaseService
+class SaasModuleRepository extends BaseRepository
 {
     /**
      * Fetch list of SAAS Modules

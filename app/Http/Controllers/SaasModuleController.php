@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SaasModuleService;
+use App\Repositories\SaasModuleRepository;
 use Illuminate\Http\Request;
 
 class SaasModuleController extends Controller
 {
-    private $SAAS_MODULE_SERVICE;
+    private $SAAS_MODULE_REPOSITORY;
 
-    public function __construct(SaasModuleService $saasModuleService)
+    public function __construct(SaasModuleRepository $saasModuleRepository)
     {
-        $this->SAAS_MODULE_SERVICE = $saasModuleService;
+        $this->SAAS_MODULE_REPOSITORY = $saasModuleRepository;
     }
 
     public function list()
     {
-        return $this->SAAS_MODULE_SERVICE->fetchAll();
+        return $this->SAAS_MODULE_REPOSITORY->fetchAll();
     }
 }

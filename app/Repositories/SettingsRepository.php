@@ -1,11 +1,11 @@
 <?php
-namespace App\Services;
+namespace App\Repositories;
 
 use Exception;
 use Illuminate\Http\Request;
 use Validator;
 
-class SettingsRepository extends BaseService
+class SettingsRepository extends BaseRepository
 {
     // Delivery Settings
     public function updateDeliveryCalculations(array $params)

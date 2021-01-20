@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\SaasPlan;
-use App\Services\SaasPlanService;
+use App\Repositories\SaasPlanRepository;
 use Illuminate\Http\Request;
 
 class SaasPlanController extends Controller
 {
-    private $SAAS_PLAN_SERVICE;
+    private $SAAS_PLAN_REPOSITORY;
 
-    public function __construct(SaasPlanService $saas_plan_service)
+    public function __construct(SaasPlanRepository $saasPlanRepository)
     {
-        $this->SAAS_PLAN_SERVICE = $saas_plan_service;
+        $this->SAAS_PLAN_REPOSITORY = $saasPlanRepository;
     }
 
     /**
@@ -23,7 +23,7 @@ class SaasPlanController extends Controller
         //$this->hasPermission('saas_plan_create');
 
         $attributes = $request->all();
-        $response = $this->SAAS_PLAN_SERVICE->save($attributes);
+        $response = $this->SAAS_PLAN_REPOSITORY->save($attributes);
 
         return $this->processServiceResponse($response);
     }
@@ -34,7 +34,7 @@ class SaasPlanController extends Controller
     public function update(Request $request)
     {
         $attributes = $request->all();
-        $response = $this->SAAS_PLAN_SERVICE->update($attributes);
+        $response = $this->SAAS_PLAN_REPOSITORY->update($attributes);
 
         return $this->processServiceResponse($response);
     }
@@ -44,7 +44,7 @@ class SaasPlanController extends Controller
      */
     public function list()
     {
-        $response = $this->SAAS_PLAN_SERVICE->fetchAll();
+        $response = $this->SAAS_PLAN_REPOSITORY->fetchAll();
         return $this->processServiceResponse($response);
     }
 
@@ -53,7 +53,7 @@ class SaasPlanController extends Controller
      */
     public function view(Request $request)
     {
-        $response = $this->SAAS_PLAN_SERVICE->fetch($request->all());
+        $response = $this->SAAS_PLAN_REPOSITORY->fetch($request->all());
         return $this->processServiceResponse($response);
     }
 
@@ -62,7 +62,7 @@ class SaasPlanController extends Controller
      */
     public function delete(Request $request)
     {
-        $response = $this->SAAS_PLAN_SERVICE->destroy($request->id);
+        $response = $this->SAAS_PLAN_REPOSITORY->destroy($request->id);
         return $this->processServiceResponse($response);
     }
 
@@ -71,7 +71,7 @@ class SaasPlanController extends Controller
      */
     public function listPlanBillingCycle(Request $request)
     {
-        $response = $this->SAAS_PLAN_SERVICE->listPlanBillingCycle();
+        $response = $this->SAAS_PLAN_REPOSITORY->listPlanBillingCycle();
         return $this->successResponse(null, $response);
     }
 

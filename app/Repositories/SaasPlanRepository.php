@@ -1,10 +1,10 @@
 <?php
-namespace App\Services;
+namespace App\Repositories;
 
 use App\SaasPlan;
 use Illuminate\Support\Facades\Validator;
 
-class SaasPlanService extends BaseService
+class SaasPlanRepository extends BaseRepository
 {
     /**
      * Save SAAS Plan Details
