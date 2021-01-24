@@ -2,7 +2,6 @@
 namespace App\Repositories;
 
 use Exception;
-use Illuminate\Http\Request;
 use Validator;
 
 class SettingsRepository extends BaseRepository
@@ -14,14 +13,14 @@ class SettingsRepository extends BaseRepository
             'tenant_id' => "required",
             "setting_value" => "required",
         ]);
-       
+
         if ($validate->fails()) {
             throw new Exception($validate->errors());
         }
-    
+
         $setting_key = "tenant_delivery_calculation_method";
         $setting_tag = "tenant_delivery_settings";
-    
+
         $response = $this->updateSetting(
             $setting_key,
             $params["setting_value"],
@@ -150,18 +149,15 @@ class SettingsRepository extends BaseRepository
             'tenant_id' => "required",
             "setting_value" => "required",
         ]);
-       
+
         if ($validate->fails()) {
             throw new Exception($validate->errors());
         }
 
-        $setting_key = "gmap_api_key";
-        $setting_tag = "api_key";
+        $settings["gmap_api_key"] = $params['setting_value'];
 
         $response = $this->updateSetting(
-            $setting_key,
-            $params['setting_value'],
-            $setting_tag,
+            $settings,
             $params['tenant_id'],
             null,
         );

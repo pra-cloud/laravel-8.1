@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
-use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 use Illuminate\Http\Request;
 use App\Repositories\SettingsRepository;
 
 class ApiKeyController extends Controller
 {
-    use SettingsServiceTrait;
     private $SETTINGS_REPOSITORY;
 
     function __construct(SettingsRepository $settings_repository)
@@ -20,9 +18,8 @@ class ApiKeyController extends Controller
     public function updateGmapApiKey(Request $request)
     {
         try {
-            $response = $this->SETTINGS_REPOSITORY->updateDeliveryCalculations($request->all());
+            $response = $this->SETTINGS_REPOSITORY->updateGmapApiKey($request->all());
             return $this->processServiceResponse($response, "API Key updated.");
-
         } catch (\Exception $e) {
 
             return $this->errorResponse(null, $e->getMessage());
@@ -32,7 +29,7 @@ class ApiKeyController extends Controller
     public function fetchGmapApiKey(Request $request)
     {
         try {
-            $response = $this->SETTINGS_REPOSITORY->fetchDeliveryCalculations($request->all());
+            $response = $this->SETTINGS_REPOSITORY->fetchGmapApiKey($request->all());
             return $this->processServiceResponse($response);
 
         } catch (\Exception $e) {
