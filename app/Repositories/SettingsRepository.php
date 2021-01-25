@@ -17,17 +17,14 @@ class SettingsRepository extends BaseRepository
         if ($validate->fails()) {
             throw new Exception($validate->errors());
         }
-
-        $setting_key = "tenant_delivery_calculation_method";
-        $setting_tag = "tenant_delivery_settings";
-
+        
+        $settings["tenant_delivery_calculation_method"] = $params['setting_value'];
         $response = $this->updateSetting(
-            $setting_key,
-            $params["setting_value"],
-            $setting_tag,
-            $params["tenant_id"],
+            $settings,
+            $params['tenant_id'],
             null,
         );
+
         return $response;
     }
 
@@ -62,17 +59,13 @@ class SettingsRepository extends BaseRepository
             throw new Exception($validate->errors());
         }
 
-        $setting_key = "tenant_delivery_fee_source";
-        $setting_tag = "tenant_delivery_settings";
-        $user_type = "tenant";
-
+        $settings["tenant_delivery_fee_source"] = $params['setting_value'];
         $response = $this->updateSetting(
-            $setting_key,
-            $params['setting_value'],
-            $setting_tag,
+            $settings,
             $params['tenant_id'],
             null,
         );
+
         return $response;
     }
 
@@ -94,6 +87,7 @@ class SettingsRepository extends BaseRepository
             $params['tenant_id'],
             null,
         );
+
         return $response;
     }
 
@@ -103,21 +97,18 @@ class SettingsRepository extends BaseRepository
             'tenant_id' => "required",
             "setting_value" => "required"
         ]);
+
         if ($validate->fails()) {
             throw new Exception($validate->errors());
         }
 
-        $setting_key = "tenant_delivery_fee_flat";
-        $setting_tag = "tenant_delivery_settings";
-        $user_type = "tenant";
-
+        $settings["tenant_delivery_fee_flat"] = $params['setting_value'];
         $response = $this->updateSetting(
-            $setting_key,
-            $params['setting_value'],
-            $setting_tag,
+            $settings,
             $params['tenant_id'],
             null,
         );
+
         return $response;
     }
 
@@ -126,6 +117,7 @@ class SettingsRepository extends BaseRepository
         $validate = Validator::make($params, [
             'tenant_id' => "required"
         ]);
+
         if ($validate->fails()) {
             throw new Exception($validate->errors());
         }
@@ -139,6 +131,7 @@ class SettingsRepository extends BaseRepository
             $params['tenant_id'],
             null,
         );
+
         return $response;
     }
 
@@ -155,7 +148,6 @@ class SettingsRepository extends BaseRepository
         }
 
         $settings["gmap_api_key"] = $params['setting_value'];
-
         $response = $this->updateSetting(
             $settings,
             $params['tenant_id'],
