@@ -52,7 +52,7 @@ class SettingsRepository extends BaseRepository
     public function updateDeliveryFeeSource($params)
     {
         $validate = Validator::make($params, [
-            'tenant_id' => "required",
+            "tenant_id" => "required",
             "setting_value" => "required"
         ]);
         if ($validate->fails()) {
