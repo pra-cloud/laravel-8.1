@@ -6,6 +6,8 @@ use Validator;
 
 class SettingsRepository extends BaseRepository
 {
+    protected $account_type = 'tenant';
+
     // Delivery Settings
     public function updateDeliveryCalculations(array $params)
     {
@@ -19,7 +21,9 @@ class SettingsRepository extends BaseRepository
         }
         
         $settings["tenant_delivery_calculation_method"] = $params['setting_value'];
+
         $response = $this->updateSetting(
+            'tenant',
             $settings,
             $params['tenant_id'],
             null,
@@ -28,7 +32,7 @@ class SettingsRepository extends BaseRepository
         return $response;
     }
 
-    public function fetchDeliveryCalculations($params)
+    public function fetchDeliveryCalculations(array $params)
     {
         $validate = Validator::make($params, [
             'tenant_id' => "required"
@@ -37,10 +41,13 @@ class SettingsRepository extends BaseRepository
             throw new Exception($validate->errors());
         }
 
-        $setting_key = "tenant_delivery_calculation_method";
+        $setting_key = 'tenant_delivery_calculation_method';
         $setting_tag = "tenant_delivery_settings";
-
+        $account_type = $this->account_type;
+        
         $response = $this->settingsByKey(
+            $account_type,
+            null,
             $setting_key,
             $params['tenant_id'],
             null,
