@@ -19,7 +19,8 @@ class SaasPlanRepository extends BaseRepository
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse($validator->errors()->all());
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $saas_plan_details = [
@@ -33,10 +34,9 @@ class SaasPlanRepository extends BaseRepository
         $saas_plan = SaasPlan::create($saas_plan_details);
 
         if ($saas_plan) {
-            return $this->successResponse('SAAS Plan has been created successfully.', $saas_plan);
+            return  $saas_plan;
         }
-
-        return $this->errorResponse('Error creating SAAS Plan');
+        throw new \Exception("Error creating SAAS Plan");
     }
 
     /**
@@ -53,7 +53,8 @@ class SaasPlanRepository extends BaseRepository
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse($validator->errors()->all());
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $saas_plan = SaasPlan::findOrFail($attributes['id']);
@@ -64,10 +65,10 @@ class SaasPlanRepository extends BaseRepository
         $saas_plan->amount = $attributes['amount'];
         $saas_plan->status = $attributes['status'];
 
-        if ($saas_plan->save())
-            return $this->successResponse('SAAS Plan has been updated successfully.', $saas_plan);
-        else
-            return $this->errorResponse('Error updating SAAS Plan.');
+        if ($saas_plan->save()) {
+            return $saas_plan;
+        }
+        throw new \Exception("Error updating SAAS Plan.");
     }
 
     /**
@@ -76,7 +77,7 @@ class SaasPlanRepository extends BaseRepository
     public function fetchAll(array $attributes = null)
     {
         $saas_plans = SaasPlan::where($attributes)->get();
-        return $this->successResponse(null, $saas_plans);
+        return $saas_plans;
     }
 
     /**
@@ -84,11 +85,8 @@ class SaasPlanRepository extends BaseRepository
      */
     public function fetch(array $attributes)
     {
-        $saas_plan = SaasPlan::where($attributes)->first();
-        if ($saas_plan)
-            return $this->successResponse(null, $saas_plan);
-        else
-            return $this->errorResponse(null);
+        $saas_plan = SaasPlan::where($attributes)->firstOrFail();
+        return $saas_plan;
     }
 
     /**
@@ -96,12 +94,8 @@ class SaasPlanRepository extends BaseRepository
      */
     public function destroy($id)
     {
-        try {
-            SaasPlan::findOrFail($id)->delete();
-            return $this->successResponse('SAAS Plan has been deleted successfully.');
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage());
-        }
+        SaasPlan::findOrFail($id)->delete();
+        return 'SAAS Plan has been deleted successfully.';
     }
 
     public function listPlanBillingCycle()
@@ -113,4 +107,3 @@ class SaasPlanRepository extends BaseRepository
         ];
     }
 }
- ?>

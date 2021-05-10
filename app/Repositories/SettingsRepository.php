@@ -11,13 +11,14 @@ class SettingsRepository extends BaseRepository
     // Delivery Settings
     public function updateDeliveryCalculations(array $params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required",
             "setting_value" => "required",
         ]);
 
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
         
         $settings["tenant_delivery_calculation_method"] = $params['setting_value'];
@@ -34,11 +35,12 @@ class SettingsRepository extends BaseRepository
 
     public function fetchDeliveryCalculations(array $params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required"
         ]);
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $setting_key = 'tenant_delivery_calculation_method';
@@ -58,12 +60,13 @@ class SettingsRepository extends BaseRepository
 
     public function updateDeliveryFeeSource($params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             "tenant_id" => "required",
             "setting_value" => "required"
         ]);
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $settings["tenant_delivery_fee_source"] = $params['setting_value'];
@@ -78,11 +81,12 @@ class SettingsRepository extends BaseRepository
 
     public function fetchDeliveryFeeSource($params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required"
         ]);
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $setting_key = "tenant_delivery_fee_source";
@@ -100,13 +104,14 @@ class SettingsRepository extends BaseRepository
 
     public function updateFlatDeliveryFee($params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required",
             "setting_value" => "required"
         ]);
 
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $settings["tenant_delivery_fee_flat"] = $params['setting_value'];
@@ -121,12 +126,13 @@ class SettingsRepository extends BaseRepository
 
     public function fetchFlatDeliveryFee($params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required"
         ]);
 
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $setting_key = "tenant_delivery_fee_flat";
@@ -145,13 +151,14 @@ class SettingsRepository extends BaseRepository
     // API Settings
     public function updateGmapApiKey(array $params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required",
             "setting_value" => "required",
         ]);
 
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $settings["gmap_api_key"] = $params['setting_value'];
@@ -166,11 +173,12 @@ class SettingsRepository extends BaseRepository
 
     public function fetchGmapApiKey($params)
     {
-        $validate = Validator::make($params, [
+        $validator = Validator::make($params, [
             'tenant_id' => "required"
         ]);
-        if ($validate->fails()) {
-            throw new Exception($validate->errors());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $setting_key = "gmap_api_key";

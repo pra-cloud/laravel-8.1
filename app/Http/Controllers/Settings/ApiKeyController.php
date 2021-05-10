@@ -10,7 +10,7 @@ class ApiKeyController extends Controller
 {
     private $SETTINGS_REPOSITORY;
 
-    function __construct(SettingsRepository $settings_repository)
+    public function __construct(SettingsRepository $settings_repository)
     {
         $this->SETTINGS_REPOSITORY = $settings_repository;
     }
@@ -19,10 +19,10 @@ class ApiKeyController extends Controller
     {
         try {
             $response = $this->SETTINGS_REPOSITORY->updateGmapApiKey($request->all());
-            return $this->processServiceResponse($response, "API Key updated.");
+            return $this->successResponse(null, $response);
         } catch (\Exception $e) {
-
-            return $this->errorResponse(null, $e->getMessage());
+            $errors = $this->SETTINGS_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
         }
     }
 
@@ -30,12 +30,10 @@ class ApiKeyController extends Controller
     {
         try {
             $response = $this->SETTINGS_REPOSITORY->fetchGmapApiKey($request->all());
-            return $this->processServiceResponse($response);
-
+            return $this->successResponse(null, $response);
         } catch (\Exception $e) {
-
-            return $this->errorResponse(null, $e->getMessage());
+            $errors = $this->SETTINGS_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
         }
     }
-
 }

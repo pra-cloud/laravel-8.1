@@ -20,12 +20,13 @@ class SaasPlanController extends Controller
      */
     public function create(Request $request)
     {
-        //$this->hasPermission('saas_plan_create');
-
-        $attributes = $request->all();
-        $response = $this->SAAS_PLAN_REPOSITORY->save($attributes);
-
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->SAAS_PLAN_REPOSITORY->save($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_PLAN_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -33,19 +34,27 @@ class SaasPlanController extends Controller
      */
     public function update(Request $request)
     {
-        $attributes = $request->all();
-        $response = $this->SAAS_PLAN_REPOSITORY->update($attributes);
-
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->SAAS_PLAN_REPOSITORY->update($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_PLAN_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
-     * List of SAAS PLans
+     * List of SAAS Plans
      */
     public function list()
     {
-        $response = $this->SAAS_PLAN_REPOSITORY->fetchAll();
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->SAAS_PLAN_REPOSITORY->fetchAll();
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_PLAN_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -53,8 +62,13 @@ class SaasPlanController extends Controller
      */
     public function view(Request $request)
     {
-        $response = $this->SAAS_PLAN_REPOSITORY->fetch($request->all());
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->SAAS_PLAN_REPOSITORY->fetch($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_PLAN_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -62,8 +76,13 @@ class SaasPlanController extends Controller
      */
     public function delete(Request $request)
     {
-        $response = $this->SAAS_PLAN_REPOSITORY->destroy($request->id);
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->SAAS_PLAN_REPOSITORY->destroy($request->id);
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_PLAN_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -71,8 +90,12 @@ class SaasPlanController extends Controller
      */
     public function listPlanBillingCycle(Request $request)
     {
-        $response = $this->SAAS_PLAN_REPOSITORY->listPlanBillingCycle();
-        return $this->successResponse(null, $response);
+        try {
+            $response = $this->SAAS_PLAN_REPOSITORY->listPlanBillingCycle();
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_PLAN_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
-
 }

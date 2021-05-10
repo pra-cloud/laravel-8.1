@@ -13,6 +13,6 @@ class SaasModuleRepository extends BaseRepository
     public function fetchAll()
     {
         $saas_modules = SaasModule::all();
-        return $this->successResponse("", $saas_modules);
+        return $saas_modules;
     }
 }

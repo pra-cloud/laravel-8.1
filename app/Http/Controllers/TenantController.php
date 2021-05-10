@@ -23,10 +23,13 @@ class TenantController extends Controller
      */
     public function create(Request $request)
     {
-        $attributes = $request->all();
-        $response = $this->TENANT_REPOSITORY->save($attributes);
-
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->TENANT_REPOSITORY->save($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -35,9 +38,13 @@ class TenantController extends Controller
      */
     public function update(Request $request)
     {
-        $attributes = $request->all();
-        $response = $this->TENANT_REPOSITORY->update($attributes);
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->TENANT_REPOSITORY->update($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -46,8 +53,13 @@ class TenantController extends Controller
      */
     public function list()
     {
-        $response = $this->TENANT_REPOSITORY->fetchAll();
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->TENANT_REPOSITORY->fetchAll();
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -56,8 +68,13 @@ class TenantController extends Controller
      */
     public function view(Request $request)
     {
-        $response = $this->TENANT_REPOSITORY->fetch($request->all());
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->TENANT_REPOSITORY->fetch($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     /**
@@ -66,31 +83,56 @@ class TenantController extends Controller
      */
     public function delete(Request $request)
     {
-        $response = $this->TENANT_REPOSITORY->destroy($request->id);
-        return $this->processServiceResponse($response);
+        try {
+            $response = $this->TENANT_REPOSITORY->destroy($request->id);
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     public function updateImages(Request $request)
     {
-        $response = $this->TENANT_REPOSITORY->updateImages($request->all());
-        return $response;
+        try {
+            $response = $this->TENANT_REPOSITORY->updateImages($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     public function getTenantIdByAdminDomain(Request $request)
     {
-        $response = $this->TENANT_REPOSITORY->getTenantIdByAdminDomain($request->all());
-        return $response;
+        try {
+            $response = $this->TENANT_REPOSITORY->getTenantIdByAdminDomain($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     public function getTenantIdByDomain(Request $request)
     {
-        $response = $this->TENANT_REPOSITORY->getTenantIdByDomain($request->all());
-        return $response;
+        try {
+            $response = $this->TENANT_REPOSITORY->getTenantIdByDomain($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 
     public function fetchTenantStatus(Request $request)
     {
-        $response = $this->TENANT_REPOSITORY->fetchTenantStatus($request->all());
-        return $response;
+        try {
+            $response = $this->TENANT_REPOSITORY->fetchTenantStatus($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 }

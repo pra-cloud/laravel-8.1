@@ -16,6 +16,12 @@ class SaasModuleController extends Controller
 
     public function list()
     {
-        return $this->SAAS_MODULE_REPOSITORY->fetchAll();
+        try {
+            $response = $this->SAAS_MODULE_REPOSITORY->fetchAll();
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SAAS_MODULE_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
     }
 }

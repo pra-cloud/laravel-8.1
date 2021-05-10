@@ -2,18 +2,19 @@
 namespace App\Repositories;
 
 use App\Tenant;
-use App\TenantBillingDetail;
+use Carbon\Carbon;
+use App\Rules\Domain;
 use App\TenantModule;
+use App\TenantBillingDetail;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\SaasPlanRepository;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\Domain;
-use Carbon\Carbon;
 
 class TenantRepository extends BaseRepository
 {
     private $SAAS_PLAN_REPOSITORY;
 
-    function __construct(SaasPlanRepository $saasPlanRepository)
+    public function __construct(SaasPlanRepository $saasPlanRepository)
     {
         $this->SAAS_PLAN_REPOSITORY = $saasPlanRepository;
     }
@@ -44,7 +45,8 @@ class TenantRepository extends BaseRepository
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse($validator->errors()->all());
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         // Calculate plan_expiry_date
@@ -67,7 +69,6 @@ class TenantRepository extends BaseRepository
         $tenant = null;
 
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
-
             $tenant = Tenant::create($tenant_details);
 
             $tenant_billing_details = [
@@ -91,10 +92,9 @@ class TenantRepository extends BaseRepository
                 $tenant_module->module_limit = $module['module_limit'];
                 $tenant_module->save();
             }
-
         });
 
-        return $this->successResponse('Tenant has been created successfully.', [ 'tenant' => $tenant ]);
+        return $tenant;
     }
 
     /**
@@ -124,7 +124,8 @@ class TenantRepository extends BaseRepository
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse($validator->errors()->all());
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
         }
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
@@ -149,10 +150,10 @@ class TenantRepository extends BaseRepository
         $tenant->tenantBillingDetail->tax_id              = $attributes['tenant_billing_detail']['tax_id'];
         $tenant->tenantBillingDetail->save();
 
-        if ($tenant)
-            return $this->successResponse('Tenant has been updated successfully', [ 'tenant' => $tenant ]);
-        else
-            return $this->errorResponse('Error updating SAAS Plan.');
+        if ($tenant) {
+            return $tenant;
+        }
+        throw new \Exception("Error updating tenant");
     }
 
     /**
@@ -162,7 +163,7 @@ class TenantRepository extends BaseRepository
     public function fetchAll(array $attributes = [])
     {
         $tenants = Tenant::where($attributes)->get();
-        return $this->successResponse(null, $tenants);
+        return $tenants;
     }
 
     /**
@@ -175,23 +176,24 @@ class TenantRepository extends BaseRepository
             'id' => ['nullable'],
         ]);
 
-        if ($validator->fails())
-            return $this->errorResponse($validator->errors()->all());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
 
         $attributes = $validator->validated();
 
-        try {
-            $tenant = Tenant::where($attributes)->firstOrFail();
-            return $this->successResponse(null, $tenant);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage());
+
+        $tenant = Tenant::where($attributes)->firstOrFail();
+        if ($tenant) {
+            return $tenant;
         }
     }
 
     public function fetchTenantStatus(array $attributes)
     {
-        $tenant = Tenant::select('status')->where($attributes)->first();
-        return $this->successResponse(null, $tenant);
+        $tenant = Tenant::where($attributes)->firstorFail();
+        return $tenant->status;
     }
 
     public function getTenantIdByAdminDomain($attributes)
@@ -200,15 +202,18 @@ class TenantRepository extends BaseRepository
             'admin_domain'          => ['required', new Domain],
         ]);
 
-        if ($validator->fails())
-            return $this->errorResponse($validator->errors()->all());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
 
         $tenant = Tenant::setEagerLoads([])->select('id')->where('admin_domain', $attributes['admin_domain'])->first();
 
-        if (!$tenant)
-            return $this->errorResponse("Tenant not found by this admin domain");
+        if (!$tenant) {
+            throw new \Exception("Tenant not found by this admin domain");
+        }
 
-        return $this->successResponse(null, ['tenant_id' => $tenant->id]);
+        return ['tenant_id' => $tenant->id];
     }
 
     public function getTenantIdByDomain($attributes)
@@ -217,15 +222,18 @@ class TenantRepository extends BaseRepository
             'domain'          => ['required', new Domain],
         ]);
 
-        if ($validator->fails())
-            return $this->errorResponse($validator->errors()->all());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
 
         $tenant = Tenant::setEagerLoads([])->select('id')->where('domain', $attributes['domain'])->first();
 
-        if (!$tenant)
-            return $this->errorResponse("Tenant not found by this domain");
+        if (!$tenant) {
+            throw new \Exception("Tenant not found by this domain");
+        }
 
-        return $this->successResponse(null, ['tenant_id' => $tenant->id]);
+        return ['tenant_id' => $tenant->id];
     }
 
     public function isValidDomain($domain)
@@ -241,27 +249,31 @@ class TenantRepository extends BaseRepository
     {
         $tenant = Tenant::find($id);
 
-        if (!$tenant)
-            return $this->errorResponse('Cannot find tenant.');
+        if (!$tenant) {
+            throw new \Exception("Cannot find tenant.");
+        }
 
-        if ($tenant->delete())
-            return $this->successResponse('Tenant has been deleted successfully.');
-        else
-            return $this->errorResponse('Cannot delete tenant.');
+        if ($tenant->delete()) {
+            return 'Tenant has been deleted successfully.';
+        }
+        throw new \Exception("Error in deleting tenant.");
     }
 
     public function calculatePlanExpiryDate($plan_billing_cycle, $date)
     {
         $plan_expiry_date = Carbon::parse('1970-01-01');
 
-        if ($plan_billing_cycle == 'monthly')
+        if ($plan_billing_cycle == 'monthly') {
             $plan_expiry_date = Carbon::parse($date)->addMonth();
+        }
 
-        if ($plan_billing_cycle == 'quaterly')
+        if ($plan_billing_cycle == 'quaterly') {
             $plan_expiry_date = Carbon::parse($date)->addMonths(4);
+        }
 
-        if ($plan_billing_cycle == 'yearly')
+        if ($plan_billing_cycle == 'yearly') {
             $plan_expiry_date = Carbon::parse($date)->addYear();
+        }
 
         return $plan_expiry_date->toDateString();
     }
@@ -274,20 +286,23 @@ class TenantRepository extends BaseRepository
             'favicon_url' => 'nullable|url',
         ]);
 
-        if ($validator->fails())
-            return $this->errorResponse($validator->errors()->all());
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
-        if (isset($attributes['logo_url']))
+        if (isset($attributes['logo_url'])) {
             $tenant->logo_url = $attributes['logo_url'];
+        }
 
-        if (isset($attributes['favicon_url']))
+        if (isset($attributes['favicon_url'])) {
             $tenant->favicon_url = $attributes['favicon_url'];
+        }
 
         $tenant->save();
 
-        return $this->successResponse("Tenant images updated successfully.", $tenant);
+        return $tenant;
     }
 }
- ?>
