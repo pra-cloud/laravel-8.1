@@ -67,7 +67,7 @@ class TenantRepository extends BaseRepository
         ];
 
         $tenant = null;
-
+        
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
 
@@ -81,11 +81,12 @@ class TenantRepository extends BaseRepository
                 'tax_id'                => $attributes['tenant_billing_detail']['tax_id'],
             ];
 
+            
             TenantBillingDetail::create($tenant_billing_details);
 
             $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
-
-            foreach ($saas_plan['data']['modules'] as $module) {
+            
+            foreach ($saas_plan['modules'] as $module) {
                 $tenant_module = new TenantModule();
                 $tenant_module->tenant_id = $tenant->id;
                 $tenant_module->saas_module_id = $module['module_id'];
