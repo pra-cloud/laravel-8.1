@@ -19,6 +19,8 @@ class ServiceableAreaController extends Controller
     public function check(Request $request)
     {
         $validated_values = $this->validateUserInput($request);
+        if (isset($validated_values['error'])) return $validated_values['errors_array'];
+
         $user_lat_long = $validated_values['user_lat_long'];
         $country = $validated_values['country'];
 
@@ -150,7 +152,9 @@ class ServiceableAreaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $validator->errors();
+            $validation_errors['error'] = true;
+            $validation_errors['errors_array'] = $validator->errors()->toArray();
+            return $validation_errors;
         }
 
         $validated_values = $validator->validate();
