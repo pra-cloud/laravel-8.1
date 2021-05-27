@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
+use Error;
 use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
+use Hyperzod\HyperzodServiceFunctions\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Location\Coordinate;
@@ -13,8 +14,19 @@ use Location\Distance\Vincenty;
 
 class ServiceableAreaController extends Controller
 {
+    use ApiResponseTrait;
     use SettingsServiceTrait;
     use HelpersServiceTrait;
+
+    public function checkIfPresentOrnot(Request $request)
+    {
+        $present = $this->check($request);
+        if (!$present) {
+            return $this->errorResponse("Tenant not serviceable in your area.", $present);
+        }
+
+        return $this->successResponse("Tenant Serviceable", $present);
+    }
 
     public function check(Request $request)
     {
@@ -46,7 +58,7 @@ class ServiceableAreaController extends Controller
         }
 
         // Purpose: Return the message below if the user location falls out of the serviceable area.
-        return "Out of serviceable area.";
+        return false;
     }
 
     public function returnGeofence($coordinates_array)

@@ -21,7 +21,7 @@ $router->get('/', function () use ($router) {
  * Tenant Module Routes
  */
 $router->group([ 'prefix' => '/tenant/serviceable-area' ], function () use ($router) {
-    $router->post('/', 'ServiceableAreaController@check');
+    $router->post('/', 'ServiceableAreaController@checkIfPresentOrnot');
 });
 
 /**
