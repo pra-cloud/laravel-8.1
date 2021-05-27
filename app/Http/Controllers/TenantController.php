@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\SaasPlanRepository;
-use App\Tenant;
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
-use App\Repositories\TenantBillingDetailService;
 
 class TenantController extends Controller
 {
@@ -135,4 +132,5 @@ class TenantController extends Controller
             return $this->errorResponse($e->getMessage(), $errors);
         }
     }
+
 }
