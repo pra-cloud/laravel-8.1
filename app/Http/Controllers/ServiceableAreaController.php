@@ -158,7 +158,7 @@ class ServiceableAreaController extends Controller
         }, "Invalid coordinates");
 
         $validator = Validator::make($request->all(), [
-            'country' => 'country_exists',
+            'country' => 'nullable|country_exists',
             'user_lat_long' => ["array","min:2","max:2"],
             'user_lat_long' => 'double'
         ]);
