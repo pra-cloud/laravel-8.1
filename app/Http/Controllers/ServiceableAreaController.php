@@ -105,18 +105,18 @@ class ServiceableAreaController extends Controller
 
     public function checkByGeofence($setting, $user_lat_long)
     {
-        $geofence_coordinates = $setting['value'][0];
-        $geofence = $this->returnGeofence($geofence_coordinates);
+        $geofence_coordinates = $setting['value'];
+        $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
 
-        $user_lat_long = new Coordinate($user_lat_long[0],$user_lat_long[1]);
-
-        $user_point_inside = $geofence->contains($user_lat_long);
-
-        if (!$user_point_inside) {
-            return false;
+        foreach ($geofence_coordinates as $geofence_coordinate) {
+            $geofence = $this->returnGeofence($geofence_coordinate);
+            $user_point_inside[] = $geofence->contains($user_lat_long);
         }
 
-        return true;
+        // Purpose: Check if the user falls in any of the geofences of the tenant, return true is
+        if (in_array(true, $user_point_inside)) return true;
+
+        return false;
     }
 
     public function getRadiusInMetres($scale, $radius)
@@ -136,7 +136,7 @@ class ServiceableAreaController extends Controller
         $country_codes = $this->fetchCountries();
         $country_codes = collect($country_codes['data'])->pluck('code')->toArray();
 
-        Validator::extend('country_exists', function($attribute, $value, $parameters) use ($country_codes) {
+        Validator::extend('country_exists', function ($attribute, $value, $parameters) use ($country_codes) {
             $country_present = in_array($value, $country_codes);
             if (!$country_present) {
                 return false;
@@ -145,7 +145,7 @@ class ServiceableAreaController extends Controller
             return true;
         }, "Invalid country code(s)");
 
-        Validator::extend('double', function($attribute, $value, $parameters) {
+        Validator::extend('double', function ($attribute, $value, $parameters) {
 
             $coordinates = $value;
             foreach ($coordinates as $coordinate) {
@@ -159,7 +159,7 @@ class ServiceableAreaController extends Controller
 
         $validator = Validator::make($request->all(), [
             'country' => 'nullable|country_exists',
-            'user_lat_long' => ["array","min:2","max:2"],
+            'user_lat_long' => ["array", "min:2", "max:2"],
             'user_lat_long' => 'double'
         ]);
 
