@@ -28,10 +28,9 @@ class ServiceableAreaController extends Controller
         return $this->successResponse("Tenant Serviceable", $present);
     }
 
-    public function check(Request $request)
+    public function check(Request $request) : bool
     {
         $validated_values = $this->validateUserInput($request);
-        if (isset($validated_values['error'])) return $validated_values['errors_array'];
 
         $user_lat_long = $validated_values['user_lat_long'];
         $country = $validated_values['country'];
@@ -164,9 +163,8 @@ class ServiceableAreaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $validation_errors['error'] = true;
-            $validation_errors['errors_array'] = $validator->errors()->toArray();
-            return $validation_errors;
+            $validation_errors = $validator->errors();
+            throw new \Exception($validation_errors);
         }
 
         $validated_values = $validator->validate();
