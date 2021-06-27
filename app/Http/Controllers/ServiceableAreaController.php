@@ -120,11 +120,11 @@ class ServiceableAreaController extends Controller
 
     public function getRadiusInMetres($scale, $radius)
     {
-        if ($scale == 'kms') {
+        if ($scale == 'km') {
             $radius_in_metres =  $radius * 1000;
             return $radius_in_metres;
         }
-        if ($scale == 'miles') {
+        if ($scale == 'mi') {
             $radius_in_metres = $radius * 1609.34;
             return $radius_in_metres;
         }
