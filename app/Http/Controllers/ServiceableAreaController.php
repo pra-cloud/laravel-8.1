@@ -93,7 +93,7 @@ class ServiceableAreaController extends Controller
 
         $distance = $user_lat_long->getDistance($destination_location, new Vincenty());
 
-        if ($distance < $radius_in_metres) {
+        if ($distance <= $radius_in_metres) {
             return true;
         }
 
