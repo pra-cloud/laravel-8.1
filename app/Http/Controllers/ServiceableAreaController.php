@@ -112,7 +112,7 @@ class ServiceableAreaController extends Controller
             $user_point_inside[] = $geofence->contains($user_lat_long);
         }
 
-        // Purpose: Check if the user falls in any of the geofences of the tenant, return true is
+        // Purpose: Check if the user falls in any of the geofences of the tenant, return true if yes
         if (in_array(true, $user_point_inside)) return true;
 
         return false;
