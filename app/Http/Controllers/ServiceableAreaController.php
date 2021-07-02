@@ -132,8 +132,8 @@ class ServiceableAreaController extends Controller
 
     public function validateUserInput($request)
     {
-        $country_codes = $this->fetchCountries();
-        $country_codes = collect($country_codes['data'])->pluck('code')->toArray();
+        $country_codes = $this->fetchCountries();;
+        $country_codes = collect($country_codes)->pluck('code')->toArray();
 
         Validator::extend('country_exists', function ($attribute, $value, $parameters) use ($country_codes) {
             $country_present = in_array($value, $country_codes);
