@@ -11,7 +11,7 @@ Route::get('/', function () use ($router) {
  * Tenant Module Routes
  */
 
-Route::group([ 'prefix' => '/tenant/serviceable-area' ], function () {
+Route::group([ 'prefix' => '/tenant/is-serviceable-area' ], function () {
     Route::post('/', 'ServiceableAreaController@checkIfPresentOrnot');
 });
 
