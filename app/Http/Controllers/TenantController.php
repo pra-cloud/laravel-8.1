@@ -106,12 +106,14 @@ class TenantController extends Controller
     public function updateDomain(Request $request)
     {
         try {
-            $response = $this->SETTINGS_REPOSITORY->updateDomain($request);
+            $response = $this->TENANT_REPOSITORY->updateDomain($request->all());
             return $this->successResponse(null, $response);
-        } catch (\Exception $e) {
-            $errors = $this->SETTINGS_REPOSITORY->getErrors();
+        }
+        catch (\Exception $e){
+            $errors = $this->TENANT_REPOSITORY->getErrors();
             return $this->errorResponse($e->getMessage(), $errors);
         }
+
     }
 
     public function getTenantIdByAdminDomain(Request $request)

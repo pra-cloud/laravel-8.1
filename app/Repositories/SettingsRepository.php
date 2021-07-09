@@ -11,24 +11,7 @@ class SettingsRepository extends BaseRepository
 {
     protected $account_type = 'tenant';
 
-    public function updateDomain(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'tenant_id' => 'integer',
-            'admin_domain' => [new Domain],
-        ]);
-
-        $validated_values = $validator->validated();
-
-        $response = Tenant::where('id', $validated_values['tenant_id'])->update(['admin_domain' => $validated_values['admin_domain']]);
-
-        if ($response != true) {
-            return $this->errorResponse("Failed to update the new domain: {$validated_values['admin_domain']}", $response);
-        }
-
-        return $this->successResponse("Domain: {$validated_values['admin_domain']} updated successfully!");
-
-    }
+    
 
     // Delivery Settings
     public function updateDeliveryCalculations(array $params)
