@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
+use App\Repositories\SettingsRepository;
 
 class TenantController extends Controller
 {
     private $TENANT_REPOSITORY;
+    private $SETTINGS_REPOSITORY;
 
-    public function __construct(TenantRepository $tenantRepository)
+    public function __construct(SettingsRepository $SettingsRepository, TenantRepository $TenantRepository)
     {
-        $this->TENANT_REPOSITORY = $tenantRepository;
+        $this->TENANT_REPOSITORY = $TenantRepository;
+        $this->SETTINGS_REPOSITORY = $SettingsRepository;
     }
 
     /**
@@ -96,6 +99,17 @@ class TenantController extends Controller
             return $this->successResponse(null, $response);
         } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
+
+    public function updateDomain(Request $request)
+    {
+        try {
+            $response = $this->SETTINGS_REPOSITORY->updateDomain($request);
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->SETTINGS_REPOSITORY->getErrors();
             return $this->errorResponse($e->getMessage(), $errors);
         }
     }

@@ -20,7 +20,10 @@ Route::group([ 'prefix' => '/tenant/is-serviceable-area' ], function () {
  */
 $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->post('/create', 'TenantController@create');
+
     $router->post('/update', 'TenantController@update');
+    $router->post('/update/domain', 'TenantController@updateDomain');
+
     $router->get('/list', 'TenantController@list');
     $router->get('/view', 'TenantController@view');
     $router->get('/status', 'TenantController@fetchTenantStatus');
@@ -28,6 +31,7 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->get('/getTenantIdByDomain', 'TenantController@getTenantIdByDomain');
     $router->post('/delete', 'TenantController@delete');
     $router->post('/images', 'TenantController@updateImages');
+
 });
 
 /**
