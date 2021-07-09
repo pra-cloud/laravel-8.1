@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Repositories;
 
 use App\SaasModule;

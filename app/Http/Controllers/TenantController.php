@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\SaasPlanRepository;
-use App\Tenant;
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
-use App\Repositories\TenantBillingDetailService;
+use App\Repositories\SettingsRepository;
+use GrahamCampbell\ResultType\Success;
 
 class TenantController extends Controller
 {
     private $TENANT_REPOSITORY;
+    private $SETTINGS_REPOSITORY;
 
-    public function __construct(TenantRepository $tenantRepository)
+    public function __construct(SettingsRepository $SettingsRepository, TenantRepository $TenantRepository)
     {
-        $this->TENANT_REPOSITORY = $tenantRepository;
+        $this->TENANT_REPOSITORY = $TenantRepository;
+        $this->SETTINGS_REPOSITORY = $SettingsRepository;
     }
 
     /**
@@ -62,6 +63,23 @@ class TenantController extends Controller
         }
     }
 
+    public function listStoreTypes()
+    {
+        $store_types = [
+            'food_delivery' => 'Food Delivery Solution',
+            'grocery_delivery' => 'Grocery Delivery Solution',
+            'bakery_delivery' => 'Bakery Delivery Solution',
+            'pet_food_delivery' => 'Pet Food Delivery Solution',
+            'bouquet_delivery' => 'Bouquets Delivery Solution',
+            'stationary_delivery' => 'Stationary Delivery Solution',
+            'accessories_delivery' => 'Accessories Delivery Solution',
+            'clothing_delivery' => 'Clothing Delivery Solution',
+            'beverages_delivery' => 'Beverages Delivery Solution',
+        ];
+
+        return $this->successResponse("List of store types", $store_types);
+    }
+
     /**
      * View Tenant Details
      * with Tenant Billing Detail
@@ -101,6 +119,19 @@ class TenantController extends Controller
             $errors = $this->TENANT_REPOSITORY->getErrors();
             return $this->errorResponse($e->getMessage(), $errors);
         }
+    }
+
+    public function updateDomain(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->updateDomain($request->all());
+            return $this->successResponse(null, $response);
+        }
+        catch (\Exception $e){
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+
     }
 
     public function getTenantIdByAdminDomain(Request $request)

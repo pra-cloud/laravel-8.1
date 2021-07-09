@@ -105,9 +105,8 @@ class TenantRepository extends BaseRepository
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'tenant_id' => 'required|integer',
-            'domain'                => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
-            'admin_domain'          => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
+            'domain'                => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
+            'admin_domain'          => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
             'email'                 => 'required|email',
             'mobile'                => 'required',
@@ -347,5 +346,63 @@ class TenantRepository extends BaseRepository
         return [
             "exists" => $tenant_exists
         ];
+    }
+    
+    public function updateDomain(array $attributes)
+    {
+        $validator = Validator::make($attributes, [
+            'tenant_id' => 'integer',
+            'domain' => ['nullable', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
+            'admin_domain' => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"]
+        ]);
+        
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+        
+        $validated_values = $validator->validated();
+        $response['tenant_id'] = $validated_values['tenant_id'];
+
+        if (isset($validated_values['domain'], $validated_values['admin_domain'])) {
+            $db_response = Tenant::where('id', $validated_values['tenant_id'])->update([
+                'domain' => $validated_values['domain'],
+                'admin_domain' => $validated_values['admin_domain']
+            ]);
+
+            $response['updated_domain'] = $validated_values['domain'];
+            $response['updated_admin_domain'] = $validated_values['admin_domain'];
+
+            if ($db_response != true) {
+                return $response;
+            }
+            return $response;
+        }
+
+        if (isset($validated_values['domain']) || isset($validated_values['admin_domain'])) {
+            if (isset($validated_values['domain'])) {
+                $db_response = Tenant::where('id', $validated_values['tenant_id'])->update(['domain' => $validated_values['domain']]);
+                $response['updated_domain'] = $validated_values['domain'];
+                
+                if ($db_response != true) {
+                    return $response;
+                }
+                
+                return $response;
+            }
+
+            if (isset($validated_values['admin_domain'])) {
+                $db_response = Tenant::where('id', $validated_values['tenant_id'])->update(['admin_domain' => $validated_values['admin_domain']]);
+                $response['updated_admin_domain'] = $validated_values['admin_domain'];
+
+                if ($db_response != true) {
+                    return $response;
+                }
+        
+                return $this->successResponse("Domain: {$validated_values['admin_domain']} updated successfully!", $response);
+            }
+        }
+        
+        return $response;
     }
 }

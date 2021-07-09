@@ -2,11 +2,16 @@
 namespace App\Repositories;
 
 use Exception;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+use App\Rules\Domain;
+use Illuminate\Http\Request;
+use App\Tenant;
 
 class SettingsRepository extends BaseRepository
 {
     protected $account_type = 'tenant';
+
+    
 
     // Delivery Settings
     public function updateDeliveryCalculations(array $params)
