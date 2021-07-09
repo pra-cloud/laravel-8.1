@@ -106,7 +106,7 @@ class TenantRepository extends BaseRepository
     {
         $validator = Validator::make($attributes, [
             'domain'                => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
-            'admin_domain'          => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
+            'admin_domain'          => ['required', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
             'email'                 => ['required', 'email', "unique:tenants,email,{$attributes['tenant_id']},id"],
             'mobile'                => 'required',
