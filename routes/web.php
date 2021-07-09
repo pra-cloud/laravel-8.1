@@ -21,7 +21,6 @@ $router->get('/', function () use ($router) {
  * Tenant Module Routes
  */
 $router->group([ 'prefix' => '/tenant-module' ], function () use ($router) {
-
 });
 
 /**
@@ -37,6 +36,8 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->get('/getTenantIdByDomain', 'TenantController@getTenantIdByDomain');
     $router->post('/delete', 'TenantController@delete');
     $router->post('/images', 'TenantController@updateImages');
+    $router->post('/configure-setup', 'TenantController@configureSetup');
+    $router->get('/exists', 'TenantController@tenantExists');
 });
 
 /**
@@ -54,14 +55,14 @@ $router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
 /**
  * SAAS Modules Routes
  */
-$router->group(['prefix' => '/saas-module'], function () use ($router){
+$router->group(['prefix' => '/saas-module'], function () use ($router) {
     $router->get('list', 'SaasModuleController@list');
 });
 
 /**
  * Settings Routes
  */
-$router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router){
+$router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router) {
     $router->post('/currency', 'SettingController@updateCurrency');
 
     $router->post('/delivery-settings/delivery-calculation', 'DeliverySettingsController@updateDeliveryCalculations');
@@ -76,5 +77,3 @@ $router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function ()
     $router->post('/apikey/gmap', 'ApiKeyController@updateGmapApiKey');
     $router->get('/apikey/gmap', 'ApiKeyController@fetchGmapApiKey');
 });
-
-

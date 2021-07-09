@@ -10,7 +10,8 @@
         "guzzlehttp/guzzle": "^7.0",
         "hyperzodtech/hyperzod-service-functions": "master",
         "laravel/lumen-framework": "^7.0",
-        "laravelista/lumen-vendor-publish": "7.0"
+        "laravelista/lumen-vendor-publish": "7.0",
+        "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",

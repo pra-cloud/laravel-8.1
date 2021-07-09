@@ -10,7 +10,7 @@ class Tenant extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'domain', 'admin_domain', 'name', 'status', 'plan_expiry_date', 'plan_billing_cycle', 'payment_failed_tries', 'email', 'mobile','country', 'city', 'saas_plan_id', 'mobile'
+        'domain', 'admin_domain', 'name', 'status', 'plan_expiry_date', 'plan_billing_cycle', 'payment_failed_tries', 'email', 'mobile','country', 'city', 'saas_plan_id', 'mobile', 'is_setup_configured', 'slug',
     ];
 
     protected $with = ['tenantBillingDetail', 'tenantModules', 'saasPlan'];
@@ -33,5 +33,4 @@ class Tenant extends Model
     {
         return $this->belongsTo(SaasPlan::class);
     }
-
 }

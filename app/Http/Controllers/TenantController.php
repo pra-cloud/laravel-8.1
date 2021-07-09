@@ -135,4 +135,26 @@ class TenantController extends Controller
             return $this->errorResponse($e->getMessage(), $errors);
         }
     }
+
+    public function configureSetup(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->configureSetup($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
+
+    public function tenantExists(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->tenantExists($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
 }

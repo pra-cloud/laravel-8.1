@@ -40,8 +40,8 @@ class TenantRepository extends BaseRepository
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
             'tenant_billing_detail.billing_address' => 'required',
-            'tenant_billing_detail.tax_type_id'     => 'required',
-            'tenant_billing_detail.tax_id'          => 'required',
+            'tenant_billing_detail.billing_provider'=> 'required|string',
+            'tenant_billing_detail.billing_provider_customer_id'=> 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -77,8 +77,8 @@ class TenantRepository extends BaseRepository
                 'billing_email'         => $attributes['tenant_billing_detail']['billing_email'],
                 'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
                 'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
-                'tax_type_id'           => $attributes['tenant_billing_detail']['tax_type_id'],
-                'tax_id'                => $attributes['tenant_billing_detail']['tax_id'],
+                'billing_provider_customer_id' => $attributes['tenant_billing_detail']['billing_provider_customer_id'],
+                'billing_provider' => $attributes['tenant_billing_detail']['billing_provider'],
             ];
 
             
@@ -105,6 +105,7 @@ class TenantRepository extends BaseRepository
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
+            'tenant_id' => 'required|integer',
             'domain'                => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
             'admin_domain'          => ['required', new Domain, 'unique:tenants,id,'.$attributes['tenant_id']],
             'name'                  => 'required',
@@ -120,8 +121,8 @@ class TenantRepository extends BaseRepository
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
             'tenant_billing_detail.billing_address' => 'required',
-            'tenant_billing_detail.tax_type_id'     => 'required',
-            'tenant_billing_detail.tax_id'          => 'required',
+            'tenant_billing_detail.billing_provider'=> 'required|string',
+            'tenant_billing_detail.billing_provider_customer_id'=> 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -147,8 +148,8 @@ class TenantRepository extends BaseRepository
         $tenant->tenantBillingDetail->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
         $tenant->tenantBillingDetail->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
         $tenant->tenantBillingDetail->billing_address     = $attributes['tenant_billing_detail']['billing_address'];
-        $tenant->tenantBillingDetail->tax_type_id         = $attributes['tenant_billing_detail']['tax_type_id'];
-        $tenant->tenantBillingDetail->tax_id              = $attributes['tenant_billing_detail']['tax_id'];
+        $tenant->tenantBillingDetail->billing_provider_customer_id              = $attributes['tenant_billing_detail']['billing_provider_customer_id'];
+        $tenant->tenantBillingDetail->billing_provider              = $attributes['tenant_billing_detail']['billing_provider'];
         $tenant->tenantBillingDetail->save();
 
         if ($tenant) {
@@ -305,5 +306,46 @@ class TenantRepository extends BaseRepository
         $tenant->save();
 
         return $tenant;
+    }
+
+    public function configureSetup(array $params)
+    {
+        $validator = Validator::make($params, [
+            'tenant_id' => 'required',
+            'is_setup_configured' => 'required|boolean'
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+
+        $validated = $validator->validated();
+
+        $tenant = Tenant::findOrFail($validated['tenant_id']);
+        $tenant->is_setup_configured = boolval($validated['is_setup_configured']);
+        $tenant->save();
+
+        return $tenant;
+    }
+
+    public function tenantExists(array $params)
+    {
+        $validator = Validator::make($params, [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+
+        $validated = $validator->validated();
+
+        $tenant_exists = Tenant::where('email', $validated['email'])->exists();
+
+        return [
+            "exists" => $tenant_exists
+        ];
     }
 }
