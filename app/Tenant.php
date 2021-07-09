@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Tenant extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasSlug;
 
     protected $fillable = [
         'domain', 'admin_domain', 'name', 'status', 'plan_expiry_date', 'plan_billing_cycle', 'payment_failed_tries', 'email', 'mobile','country', 'city', 'saas_plan_id', 'mobile', 'is_setup_configured', 'slug',
@@ -32,5 +34,12 @@ class Tenant extends Model
     public function saasPlan()
     {
         return $this->belongsTo(SaasPlan::class);
+    }
+
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 }
