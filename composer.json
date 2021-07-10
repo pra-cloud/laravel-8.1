@@ -9,10 +9,11 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "hyperzodtech/hyperzod-service-functions": "master",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
-        "hyperzodtech/hyperzod-service-functions": "master",
-        "mjaschen/phpgeo": "^3.2"
+        "mjaschen/phpgeo": "^3.2",
+        "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

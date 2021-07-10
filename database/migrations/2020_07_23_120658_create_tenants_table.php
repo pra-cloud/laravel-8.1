@@ -17,7 +17,7 @@ class CreateTenantsTable extends Migration
             $table->id();
             $table->string('domain', 45)->unique('domain');
             $table->string('name', 45);
-            $table->string('email', 45);
+            $table->string('email', 45)->unique();
             $table->string('mobile', 45);
             $table->string('city', 45);
             $table->string('country', 45);
