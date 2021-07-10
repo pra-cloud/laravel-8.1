@@ -25,14 +25,15 @@ class TenantRepository extends BaseRepository
     public function save(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'                => ['required','unique:tenants', new Domain],
+            'domain'                => ['nullable','unique:tenants', new Domain],
             'admin_domain'          => ['nullable','unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => ['required', 'email', 'unique:tenants'],
             'mobile'                => 'required',
             'city'                  => 'required',
             'country'               => 'required',
-            'status'                => 'required',
+            'status'                => 'required|boolean',
+            'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
             'saas_plan_id'          => 'required',
             'plan_start_date'       => 'required|date',
             'plan_billing_cycle'    => 'required',
@@ -53,7 +54,7 @@ class TenantRepository extends BaseRepository
         $attributes['plan_expiry_date'] = $this->calculatePlanExpiryDate($attributes['plan_billing_cycle'], $attributes['plan_start_date']);
 
         $tenant_details = [
-            'domain'                => $attributes['domain'],
+            'domain'                => $attributes['domain'] ?? null,
             'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
@@ -61,6 +62,7 @@ class TenantRepository extends BaseRepository
             'city'                  => $attributes['city'],
             'country'               => $attributes['country'],
             'status'                => $attributes['status'],
+            'business_type'         => $attributes['business_type'],
             'saas_plan_id'          => $attributes['saas_plan_id'],
             'plan_expiry_date'      => $attributes['plan_expiry_date'],
             'plan_billing_cycle'      => $attributes['plan_billing_cycle'],
@@ -70,7 +72,11 @@ class TenantRepository extends BaseRepository
         
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
-
+            if (is_null($tenant_details['domain'])) {
+                $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
+                $tenant->save();
+                $tenant->refresh();
+            }
             $tenant_billing_details = [
                 'tenant_id'             => $tenant->id,
                 'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
@@ -105,14 +111,15 @@ class TenantRepository extends BaseRepository
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'                => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
+            'domain'                => ['nullable', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
             'admin_domain'          => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
             'email'                 => ['required', 'email', "unique:tenants,email,{$attributes['tenant_id']},id"],
             'mobile'                => 'required',
             'city'                  => 'required',
             'country'               => 'required',
-            'status'                => 'required',
+            'status'                => 'required|boolean',
+            'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
             'saas_plan_id'          => 'required',
             'plan_expiry_date'      => 'required|date',
             'plan_billing_cycle'    => 'required',
@@ -131,18 +138,24 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
-        $tenant->domain                 = $attributes['domain'];
+        $tenant->domain                 = $attributes['domain'] ?? null;
         $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
         $tenant->mobile                 = $attributes['mobile'];
         $tenant->city                   = $attributes['city'];
         $tenant->status                 = $attributes['status'];
+        $tenant->business_type          = $attributes['business_type'];
         $tenant->saas_plan_id           = $attributes['saas_plan_id'];
         $tenant->plan_expiry_date       = $attributes['plan_expiry_date'];
         $tenant->plan_billing_cycle     = $attributes['plan_billing_cycle'];
         $tenant->save();
-
+        if (is_null($tenant->domain)) {
+            $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
+            $tenant->save();
+            $tenant->refresh();
+        }
+        // dd($tenant->slug);
         $tenant->tenantBillingDetail->billing_name        = $attributes['tenant_billing_detail']['billing_name'];
         $tenant->tenantBillingDetail->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
         $tenant->tenantBillingDetail->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
@@ -406,6 +419,11 @@ class TenantRepository extends BaseRepository
         return $response;
     }
 
+    public function getUniqueTenantDomain($slug)
+    {
+        return "$slug.hyperzod.app";
+    }
+
     public function register(array $params)
     {
         $validator = Validator::make($params, [
@@ -423,6 +441,5 @@ class TenantRepository extends BaseRepository
         }
 
         $validated = $validator->validated();
-
     }
 }
