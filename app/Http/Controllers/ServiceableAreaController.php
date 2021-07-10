@@ -35,7 +35,15 @@ class ServiceableAreaController extends Controller
         $user_lat_long = $validated_values['user_lat_long'];
         $country = $validated_values['country'];
 
-        $serviceable_area_settings = $this->settingsByKeys('tenant', ['serviceable_area'], null, null, 1, null)->toArray()['serviceable_area'];
+        $serviceable_area_settings = $this->settingsByKeys('tenant', ['serviceable_area'], null, null, 1, null);
+
+        // If the serviceable_area settings are not set, the tenant is serviceable globally, always return true.
+        if ($serviceable_area_settings == false) {
+            return true;
+        }
+
+        $serviceable_area_settings = $serviceable_area_settings->toArray()['serviceable_area'];
+
         $countries = collect($serviceable_area_settings)->where('method', 'country')->toArray();
 
         if ($country) {
