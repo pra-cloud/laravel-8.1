@@ -63,7 +63,7 @@ class TenantController extends Controller
         }
     }
 
-    public function listStoreTypes()
+    public function listBusinessTypes()
     {
         $store_types = [
             'food_delivery' => 'Food Delivery Solution',

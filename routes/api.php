@@ -25,7 +25,7 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->post('/update/domain', 'TenantController@updateDomain');
 
     $router->get('/list', 'TenantController@list');
-    $router->get('/list/store-types', 'TenantController@listStoreTypes');
+    $router->get('/list/business-types', 'TenantController@listBusinessTypes');
     $router->get('/view', 'TenantController@view');
     $router->get('/status', 'TenantController@fetchTenantStatus');
     $router->get('/getTenantIdByAdminDomain', 'TenantController@getTenantIdByAdminDomain');
