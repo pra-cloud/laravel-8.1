@@ -19,6 +19,7 @@ Route::group([ 'prefix' => '/tenant/is-serviceable-area' ], function () {
  * Tenant Routes
  */
 $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
+    $router->post('/register', 'TenantController@register');
     $router->post('/create', 'TenantController@create');
 
     $router->post('/update', 'TenantController@update');

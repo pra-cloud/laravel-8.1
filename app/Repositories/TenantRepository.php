@@ -26,7 +26,7 @@ class TenantRepository extends BaseRepository
     {
         $validator = Validator::make($attributes, [
             'domain'                => ['required','unique:tenants', new Domain],
-            'admin_domain'          => ['required','unique:tenants', new Domain],
+            'admin_domain'          => ['nullable','unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => ['required', 'email', 'unique:tenants'],
             'mobile'                => 'required',
@@ -54,7 +54,7 @@ class TenantRepository extends BaseRepository
 
         $tenant_details = [
             'domain'                => $attributes['domain'],
-            'admin_domain'          => $attributes['admin_domain'],
+            'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
             'mobile'                => $attributes['mobile'],
@@ -106,7 +106,7 @@ class TenantRepository extends BaseRepository
     {
         $validator = Validator::make($attributes, [
             'domain'                => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
-            'admin_domain'          => ['required', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
+            'admin_domain'          => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
             'email'                 => ['required', 'email', "unique:tenants,email,{$attributes['tenant_id']},id"],
             'mobile'                => 'required',
@@ -132,7 +132,7 @@ class TenantRepository extends BaseRepository
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
         $tenant->domain                 = $attributes['domain'];
-        $tenant->admin_domain           = $attributes['admin_domain'];
+        $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
         $tenant->mobile                 = $attributes['mobile'];
@@ -404,5 +404,25 @@ class TenantRepository extends BaseRepository
         }
         
         return $response;
+    }
+
+    public function register(array $params)
+    {
+        $validator = Validator::make($params, [
+            'user_name' => 'required|string',
+            'email' => ['required', 'email', 'unique:tenants'],
+            'password' => 'required|string',
+            'mobile' => 'required',
+            'tenant_name' => 'required|string',
+            
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+
+        $validated = $validator->validated();
+
     }
 }

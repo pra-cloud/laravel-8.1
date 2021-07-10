@@ -14,7 +14,7 @@ class AddAdminDomainToTenants extends Migration
     public function up()
     {
         Schema::table('tenants', function (Blueprint $table) {
-            $table->string('admin_domain', 45)->unique()->after('domain');
+            $table->string('admin_domain', 45)->nullable()->unique()->after('domain');
         });
     }
 
