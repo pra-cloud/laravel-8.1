@@ -9,8 +9,8 @@ class AddBillingProviderColumnsInBillingDetailsTable extends Migration
     public function up()
     {
         Schema::table('tenant_billing_details', function (Blueprint $table) {
-            $table->string('billing_provider');
-            $table->string('billing_provider_customer_id', 191);
+            $table->string('billing_provider')->nullable();
+            $table->string('billing_provider_customer_id', 191)->nullable();
         });
     }
 
