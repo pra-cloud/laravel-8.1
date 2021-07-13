@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddAdminDomainToTenants extends Migration
+class AddBusinessTypeColumnToTenantsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddAdminDomainToTenants extends Migration
     public function up()
     {
         Schema::table('tenants', function (Blueprint $table) {
-            $table->string('admin_domain', 45)->nullable()->unique()->after('domain');
+            $table->string('business_type');
         });
     }
 
@@ -26,7 +26,7 @@ class AddAdminDomainToTenants extends Migration
     public function down()
     {
         Schema::table('tenants', function (Blueprint $table) {
-            $table->dropColumn('admin_domain');
+            $table->dropColumn('business_type');
         });
     }
 }

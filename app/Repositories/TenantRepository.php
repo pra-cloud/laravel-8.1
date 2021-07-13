@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Rules\Domain;
 use App\TenantModule;
 use App\TenantBillingDetail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\SaasPlanRepository;
 use Illuminate\Support\Facades\Validator;
@@ -39,23 +40,30 @@ class TenantRepository extends BaseRepository
         }, "Invalid country");
 
         $validator = Validator::make($attributes, [
-            'domain'                => ['required','unique:tenants', new Domain],
-            'admin_domain'          => ['required','unique:tenants', new Domain],
+            'domain'                => ['nullable','unique:tenants', new Domain],
+            'admin_domain'          => ['nullable','unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => ['required', 'email', 'unique:tenants'],
             'mobile'                => 'required',
             'city'                  => 'required',
+<<<<<<< HEAD
             'country'               => 'required|country_exists',
             'status'                => 'required',
             'saas_plan_id'          => 'required',
             'plan_start_date'       => 'required|date',
             'plan_billing_cycle'    => 'required',
+=======
+            'country'               => 'required',
+            'status'                => 'required|boolean',
+            'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'saas_plan_id'          => 'nullable',
+            'plan_start_date'       => 'nullable|date',
+            'plan_billing_cycle'    => 'nullable',
+>>>>>>> fb1fc3f8f38de8dd25d1705e2b2dba1e744a9f0e
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
             'tenant_billing_detail.billing_address' => 'required',
-            'tenant_billing_detail.billing_provider'=> 'required|string',
-            'tenant_billing_detail.billing_provider_customer_id'=> 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -64,38 +72,44 @@ class TenantRepository extends BaseRepository
         }
 
         // Calculate plan_expiry_date
-        $attributes['plan_expiry_date'] = $this->calculatePlanExpiryDate($attributes['plan_billing_cycle'], $attributes['plan_start_date']);
+        if (isset($attributes['plan_billing_cycle']) && isset($attributes['plan_start_date'])) {
+            $attributes['plan_expiry_date'] = $this->calculatePlanExpiryDate($attributes['plan_billing_cycle'], $attributes['plan_start_date']);
+        }
 
         $tenant_details = [
-            'domain'                => $attributes['domain'],
-            'admin_domain'          => $attributes['admin_domain'],
+            'domain'                => $attributes['domain'] ?? null,
+            'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
             'mobile'                => $attributes['mobile'],
             'city'                  => $attributes['city'],
             'country'               => $attributes['country'],
             'status'                => $attributes['status'],
-            'saas_plan_id'          => $attributes['saas_plan_id'],
-            'plan_expiry_date'      => $attributes['plan_expiry_date'],
-            'plan_billing_cycle'      => $attributes['plan_billing_cycle'],
+            'business_type'         => $attributes['business_type'],
+            'saas_plan_id'          => $attributes['saas_plan_id'] ?? null,
+            'plan_expiry_date'      => $attributes['plan_expiry_date'] ?? null,
+            'plan_billing_cycle'      => $attributes['plan_billing_cycle'] ?? null,
         ];
 
         $tenant = null;
         
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
-
+            if (is_null($tenant_details['domain'])) {
+                $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
+                $tenant->save();
+                $tenant->refresh();
+            }
             $tenant_billing_details = [
                 'tenant_id'             => $tenant->id,
                 'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
                 'billing_email'         => $attributes['tenant_billing_detail']['billing_email'],
                 'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
                 'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
-                'billing_provider_customer_id' => $attributes['tenant_billing_detail']['billing_provider_customer_id'],
-                'billing_provider' => $attributes['tenant_billing_detail']['billing_provider'],
             ];
 
             TenantBillingDetail::create($tenant_billing_details);
+<<<<<<< HEAD
 
             $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
 
@@ -105,6 +119,18 @@ class TenantRepository extends BaseRepository
                 $tenant_module->saas_module_id = $module['module_id'];
                 $tenant_module->module_limit = $module['module_limit'];
                 $tenant_module->save();
+=======
+            if ($tenant->saas_plan_id) {
+                $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
+                
+                foreach ($saas_plan['modules'] as $module) {
+                    $tenant_module = new TenantModule();
+                    $tenant_module->tenant_id = $tenant->id;
+                    $tenant_module->saas_module_id = $module['module_id'];
+                    $tenant_module->module_limit = $module['module_limit'];
+                    $tenant_module->save();
+                }
+>>>>>>> fb1fc3f8f38de8dd25d1705e2b2dba1e744a9f0e
             }
         });
 
@@ -118,23 +144,22 @@ class TenantRepository extends BaseRepository
     public function update(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'                => ['required', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
-            'admin_domain'          => ['required', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
+            'domain'                => ['nullable', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
+            'admin_domain'          => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
             'email'                 => ['required', 'email', "unique:tenants,email,{$attributes['tenant_id']},id"],
             'mobile'                => 'required',
             'city'                  => 'required',
             'country'               => 'required',
-            'status'                => 'required',
-            'saas_plan_id'          => 'required',
-            'plan_expiry_date'      => 'required|date',
-            'plan_billing_cycle'    => 'required',
+            'status'                => 'required|boolean',
+            'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'saas_plan_id'          => 'nullable',
+            'plan_expiry_date'      => 'nullable|date',
+            'plan_billing_cycle'    => 'nullable',
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
             'tenant_billing_detail.billing_address' => 'required',
-            'tenant_billing_detail.billing_provider'=> 'required|string',
-            'tenant_billing_detail.billing_provider_customer_id'=> 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -144,24 +169,28 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
-        $tenant->domain                 = $attributes['domain'];
-        $tenant->admin_domain           = $attributes['admin_domain'];
+        $tenant->domain                 = $attributes['domain'] ?? null;
+        $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
         $tenant->mobile                 = $attributes['mobile'];
         $tenant->city                   = $attributes['city'];
         $tenant->status                 = $attributes['status'];
-        $tenant->saas_plan_id           = $attributes['saas_plan_id'];
-        $tenant->plan_expiry_date       = $attributes['plan_expiry_date'];
-        $tenant->plan_billing_cycle     = $attributes['plan_billing_cycle'];
+        $tenant->business_type          = $attributes['business_type'];
+        $tenant->saas_plan_id           = $attributes['saas_plan_id'] ?? null;
+        $tenant->plan_expiry_date       = $attributes['plan_expiry_date'] ?? null;
+        $tenant->plan_billing_cycle     = $attributes['plan_billing_cycle'] ?? null;
         $tenant->save();
-
+        if (is_null($tenant->domain)) {
+            $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
+            $tenant->save();
+            $tenant->refresh();
+        }
+        // dd($tenant->slug);
         $tenant->tenantBillingDetail->billing_name        = $attributes['tenant_billing_detail']['billing_name'];
         $tenant->tenantBillingDetail->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
         $tenant->tenantBillingDetail->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
         $tenant->tenantBillingDetail->billing_address     = $attributes['tenant_billing_detail']['billing_address'];
-        $tenant->tenantBillingDetail->billing_provider_customer_id              = $attributes['tenant_billing_detail']['billing_provider_customer_id'];
-        $tenant->tenantBillingDetail->billing_provider              = $attributes['tenant_billing_detail']['billing_provider'];
         $tenant->tenantBillingDetail->save();
 
         if ($tenant) {
@@ -417,5 +446,55 @@ class TenantRepository extends BaseRepository
         }
         
         return $response;
+    }
+
+    public function getUniqueTenantDomain($slug)
+    {
+        return "$slug.hyperzod.app";
+    }
+
+    public function register(array $params)
+    {
+        $validator = Validator::make($params, [
+            'user_name' => 'required|string',
+            'email' => ['required', 'email', 'unique:tenants'],
+            'password' => 'required|string',
+            'mobile' => 'required',
+            'tenant_name' => 'required|string',
+            'business_type' => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'city' => 'required',
+            'country' => 'required',
+            'login_type' => 'required|string|in:tenant'
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+
+        $validated = $validator->validated();
+
+        //Create tenant
+        $tenant = $this->save([
+            'name' => $validated['tenant_name'],
+            'email' => $validated['email'],
+            'mobile' => $validated['mobile'],
+            'city' => $validated['city'],
+            'country' => $validated['country'],
+            'status' => true,
+            'business_type' => $validated['business_type'],
+            'tenant_billing_detail' => [
+                'billing_name' => $validated['tenant_name'],
+                'billing_email' => $validated['email'],
+                'billing_phone' => $validated['mobile'],
+                'billing_address' => $validated['city'],
+            ],
+        ]);
+
+        if (!$tenant) {
+            throw new \Exception("Error while creating tenant");
+        }
+
+        return $tenant;
     }
 }

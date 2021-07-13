@@ -20,8 +20,6 @@ class CreateTenantBillingDetailsTable extends Migration
             $table->string('billing_email', 45);
             $table->string('billing_phone', 45);
             $table->string('billing_address');
-            $table->string('tax_type_id', 45);
-            $table->string('tax_id');
             $table->timestamps();
         });
     }

@@ -15,16 +15,16 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->string('domain', 45)->unique('domain');
+            $table->string('domain', 45)->nullable()->unique('domain');
             $table->string('name', 45);
             $table->string('email', 45)->unique();
             $table->string('mobile', 45);
             $table->string('city', 45);
             $table->string('country', 45);
             $table->tinyInteger('status');
-            $table->foreignId('saas_plan_id');
-            $table->string('plan_billing_cycle', 10);
-            $table->date('plan_expiry_date');
+            $table->foreignId('saas_plan_id')->nullable();
+            $table->string('plan_billing_cycle', 10)->nullable();
+            $table->date('plan_expiry_date')->nullable();
             $table->tinyInteger('payment_failed_tries')->default(0);
             $table->timestamps();
         });
