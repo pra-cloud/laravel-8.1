@@ -420,7 +420,7 @@ class TenantRepository extends BaseRepository
         return "$slug.hyperzod.app";
     }
 
-    public function register(array $params)
+    public function onboarding(array $params)
     {
         $validator = Validator::make($params, [
             'user_name' => 'required|string',

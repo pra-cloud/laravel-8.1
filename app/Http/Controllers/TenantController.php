@@ -126,12 +126,10 @@ class TenantController extends Controller
         try {
             $response = $this->TENANT_REPOSITORY->updateDomain($request->all());
             return $this->successResponse(null, $response);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();
             return $this->errorResponse($e->getMessage(), $errors);
         }
-
     }
 
     public function getTenantIdByAdminDomain(Request $request)
@@ -189,10 +187,10 @@ class TenantController extends Controller
         }
     }
 
-    public function register(Request $request)
+    public function onboarding(Request $request)
     {
         try {
-            $response = $this->TENANT_REPOSITORY->register($request->all());
+            $response = $this->TENANT_REPOSITORY->onboarding($request->all());
             return $this->successResponse(null, $response);
         } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();
