@@ -10,9 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\SaasPlanRepository;
 use Illuminate\Support\Facades\Validator;
+use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
 
 class TenantRepository extends BaseRepository
 {
+    use HelpersServiceTrait;
     private $SAAS_PLAN_REPOSITORY;
 
     public function __construct(SaasPlanRepository $saasPlanRepository)
@@ -25,6 +27,18 @@ class TenantRepository extends BaseRepository
      */
     public function save(array $attributes)
     {
+        Validator::extend('country_exists', function ($attribute, $value, $parameters) {
+            $country_codes = $this->fetchCountries();
+            $country_codes = collect($country_codes)->pluck('code')->toArray();
+
+            $country_present = in_array($value, $country_codes);
+            if (!$country_present) {
+                return false;
+            }
+
+            return true;
+        }, "Invalid country");
+
         $validator = Validator::make($attributes, [
             'domain'                => ['nullable','unique:tenants', new Domain],
             'admin_domain'          => ['nullable','unique:tenants', new Domain],
@@ -32,12 +46,20 @@ class TenantRepository extends BaseRepository
             'email'                 => ['required', 'email', 'unique:tenants'],
             'mobile'                => 'required',
             'city'                  => 'required',
+<<<<<<< HEAD
+            'country'               => 'required|country_exists',
+            'status'                => 'required',
+            'saas_plan_id'          => 'required',
+            'plan_start_date'       => 'required|date',
+            'plan_billing_cycle'    => 'required',
+=======
             'country'               => 'required',
             'status'                => 'required|boolean',
             'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
             'saas_plan_id'          => 'nullable',
             'plan_start_date'       => 'nullable|date',
             'plan_billing_cycle'    => 'nullable',
+>>>>>>> fb1fc3f8f38de8dd25d1705e2b2dba1e744a9f0e
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
@@ -86,8 +108,18 @@ class TenantRepository extends BaseRepository
                 'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
             ];
 
-            
             TenantBillingDetail::create($tenant_billing_details);
+<<<<<<< HEAD
+
+            $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
+
+            foreach ($saas_plan['modules'] as $module) {
+                $tenant_module = new TenantModule();
+                $tenant_module->tenant_id = $tenant->id;
+                $tenant_module->saas_module_id = $module['module_id'];
+                $tenant_module->module_limit = $module['module_limit'];
+                $tenant_module->save();
+=======
             if ($tenant->saas_plan_id) {
                 $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
                 
@@ -98,6 +130,7 @@ class TenantRepository extends BaseRepository
                     $tenant_module->module_limit = $module['module_limit'];
                     $tenant_module->save();
                 }
+>>>>>>> fb1fc3f8f38de8dd25d1705e2b2dba1e744a9f0e
             }
         });
 
