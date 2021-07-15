@@ -444,7 +444,6 @@ class TenantRepository extends BaseRepository
             'business_type' => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
             'city' => 'required',
             'country' => 'required',
-            'login_type' => 'required|string|in:tenant'
         ]);
 
         if ($validator->fails()) {
