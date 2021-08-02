@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\SaasPlanRepository;
 use Illuminate\Support\Facades\Validator;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
+use Illuminate\Validation\Rule;
 
 class TenantRepository extends BaseRepository
 {
@@ -48,7 +49,7 @@ class TenantRepository extends BaseRepository
             'city'                  => 'required',
             'country'               => 'required',
             'status'                => 'required|boolean',
-            'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'business_type'         => 'required|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
             'saas_plan_id'          => 'nullable',
             'plan_start_date'       => 'nullable|date',
             'plan_billing_cycle'    => 'nullable',
@@ -123,6 +124,7 @@ class TenantRepository extends BaseRepository
      */
     public function update(array $attributes)
     {
+        $business_types = $this->fetchBusinessTypes();
         $validator = Validator::make($attributes, [
             'domain'                => ['nullable', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
             'admin_domain'          => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
@@ -132,7 +134,7 @@ class TenantRepository extends BaseRepository
             'city'                  => 'required',
             'country'               => 'required',
             'status'                => 'required|boolean',
-            'business_type'         => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'business_type' => ['required', Rule::in($business_types)],
             'saas_plan_id'          => 'nullable',
             'plan_expiry_date'      => 'nullable|date',
             'plan_billing_cycle'    => 'nullable',
@@ -435,13 +437,15 @@ class TenantRepository extends BaseRepository
 
     public function onboarding(array $params)
     {
+        $business_types = $this->fetchBusinessTypes();
+
         $validator = Validator::make($params, [
             'user_name' => 'required|string',
             'email' => ['required', 'email', 'unique:tenants'],
             'password' => 'required|string',
             'mobile' => 'required',
             'tenant_name' => 'required|string',
-            'business_type' => 'required|string|in:food_delivery,   grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'business_type' => ['required', Rule::in($business_types)],
             'city' => 'required',
             'country' => 'required',
         ]);
@@ -452,7 +456,7 @@ class TenantRepository extends BaseRepository
         }
 
         $validated = $validator->validated();
-
+        
         //Create tenant
         $tenant = $this->save([
             'name' => $validated['tenant_name'],
