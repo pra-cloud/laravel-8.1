@@ -32,6 +32,7 @@ $router->group([ 'prefix' => '/tenant' ], function () use ($router) {
     $router->get('/getTenantIdByAdminDomain', 'TenantController@getTenantIdByAdminDomain');
     $router->get('/getTenantIdByDomain', 'TenantController@getTenantIdByDomain');
     $router->post('/delete', 'TenantController@delete');
+    $router->post('/delete-force', 'TenantController@forceDestroy');
     $router->post('/images', 'TenantController@updateImages');
     $router->post('/configure-setup', 'TenantController@configureSetup');
     $router->get('/exists', 'TenantController@tenantExists');
