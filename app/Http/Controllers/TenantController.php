@@ -197,4 +197,15 @@ class TenantController extends Controller
             return $this->errorResponse($e->getMessage(), $errors);
         }
     }
+
+    public function forceDestroy(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->forceDestroy($request->id);
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
 }

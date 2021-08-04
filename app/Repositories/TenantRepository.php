@@ -267,7 +267,7 @@ class TenantRepository extends BaseRepository
     }
 
     /**
-     * Destroy Tenant
+     * Soft Delete Tenant
      * with Tenant Billing Details
      */
     public function destroy($id)
@@ -279,6 +279,24 @@ class TenantRepository extends BaseRepository
         }
 
         if ($tenant->delete()) {
+            return 'Tenant has been deleted successfully.';
+        }
+        throw new \Exception("Error in deleting tenant.");
+    }
+
+    /**
+     * Force Delete Tenant
+     * with Tenant Billing Details
+     */
+    public function forceDestroy($id)
+    {
+        $tenant = Tenant::find($id);
+
+        if (!$tenant) {
+            throw new \Exception("Cannot find tenant.");
+        }
+
+        if ($tenant->forceDelete()) {
             return 'Tenant has been deleted successfully.';
         }
         throw new \Exception("Error in deleting tenant.");
