@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Error;
 use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
 use Hyperzod\HyperzodServiceFunctions\Traits\ApiResponseTrait;
@@ -27,7 +26,7 @@ class ServiceableAreaController extends Controller
         return $this->successResponse("Tenant Serviceable", $serviceable_or_not);
     }
 
-    public function check(Request $request)
+    public function check(Request $request) // : array $serviceable_or_not
     {
         $validated_values = $this->validateUserInput($request);
 
@@ -37,7 +36,7 @@ class ServiceableAreaController extends Controller
         $serviceable_area_settings = $this->settingsByKeys('tenant', ['serviceable_area'], null, null, 1, null);
 
         // If the serviceable_area settings are not set, the tenant is serviceable globally, always return true.
-        if ($serviceable_area_settings == false) {
+        if ($serviceable_area_settings == false){
             $serviceable_or_not['success'] = true;
             return $serviceable_or_not;
         }
@@ -48,9 +47,9 @@ class ServiceableAreaController extends Controller
 
         // Check if the tenant is serviceable in the user given country
         if (!empty($country)) {
-            $serviceable_area_status = $this->checkByCountry($countries, $country);
-            if ($serviceable_area_status['success']) {
-                return $serviceable_area_status;
+            $serviceable_or_not = $this->checkByCountry($countries, $country);
+            if ($serviceable_or_not['success']) {
+                return $serviceable_or_not;
             }
         }
 
@@ -59,7 +58,7 @@ class ServiceableAreaController extends Controller
 
             if ($setting['method'] == 'radius') {
                 $serviceable_area_status = $this->checkByRadius($setting, $user_lat_long);
-                if ($serviceable_area_status['success']) {
+                if ((isset($serviceable_area_status['success']) && $serviceable_area_status['success'])) {
                     return $serviceable_area_status;
                 }
             }
@@ -77,7 +76,7 @@ class ServiceableAreaController extends Controller
         return $serviceable_or_not;
     }
 
-    public function checkByCountry($countries_array_data, $user_input_country) : array
+    public function checkByCountry($countries_array_data, $user_input_country) // : array $serviceable_or_not
     {
         foreach ($countries_array_data as $countries) {
             $countries_array = $countries['value'];
@@ -94,7 +93,7 @@ class ServiceableAreaController extends Controller
     }
 
     // Inside a foreach loop
-    public function checkByRadius($setting, $user_lat_long)
+    public function checkByRadius($setting, $user_lat_long) // : array $serviceable_or_not
     {
         $destination_location = $setting['value']['location'];
         $radius = $setting['value']['radius'];
@@ -124,7 +123,7 @@ class ServiceableAreaController extends Controller
     }
 
     // Inside a foreach loop
-    public function checkByGeofence($setting, $user_lat_long)
+    public function checkByGeofence($setting, $user_lat_long) // : array $serviceable_or_not
     {
         $geofence_coordinates = $setting['value'];
         $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
@@ -144,7 +143,7 @@ class ServiceableAreaController extends Controller
         return $serviceable_or_not;
     }
 
-    public function returnGeofence($coordinates_array)
+    public function returnGeofence($coordinates_array) // : array $geofence
     {
         $geofence = new Polygon();
         foreach ($coordinates_array as $coordinates) {
@@ -154,7 +153,7 @@ class ServiceableAreaController extends Controller
         return $geofence;
     }
 
-    public function getRadiusInMetres($scale, $radius)
+    public function getRadiusInMetres($scale, $radius) // : $radius_in_metres
     {
         if ($scale == 'km') {
             $radius_in_metres =  $radius * 1000;
@@ -180,31 +179,19 @@ class ServiceableAreaController extends Controller
             return true;
         }, "Invalid country code(s)");
 
-        Validator::extend('double', function ($attribute, $value, $parameters) {
-
-            $coordinates = $value;
-            foreach ($coordinates as $coordinate) {
-                if (gettype($coordinate) !== 'double') {
-                    return false;
-                }
-            }
-
-            return true;
-        }, "Invalid coordinates");
-
         $validator = Validator::make($request->all(), [
             'country' => 'nullable|country_exists',
             'user_lat_long' => ["array", "min:2", "max:2"],
-            'user_lat_long' => 'double'
+            'user_lat_long.*' => 'numeric'
         ]);
 
         if ($validator->fails()) {
             $validation_errors = $validator->errors();
+            
             throw new \Exception($validation_errors);
         }
 
-        $validated_values = $validator->validate();
-
+        $validated_values = $validator->validated();
         return $validated_values;
     }
 }
