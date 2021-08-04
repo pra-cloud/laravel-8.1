@@ -20,15 +20,14 @@ class ServiceableAreaController extends Controller
 
     public function checkIfPresentOrnot(Request $request)
     {
-        $present = $this->check($request);
-        if (!$present) {
-            return $this->errorResponse("Tenant not serviceable in your area.", $present);
+        $serviceable_or_not = $this->check($request);
+        if (!$serviceable_or_not['success']) {
+            return $this->errorResponse("Tenant not serviceable in your area.");
         }
-
-        return $this->successResponse("Tenant Serviceable", $present);
+        return $this->successResponse("Tenant Serviceable", $serviceable_or_not);
     }
 
-    public function check(Request $request) : bool
+    public function check(Request $request)
     {
         $validated_values = $this->validateUserInput($request);
 
@@ -39,55 +38,62 @@ class ServiceableAreaController extends Controller
 
         // If the serviceable_area settings are not set, the tenant is serviceable globally, always return true.
         if ($serviceable_area_settings == false) {
-            return true;
+            $serviceable_or_not['success'] = true;
+            return $serviceable_or_not;
         }
 
         $serviceable_area_settings = $serviceable_area_settings->toArray()['serviceable_area'];
 
         $countries = collect($serviceable_area_settings)->where('method', 'country')->toArray();
 
-        if ($country) {
+        // Check if the tenant is serviceable in the user given country
+        if (!empty($country)) {
             $serviceable_area_status = $this->checkByCountry($countries, $country);
-            if ($serviceable_area_status) return true;
+            if ($serviceable_area_status['success']) {
+                return $serviceable_area_status;
+            }
         }
+
 
         foreach ($serviceable_area_settings as $setting) {
 
             if ($setting['method'] == 'radius') {
                 $serviceable_area_status = $this->checkByRadius($setting, $user_lat_long);
-                if ($serviceable_area_status) return true;
+                if ($serviceable_area_status['success']) {
+                    return $serviceable_area_status;
+                }
             }
 
             if ($setting['method'] == 'geofence') {
                 $serviceable_area_status = $this->checkByGeofence($setting, $user_lat_long);
-                if ($serviceable_area_status) return true;
+                if (isset($serviceable_area_status['success']) && $serviceable_area_status['success']) {
+                    return $serviceable_area_status;
+                }
             }
         }
 
         // Purpose: Return the message below if the user location falls out of the serviceable area.
-        return false;
+        $serviceable_or_not['success'] = false;
+        return $serviceable_or_not;
     }
 
-    public function returnGeofence($coordinates_array)
-    {
-        $geofence = new Polygon();
-        foreach ($coordinates_array as $coordinates) {
-            $coordinates = array_values($coordinates);
-            $geofence->addPoint(new Coordinate($coordinates[0], $coordinates[1]));
-        }
-        return $geofence;
-    }
-
-    public function checkByCountry($countries_array_data, $user_lat_long)
+    public function checkByCountry($countries_array_data, $user_input_country) : array
     {
         foreach ($countries_array_data as $countries) {
             $countries_array = $countries['value'];
-            $country_status = in_array($user_lat_long, $countries_array);
-            if ($country_status) return true;
+            $country_status = in_array($user_input_country, $countries_array);
+            if ($country_status) {
+                $serviceable_or_not['name'] = $countries['name'];
+                $serviceable_or_not['group_ids'] = $countries['group_ids'] ?? null;
+                $serviceable_or_not['success'] = $country_status;
+                return $serviceable_or_not;
+            }
         }
-        return false;
+        $serviceable_or_not['success'] = false;
+        return $serviceable_or_not;
     }
 
+    // Inside a foreach loop
     public function checkByRadius($setting, $user_lat_long)
     {
         $destination_location = $setting['value']['location'];
@@ -101,15 +107,23 @@ class ServiceableAreaController extends Controller
 
         $distance = $user_lat_long->getDistance($destination_location, new Vincenty());
 
+        // User falls within the radius
         if ($distance <= $radius_in_metres) {
-            return true;
+
+            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? null;
+            $serviceable_or_not['success'] = true;
+            return $serviceable_or_not;
         }
 
+        // User DOES NOT fall within the radius
         if ($distance > $radius_in_metres) {
-            return false;
+            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? null;
+            $serviceable_or_not['success'] = false;
+            return $serviceable_or_not;
         }
     }
 
+    // Inside a foreach loop
     public function checkByGeofence($setting, $user_lat_long)
     {
         $geofence_coordinates = $setting['value'];
@@ -121,9 +135,23 @@ class ServiceableAreaController extends Controller
         }
 
         // Purpose: Check if the user falls in any of the geofences of the tenant, return true if yes
-        if (in_array(true, $user_point_inside)) return true;
+        if (in_array(true, $user_point_inside)) {
+            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? null;
+            $serviceable_or_not['success'] = true;
+            return $serviceable_or_not;
+        }
+        $serviceable_or_not['success'] = false;
+        return $serviceable_or_not;
+    }
 
-        return false;
+    public function returnGeofence($coordinates_array)
+    {
+        $geofence = new Polygon();
+        foreach ($coordinates_array as $coordinates) {
+            $coordinates = array_values($coordinates);
+            $geofence->addPoint(new Coordinate($coordinates[0], $coordinates[1]));
+        }
+        return $geofence;
     }
 
     public function getRadiusInMetres($scale, $radius)
