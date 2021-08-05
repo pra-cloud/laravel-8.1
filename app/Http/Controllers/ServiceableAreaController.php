@@ -20,8 +20,8 @@ class ServiceableAreaController extends Controller
     public function checkIfPresentOrnot(Request $request)
     {
         $serviceable_or_not = $this->check($request);
-        if (!$serviceable_or_not['success']) {
-            return $this->errorResponse("Tenant not serviceable in your area.");
+        if (!$serviceable_or_not['is_serviceable']) {
+            return $this->errorResponse("Tenant not serviceable in your area.", $serviceable_or_not);
         }
         return $this->successResponse("Tenant Serviceable", $serviceable_or_not);
     }
@@ -37,7 +37,7 @@ class ServiceableAreaController extends Controller
 
         // If the serviceable_area settings are not set, the tenant is serviceable globally, always return true.
         if ($serviceable_area_settings == false){
-            $serviceable_or_not['success'] = true;
+            $serviceable_or_not['is_serviceable'] = true;
             return $serviceable_or_not;
         }
 
@@ -48,7 +48,7 @@ class ServiceableAreaController extends Controller
         // Check if the tenant is serviceable in the user given country
         if (!empty($country)) {
             $serviceable_or_not = $this->checkByCountry($countries, $country);
-            if ($serviceable_or_not['success']) {
+            if ($serviceable_or_not['is_serviceable']) {
                 return $serviceable_or_not;
             }
         }
@@ -58,21 +58,21 @@ class ServiceableAreaController extends Controller
 
             if ($setting['method'] == 'radius') {
                 $serviceable_area_status = $this->checkByRadius($setting, $user_lat_long);
-                if ((isset($serviceable_area_status['success']) && $serviceable_area_status['success'])) {
+                if ((isset($serviceable_area_status['is_serviceable']) && $serviceable_area_status['is_serviceable'])) {
                     return $serviceable_area_status;
                 }
             }
 
             if ($setting['method'] == 'geofence') {
                 $serviceable_area_status = $this->checkByGeofence($setting, $user_lat_long);
-                if (isset($serviceable_area_status['success']) && $serviceable_area_status['success']) {
+                if (isset($serviceable_area_status['is_serviceable']) && $serviceable_area_status['is_serviceable']) {
                     return $serviceable_area_status;
                 }
             }
         }
 
         // Purpose: Return the message below if the user location falls out of the serviceable area.
-        $serviceable_or_not['success'] = false;
+        $serviceable_or_not['is_serviceable'] = false;
         return $serviceable_or_not;
     }
 
@@ -83,12 +83,12 @@ class ServiceableAreaController extends Controller
             $country_status = in_array($user_input_country, $countries_array);
             if ($country_status) {
                 $serviceable_or_not['name'] = $countries['name'];
-                $serviceable_or_not['group_ids'] = $countries['group_ids'] ?? null;
-                $serviceable_or_not['success'] = $country_status;
+                $serviceable_or_not['group_ids'] = $countries['group_ids'] ?? [];
+                $serviceable_or_not['is_serviceable'] = true;
                 return $serviceable_or_not;
             }
         }
-        $serviceable_or_not['success'] = false;
+        $serviceable_or_not['is_serviceable'] = false;
         return $serviceable_or_not;
     }
 
@@ -105,19 +105,18 @@ class ServiceableAreaController extends Controller
         $destination_location = new Coordinate($destination_location[0], $destination_location[1]);
 
         $distance = $user_lat_long->getDistance($destination_location, new Vincenty());
-
         // User falls within the radius
         if ($distance <= $radius_in_metres) {
 
-            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? null;
-            $serviceable_or_not['success'] = true;
+            $serviceable_or_not['name'] = $setting['name'];
+            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? [];
+            $serviceable_or_not['is_serviceable'] = true;
             return $serviceable_or_not;
         }
 
         // User DOES NOT fall within the radius
         if ($distance > $radius_in_metres) {
-            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? null;
-            $serviceable_or_not['success'] = false;
+            $serviceable_or_not['is_serviceable'] = false;
             return $serviceable_or_not;
         }
     }
@@ -135,11 +134,12 @@ class ServiceableAreaController extends Controller
 
         // Purpose: Check if the user falls in any of the geofences of the tenant, return true if yes
         if (in_array(true, $user_point_inside)) {
-            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? null;
-            $serviceable_or_not['success'] = true;
+            $serviceable_or_not['name'] = $setting['name'];
+            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? [];
+            $serviceable_or_not['is_serviceable'] = true;
             return $serviceable_or_not;
         }
-        $serviceable_or_not['success'] = false;
+        $serviceable_or_not['is_serviceable'] = false;
         return $serviceable_or_not;
     }
 
@@ -165,7 +165,7 @@ class ServiceableAreaController extends Controller
         }
     }
 
-    public function validateUserInput($request)
+    public function validateUserInput($request) // : array $validated_values || throw new Exception
     {
         $country_codes = $this->fetchCountries();;
         $country_codes = collect($country_codes)->pluck('code')->toArray();
