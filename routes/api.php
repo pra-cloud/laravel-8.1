@@ -18,60 +18,69 @@ Route::group([ 'prefix' => '/tenant/is-serviceable-area' ], function () {
 /**
  * Tenant Routes
  */
-$router->group([ 'prefix' => '/tenant' ], function () use ($router) {
-    $router->post('/onboarding', 'TenantController@onboarding');
-    $router->post('/create', 'TenantController@create');
+Route::group([ 'prefix' => '/tenant' ], function () use ($router) {
+    Route::post('/onboarding', 'TenantController@onboarding');
+    Route::post('/create', 'TenantController@create');
 
-    $router->post('/update', 'TenantController@update');
-    $router->post('/update/domain', 'TenantController@updateDomain');
+    // Update
+    Route::post('/update', 'TenantController@update');
+    Route::post('/update/domain', 'TenantController@updateDomain');
 
-    $router->get('/list', 'TenantController@list');
-    $router->get('/list/business-types', 'TenantController@listBusinessTypes');
-    $router->get('/view', 'TenantController@view');
-    $router->get('/status', 'TenantController@fetchTenantStatus');
-    $router->get('/getTenantIdByAdminDomain', 'TenantController@getTenantIdByAdminDomain');
-    $router->get('/getTenantIdByDomain', 'TenantController@getTenantIdByDomain');
-    $router->post('/delete', 'TenantController@delete');
-    $router->post('/delete-force', 'TenantController@forceDestroy');
-    $router->post('/images', 'TenantController@updateImages');
-    $router->post('/configure-setup', 'TenantController@configureSetup');
-    $router->get('/exists', 'TenantController@tenantExists');
+    // List
+    Route::get('/list', 'TenantController@list');
+    Route::get('/list/business-types', 'TenantController@listBusinessTypes');
+
+    // View
+    Route::get('/view', 'TenantController@view');
+    Route::get('/view/public', 'TenantController@viewPublic');
+
+    Route::get('/status', 'TenantController@fetchTenantStatus');
+    Route::get('/getTenantIdByAdminDomain', 'TenantController@getTenantIdByAdminDomain');
+    Route::get('/getTenantIdByDomain', 'TenantController@getTenantIdByDomain');
+
+    // Delete
+    Route::post('/delete', 'TenantController@delete');
+    Route::post('/delete-force', 'TenantController@forceDestroy');
+
+    Route::post('/images', 'TenantController@updateImages');
+    Route::post('/configure-setup', 'TenantController@configureSetup');
+    Route::get('/exists', 'TenantController@tenantExists');
 });
 
 /**
  * SAAS Plan Routes
  */
-$router->group([ 'prefix' => '/saas-plan' ], function () use ($router) {
-    $router->post('/create', 'SaasPlanController@create');
-    $router->post('/update', 'SaasPlanController@update');
-    $router->get('/list', 'SaasPlanController@list');
-    $router->get('/view', 'SaasPlanController@view');
-    $router->post('/delete', 'SaasPlanController@delete');
-    $router->get('/list-billing-cycles', 'SaasPlanController@listPlanBillingCycle');
+Route::group([ 'prefix' => '/saas-plan' ], function () use ($router) {
+    Route::post('/create', 'SaasPlanController@create');
+    Route::post('/update', 'SaasPlanController@update');
+    Route::get('/list', 'SaasPlanController@list');
+    Route::get('/view', 'SaasPlanController@view');
+    Route::post('/delete', 'SaasPlanController@delete');
+    Route::get('/list-billing-cycles', 'SaasPlanController@listPlanBillingCycle');
 });
 
 /**
  * SAAS Modules Routes
  */
-$router->group(['prefix' => '/saas-module'], function () use ($router) {
-    $router->get('list', 'SaasModuleController@list');
+Route::group(['prefix' => '/saas-module'], function () use ($router) {
+    Route::get('list', 'SaasModuleController@list');
 });
 
 /**
  * Settings Routes
  */
-$router->group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router) {
-    $router->post('/currency', 'SettingController@updateCurrency');
+Route::group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router) {
+    Route::post('/currency', 'SettingController@updateCurrency');
 
-    $router->post('/delivery-settings/delivery-calculation', 'DeliverySettingsController@updateDeliveryCalculations');
-    $router->get('/delivery-settings/delivery-calculation', 'DeliverySettingsController@fetchDeliveryCalculations');
+    Route::post('/delivery-settings/delivery-calculation', 'DeliverySettingsController@updateDeliveryCalculations');
+    Route::get('/delivery-settings/delivery-calculation', 'DeliverySettingsController@fetchDeliveryCalculations');
 
-    $router->post('/delivery-settings/delivery-fee-source', 'DeliverySettingsController@updateDeliveryFeeSource');
-    $router->get('/delivery-settings/delivery-fee-source', 'DeliverySettingsController@fetchDeliveryFeeSource');
+    Route::post('/delivery-settings/delivery-fee-source', 'DeliverySettingsController@updateDeliveryFeeSource');
+    Route::get('/delivery-settings/delivery-fee-source', 'DeliverySettingsController@fetchDeliveryFeeSource');
 
-    $router->post('/delivery-settings/flat-delivery-fee', 'DeliverySettingsController@updateFlatDeliveryFee');
-    $router->get('/delivery-settings/flat-delivery-fee', 'DeliverySettingsController@fetchFlatDeliveryFee');
+    Route::post('/delivery-settings/flat-delivery-fee', 'DeliverySettingsController@updateFlatDeliveryFee');
+    Route::get('/delivery-settings/flat-delivery-fee', 'DeliverySettingsController@fetchFlatDeliveryFee');
 
-    $router->post('/apikey/gmap', 'ApiKeyController@updateGmapApiKey');
-    $router->get('/apikey/gmap', 'ApiKeyController@fetchGmapApiKey');
+    Route::post('/apikey/gmap', 'ApiKeyController@updateGmapApiKey');
+    Route::get('/apikey/gmap', 'ApiKeyController@fetchGmapApiKey');
 });

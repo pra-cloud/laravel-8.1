@@ -208,7 +208,6 @@ class TenantRepository extends BaseRepository
 
         $attributes = $validator->validated();
 
-
         $tenant = Tenant::where($attributes)->firstOrFail();
         if ($tenant) {
             return $tenant;

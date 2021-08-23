@@ -95,6 +95,17 @@ class TenantController extends Controller
         }
     }
 
+    public function viewPublic(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->fetch($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
+
     /**
      * Delete Tenant
      * with Tenant Billing Detail
