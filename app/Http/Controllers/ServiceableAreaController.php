@@ -36,7 +36,6 @@ class ServiceableAreaController extends Controller
 
             $errors = $exception->getArrayData();
             return $this->errorResponse("Something went wrong.", $errors);
-
         }
     }
 
@@ -59,7 +58,7 @@ class ServiceableAreaController extends Controller
         $countries = collect($serviceable_area_settings)->where('method', 'country')->toArray();
 
         // Tenant is serviceable in the requested country
-        if (isset($country)) {
+        if (isset($validated['country'])) {
             $area = $this->checkByCountry($countries, $validated['country']);
             if ($area['is_serviceable']) {
                 return $area;
@@ -92,12 +91,21 @@ class ServiceableAreaController extends Controller
     public function checkByCountry($countries_array_data, $user_input_country) // : array $area
     {
         foreach ($countries_array_data as $countries) {
-            $countries_array = $countries['value'];
-            $country_status = in_array($user_input_country, $countries_array);
-            if ($country_status) {
-                $area['name'] = $countries['name'];
-                $area['group_ids'] = $countries['group_ids'] ?? [];
-                $area['is_serviceable'] = true;
+
+            if ($countries['active'] == true) {
+
+                $countries_array = $countries['value'];
+                $country_status = in_array($user_input_country, $countries_array);
+                if ($country_status) {
+                    $area['name'] = $countries['name'];
+                    $area['group_ids'] = $countries['group_ids'] ?? [];
+                    $area['is_serviceable'] = true;
+                    return $area;
+                }
+            }
+
+            if ($countries['active'] == false) {
+                $area['is_serviceable'] = false;
                 return $area;
             }
         }
@@ -108,52 +116,67 @@ class ServiceableAreaController extends Controller
     // Inside a foreach loop
     public function checkByRadius($setting, $user_lat_long) // : array $area
     {
-        $destination_location = $setting['value']['location'];
-        $radius = $setting['value']['radius'];
-        $scale = $setting['value']['scale'];
+        if ($setting['active'] == true) {
+            $destination_location = $setting['value']['location'];
+            $radius = $setting['value']['radius'];
+            $scale = $setting['value']['scale'];
 
-        $radius_in_metres = $this->getRadiusInMetres($scale, $radius);
+            $radius_in_metres = $this->getRadiusInMetres($scale, $radius);
 
-        $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
-        $destination_location = new Coordinate($destination_location[0], $destination_location[1]);
+            $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
+            $destination_location = new Coordinate($destination_location[0], $destination_location[1]);
 
-        $distance = $user_lat_long->getDistance($destination_location, new Vincenty());
-        // User falls within the radius
-        if ($distance <= $radius_in_metres) {
+            $distance = $user_lat_long->getDistance($destination_location, new Vincenty());
+            // User falls within the radius
+            if ($distance <= $radius_in_metres) {
 
-            $area['name'] = $setting['name'];
-            $area['group_ids'] = $setting['group_ids'] ?? [];
-            $area['is_serviceable'] = true;
-            return $area;
+                $area['name'] = $setting['name'];
+                $area['group_ids'] = $setting['group_ids'] ?? [];
+                $area['is_serviceable'] = true;
+                return $area;
+            }
+
+            // User DOES NOT fall within the radius
+            if ($distance > $radius_in_metres) {
+                $area['is_serviceable'] = false;
+                return $area;
+            }
         }
 
-        // User DOES NOT fall within the radius
-        if ($distance > $radius_in_metres) {
+        if ($setting['active'] == false) {
             $area['is_serviceable'] = false;
             return $area;
         }
+
     }
 
     // Inside a foreach loop
     public function checkByGeofence($setting, $user_lat_long) // : array $area
     {
-        $geofence_coordinates = $setting['value'];
-        $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
+        if ($setting['active'] == true) {
+            $geofence_coordinates = $setting['value'];
+            $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
 
-        foreach ($geofence_coordinates as $geofence_coordinate) {
-            $geofence = $this->returnGeofence($geofence_coordinate);
-            $user_point_inside[] = $geofence->contains($user_lat_long);
-        }
+            foreach ($geofence_coordinates as $geofence_coordinate) {
+                $geofence = $this->returnGeofence($geofence_coordinate);
+                $user_point_inside[] = $geofence->contains($user_lat_long);
+            }
 
-        // Purpose: Check if the user falls in any of the geofences of the tenant, return true if yes
-        if (in_array(true, $user_point_inside)) {
-            $area['name'] = $setting['name'];
-            $area['group_ids'] = $setting['group_ids'] ?? [];
-            $area['is_serviceable'] = true;
+            // Purpose: Check if the user falls in any of the geofences of the tenant, return true if yes
+            if (in_array(true, $user_point_inside)) {
+                $area['name'] = $setting['name'];
+                $area['group_ids'] = $setting['group_ids'] ?? [];
+                $area['is_serviceable'] = true;
+                return $area;
+            }
+            $area['is_serviceable'] = false;
             return $area;
         }
-        $area['is_serviceable'] = false;
-        return $area;
+
+        if ($setting['active'] == false) {
+            $area['is_serviceable'] = false;
+            return $area;
+        }
     }
 
     public function returnGeofence($coordinates_array) // : array $geofence
