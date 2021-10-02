@@ -10,46 +10,59 @@ use Illuminate\Support\Facades\Validator;
 use Location\Coordinate;
 use Location\Polygon;
 use Location\Distance\Vincenty;
+use App\Rules\CountryExists;
+use App\Exceptions\ExceptionWithArray;
+use App\Mixins\ValidationMixins;
 
 class ServiceableAreaController extends Controller
 {
     use ApiResponseTrait;
     use SettingsServiceTrait;
     use HelpersServiceTrait;
+    use ValidationMixins;
 
     public function checkIfPresentOrnot(Request $request)
     {
-        $serviceable_or_not = $this->check($request);
-        if (!$serviceable_or_not['is_serviceable']) {
-            return $this->errorResponse("Tenant not serviceable in your area.", $serviceable_or_not);
+        try {
+
+            $area = $this->check($request);
+
+            if (!$area['is_serviceable']) {
+                return $this->errorResponse("Tenant not serviceable in your area.", $area);
+            }
+
+            return $this->successResponse("Tenant Serviceable", $area);
+        } catch (ExceptionWithArray $exception) {
+
+            $errors = $exception->getArrayData();
+            return $this->errorResponse("Something went wrong.", $errors);
+
         }
-        return $this->successResponse("Tenant Serviceable", $serviceable_or_not);
     }
 
-    public function check(Request $request) // : array $serviceable_or_not
+    public function check(Request $request) // : array $area
     {
-        $validated_values = $this->validateUserInput($request);
+        $validated = $this->validateUserInput($request);
 
-        $user_lat_long = $validated_values['user_lat_long'];
-        $country = $validated_values['country'];
+        $user_lat_long = $validated['user_lat_long'];
 
         $serviceable_area_settings = $this->settingsByKeys('tenant', ['serviceable_area'], null, null, 1, null);
 
         // If the serviceable_area settings are not set, the tenant is serviceable globally, always return true.
-        if ($serviceable_area_settings == false){
-            $serviceable_or_not['is_serviceable'] = true;
-            return $serviceable_or_not;
+        if ($serviceable_area_settings == false) {
+            $area['is_serviceable'] = true;
+            return $area;
         }
 
         $serviceable_area_settings = $serviceable_area_settings->toArray()['serviceable_area'];
 
         $countries = collect($serviceable_area_settings)->where('method', 'country')->toArray();
 
-        // Check if the tenant is serviceable in the user given country
-        if (!empty($country)) {
-            $serviceable_or_not = $this->checkByCountry($countries, $country);
-            if ($serviceable_or_not['is_serviceable']) {
-                return $serviceable_or_not;
+        // Tenant is serviceable in the requested country
+        if (isset($country)) {
+            $area = $this->checkByCountry($countries, $validated['country']);
+            if ($area['is_serviceable']) {
+                return $area;
             }
         }
 
@@ -72,28 +85,28 @@ class ServiceableAreaController extends Controller
         }
 
         // Purpose: Return the message below if the user location falls out of the serviceable area.
-        $serviceable_or_not['is_serviceable'] = false;
-        return $serviceable_or_not;
+        $area['is_serviceable'] = false;
+        return $area;
     }
 
-    public function checkByCountry($countries_array_data, $user_input_country) // : array $serviceable_or_not
+    public function checkByCountry($countries_array_data, $user_input_country) // : array $area
     {
         foreach ($countries_array_data as $countries) {
             $countries_array = $countries['value'];
             $country_status = in_array($user_input_country, $countries_array);
             if ($country_status) {
-                $serviceable_or_not['name'] = $countries['name'];
-                $serviceable_or_not['group_ids'] = $countries['group_ids'] ?? [];
-                $serviceable_or_not['is_serviceable'] = true;
-                return $serviceable_or_not;
+                $area['name'] = $countries['name'];
+                $area['group_ids'] = $countries['group_ids'] ?? [];
+                $area['is_serviceable'] = true;
+                return $area;
             }
         }
-        $serviceable_or_not['is_serviceable'] = false;
-        return $serviceable_or_not;
+        $area['is_serviceable'] = false;
+        return $area;
     }
 
     // Inside a foreach loop
-    public function checkByRadius($setting, $user_lat_long) // : array $serviceable_or_not
+    public function checkByRadius($setting, $user_lat_long) // : array $area
     {
         $destination_location = $setting['value']['location'];
         $radius = $setting['value']['radius'];
@@ -108,21 +121,21 @@ class ServiceableAreaController extends Controller
         // User falls within the radius
         if ($distance <= $radius_in_metres) {
 
-            $serviceable_or_not['name'] = $setting['name'];
-            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? [];
-            $serviceable_or_not['is_serviceable'] = true;
-            return $serviceable_or_not;
+            $area['name'] = $setting['name'];
+            $area['group_ids'] = $setting['group_ids'] ?? [];
+            $area['is_serviceable'] = true;
+            return $area;
         }
 
         // User DOES NOT fall within the radius
         if ($distance > $radius_in_metres) {
-            $serviceable_or_not['is_serviceable'] = false;
-            return $serviceable_or_not;
+            $area['is_serviceable'] = false;
+            return $area;
         }
     }
 
     // Inside a foreach loop
-    public function checkByGeofence($setting, $user_lat_long) // : array $serviceable_or_not
+    public function checkByGeofence($setting, $user_lat_long) // : array $area
     {
         $geofence_coordinates = $setting['value'];
         $user_lat_long = new Coordinate($user_lat_long[0], $user_lat_long[1]);
@@ -134,13 +147,13 @@ class ServiceableAreaController extends Controller
 
         // Purpose: Check if the user falls in any of the geofences of the tenant, return true if yes
         if (in_array(true, $user_point_inside)) {
-            $serviceable_or_not['name'] = $setting['name'];
-            $serviceable_or_not['group_ids'] = $setting['group_ids'] ?? [];
-            $serviceable_or_not['is_serviceable'] = true;
-            return $serviceable_or_not;
+            $area['name'] = $setting['name'];
+            $area['group_ids'] = $setting['group_ids'] ?? [];
+            $area['is_serviceable'] = true;
+            return $area;
         }
-        $serviceable_or_not['is_serviceable'] = false;
-        return $serviceable_or_not;
+        $area['is_serviceable'] = false;
+        return $area;
     }
 
     public function returnGeofence($coordinates_array) // : array $geofence
@@ -167,31 +180,16 @@ class ServiceableAreaController extends Controller
 
     public function validateUserInput($request) // : array $validated_values || throw new Exception
     {
-        $country_codes = $this->fetchCountries();;
-        $country_codes = collect($country_codes)->pluck('code')->toArray();
-
-        Validator::extend('country_exists', function ($attribute, $value, $parameters) use ($country_codes) {
-            $country_present = in_array($value, $country_codes);
-            if (!$country_present) {
-                return false;
-            }
-
-            return true;
-        }, "Invalid country code(s)");
-
-        $validator = Validator::make($request->all(), [
-            'country' => 'nullable|country_exists',
+        $rules = [
+            'country' => ['nullable', 'string', new CountryExists],
             'user_lat_long' => ["array", "min:2", "max:2"],
             'user_lat_long.*' => 'numeric'
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            $validation_errors = $validator->errors();
-            
-            throw new \Exception($validation_errors);
-        }
+        $validator = Validator::make($request->all(), $rules);
+        $this->throwExceptionForErrors($validator);
+        $validated = $validator->validated();
 
-        $validated_values = $validator->validated();
-        return $validated_values;
+        return $validated;
     }
 }
