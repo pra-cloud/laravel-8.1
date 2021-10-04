@@ -39,26 +39,19 @@ class ServiceableAreaController extends Controller
         // Validate the incoming request
         $validated = $this->validateUserInput($request);
 
-        // Collect crucial data
         $lat_long = $validated['user_lat_long'];
 
         $settings = $this->getSettings();
 
-        // If the serviceable_area settings are not set, the tenant is serviceable globally, always return true.
-        if ($settings == false) {
-            $area['is_serviceable'] = true;
+        // Serviceable globally
+        if ($area = $this->isServiceableGlobally($validated, $settings)) {
             return $area;
         }
 
-        // Tenant is serviceable in the requested country
-        if (isset($validated['country'])) {
-            $countries = collect($settings)->where('method', 'country')->toArray();
-            $area = $this->checkByCountry($countries, $validated['country']);
-            if ($area['is_serviceable']) {
-                return $area;
-            }
+        // Serviceable in the requested country
+        if ($area = $this->isServiceableInRequestedCountry($validated, $settings)) {
+            return $area;
         }
-
 
         foreach ($settings as $setting) {
 
