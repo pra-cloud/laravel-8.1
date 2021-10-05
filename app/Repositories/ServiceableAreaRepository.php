@@ -10,7 +10,7 @@ use App\Rules\CountryExists;
 
 trait ServiceableAreaRepository
 {
-    public function validateUserInput($request) // : array $validated_values || throw new Exception
+    public function validateUserInput($request) // : array $validated_values
     {
         $rules = [
             'country' => ['nullable', 'string', new CountryExists],
