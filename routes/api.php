@@ -3,22 +3,22 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () use ($router) {
-    return "Tenant Service Dev: " . $router->app->version();
+Route::get('/', function () {
+    return "Tenant Service Dev: ";
 });
 
 /**
  * Tenant Module Routes
  */
 
-Route::group([ 'prefix' => '/tenant/is-serviceable-area' ], function () {
+Route::group(['prefix' => '/tenant/is-serviceable-area'], function () {
     Route::post('/', 'ServiceableAreaController@checkIfPresentOrnot');
 });
 
 /**
  * Tenant Routes
  */
-Route::group([ 'prefix' => '/tenant' ], function () use ($router) {
+Route::group(['prefix' => '/tenant'], function () {
     Route::post('/onboarding', 'TenantController@onboarding');
     Route::post('/create', 'TenantController@create');
 
@@ -50,7 +50,7 @@ Route::group([ 'prefix' => '/tenant' ], function () use ($router) {
 /**
  * SAAS Plan Routes
  */
-Route::group([ 'prefix' => '/saas-plan' ], function () use ($router) {
+Route::group(['prefix' => '/saas-plan'], function () {
     Route::post('/create', 'SaasPlanController@create');
     Route::post('/update', 'SaasPlanController@update');
     Route::get('/list', 'SaasPlanController@list');
@@ -62,14 +62,14 @@ Route::group([ 'prefix' => '/saas-plan' ], function () use ($router) {
 /**
  * SAAS Modules Routes
  */
-Route::group(['prefix' => '/saas-module'], function () use ($router) {
+Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
 });
 
 /**
  * Settings Routes
  */
-Route::group(['prefix' => '/settings', 'namespace' => 'Settings'], function () use ($router) {
+Route::group(['prefix' => '/settings', 'namespace' => 'Settings'], function () {
     Route::post('/currency', 'SettingController@updateCurrency');
 
     Route::post('/delivery-settings/delivery-calculation', 'DeliverySettingsController@updateDeliveryCalculations');
