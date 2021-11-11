@@ -16,7 +16,6 @@ class CreateTenantModulesTable extends Migration
         Schema::create('tenant_modules', function (Blueprint $table) {
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->integer('saas_module_id')->unsigned();
-            $table->integer('module_limit')->unsigned();
             $table->timestamps();
 
             $table->index(['tenant_id', 'saas_module_id']);

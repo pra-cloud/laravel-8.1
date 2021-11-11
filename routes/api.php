@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return "Tenant Service Dev: ";
+    return "Tenant Service";
 });
 
 /**
@@ -64,23 +63,4 @@ Route::group(['prefix' => '/saas-plan'], function () {
  */
 Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
-});
-
-/**
- * Settings Routes
- */
-Route::group(['prefix' => '/settings', 'namespace' => 'Settings'], function () {
-    Route::post('/currency', 'SettingController@updateCurrency');
-
-    Route::post('/delivery-settings/delivery-calculation', 'DeliverySettingsController@updateDeliveryCalculations');
-    Route::get('/delivery-settings/delivery-calculation', 'DeliverySettingsController@fetchDeliveryCalculations');
-
-    Route::post('/delivery-settings/delivery-fee-source', 'DeliverySettingsController@updateDeliveryFeeSource');
-    Route::get('/delivery-settings/delivery-fee-source', 'DeliverySettingsController@fetchDeliveryFeeSource');
-
-    Route::post('/delivery-settings/flat-delivery-fee', 'DeliverySettingsController@updateFlatDeliveryFee');
-    Route::get('/delivery-settings/flat-delivery-fee', 'DeliverySettingsController@fetchFlatDeliveryFee');
-
-    Route::post('/apikey/gmap', 'ApiKeyController@updateGmapApiKey');
-    Route::get('/apikey/gmap', 'ApiKeyController@fetchGmapApiKey');
 });

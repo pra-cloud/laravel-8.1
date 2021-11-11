@@ -15,11 +15,12 @@ class SaasModulesSeeder extends Seeder
     public function run()
     {
         $saas_modules = [
-            ['name' => 'Store Management'],
-            ['name' => 'Order Management'],
-            ['name' => 'Driver Management']
+            ['module_name' => 'web_portal', 'active' => 1],
+            ['module_name' => 'app_order', 'active' => 1],
+            ['module_name' => 'app_merchant', 'active' => 1],
+            ['module_name' => 'autozod', 'active' => 1],
         ];
-
+        SaasModule::truncate();
         SaasModule::insert($saas_modules);
     }
 }
