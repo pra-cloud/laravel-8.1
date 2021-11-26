@@ -10,10 +10,6 @@ Route::get('/', function () {
  * Tenant Module Routes
  */
 
-Route::group(['prefix' => '/tenant/is-serviceable-area'], function () {
-    Route::post('/', 'ServiceableAreaController@checkIfPresentOrnot');
-});
-
 /**
  * Tenant Routes
  */
