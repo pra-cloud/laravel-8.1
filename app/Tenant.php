@@ -13,17 +13,16 @@ class Tenant extends Model
     use SoftDeletes, HasSlug, Billable;
 
     protected $fillable = [
-        'domain', 'admin_domain', 'name', 'status', 'business_type', 'plan_expiry_date', 'plan_billing_cycle', 'payment_failed_tries', 'email', 'mobile', 'country', 'city',  'mobile', 'is_setup_configured', 'slug',
-        'billing_provider', 'billing_provider_customer_id'
+        'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status',
     ];
 
-    protected $with = ['tenantBillingDetail', 'tenantModules'];
+    protected $with = ['billing', 'tenantModules'];
 
     /**
      * One to one relation between
      * Tenant and Tenant Billing Details
      */
-    public function tenantBillingDetail()
+    public function billing()
     {
         return $this->hasOne(TenantBillingDetail::class);
     }

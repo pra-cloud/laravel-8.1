@@ -38,6 +38,7 @@ class TenantRepository extends BaseRepository
         }, "Invalid country");
 
         $validator = Validator::make($attributes, [
+            'billing_provider'      => 'nullable',
             'domain'                => ['nullable', 'unique:tenants', new Domain],
             'admin_domain'          => ['nullable', 'unique:tenants', new Domain],
             'name'                  => 'required',
@@ -47,8 +48,6 @@ class TenantRepository extends BaseRepository
             'country'               => 'required|country_exists',
             'status'                => 'required|boolean',
             'business_type'         => 'required|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
-            'plan_start_date'       => 'nullable|date',
-            'plan_billing_cycle'    => 'nullable',
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
@@ -58,11 +57,6 @@ class TenantRepository extends BaseRepository
         if ($validator->fails()) {
             $this->errors = $validator->errors()->all();
             throw new \Exception("Validation error");
-        }
-
-        // Calculate plan_expiry_date
-        if (isset($attributes['plan_billing_cycle']) && isset($attributes['plan_start_date'])) {
-            $attributes['plan_expiry_date'] = $this->calculatePlanExpiryDate($attributes['plan_billing_cycle'], $attributes['plan_start_date']);
         }
 
         $tenant_details = [
@@ -75,18 +69,20 @@ class TenantRepository extends BaseRepository
             'country'               => $attributes['country'],
             'status'                => $attributes['status'],
             'business_type'         => $attributes['business_type'],
-            'plan_expiry_date'      => $attributes['plan_expiry_date'] ?? null,
-            'plan_billing_cycle'      => $attributes['plan_billing_cycle'] ?? null,
         ];
 
         $tenant = null;
 
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
+
+            # Generate unique domain from slug if not any domain has been provided
             if (is_null($tenant_details['domain'])) {
                 $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
                 $tenant->save();
             }
+
+            # Tenant Billing Details
             $tenant_billing_details = [
                 'tenant_id'             => $tenant->id,
                 'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
@@ -94,11 +90,12 @@ class TenantRepository extends BaseRepository
                 'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
                 'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
             ];
-
             TenantBillingDetail::create($tenant_billing_details);
+
             $tenant->refresh();
 
-            $tenant->subscribe();
+            # Subscribe tenant to billing provider
+            $tenant->subscribe($attributes['billing_provider'] ?? null);
 
             // $tenant_module = new TenantModule();
             // $tenant_module->tenant_id = $tenant->id;
@@ -127,8 +124,6 @@ class TenantRepository extends BaseRepository
             'country'               => 'required',
             'status'                => 'required|boolean',
             'business_type' => ['required', Rule::in($business_types)],
-            'plan_expiry_date'      => 'nullable|date',
-            'plan_billing_cycle'    => 'nullable',
             'tenant_billing_detail.billing_name'    => 'required',
             'tenant_billing_detail.billing_email'   => 'required|email',
             'tenant_billing_detail.billing_phone'   => 'required',
@@ -150,8 +145,6 @@ class TenantRepository extends BaseRepository
         $tenant->city                   = $attributes['city'];
         $tenant->status                 = $attributes['status'];
         $tenant->business_type          = $attributes['business_type'];
-        $tenant->plan_expiry_date       = $attributes['plan_expiry_date'] ?? null;
-        $tenant->plan_billing_cycle     = $attributes['plan_billing_cycle'] ?? null;
         $tenant->save();
         if (is_null($tenant->domain)) {
             $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
@@ -159,11 +152,11 @@ class TenantRepository extends BaseRepository
             $tenant->refresh();
         }
         // dd($tenant->slug);
-        $tenant->tenantBillingDetail->billing_name        = $attributes['tenant_billing_detail']['billing_name'];
-        $tenant->tenantBillingDetail->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
-        $tenant->tenantBillingDetail->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
-        $tenant->tenantBillingDetail->billing_address     = $attributes['tenant_billing_detail']['billing_address'];
-        $tenant->tenantBillingDetail->save();
+        $tenant->billing->billing_name        = $attributes['tenant_billing_detail']['billing_name'];
+        $tenant->billing->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
+        $tenant->billing->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
+        $tenant->billing->billing_address     = $attributes['tenant_billing_detail']['billing_address'];
+        $tenant->billing->save();
 
         if ($tenant) {
             return $tenant;
@@ -289,53 +282,6 @@ class TenantRepository extends BaseRepository
             return 'Tenant has been deleted successfully.';
         }
         throw new \Exception("Error in deleting tenant.");
-    }
-
-    public function calculatePlanExpiryDate($plan_billing_cycle, $date)
-    {
-        $plan_expiry_date = Carbon::parse('1970-01-01');
-
-        if ($plan_billing_cycle == 'monthly') {
-            $plan_expiry_date = Carbon::parse($date)->addMonth();
-        }
-
-        if ($plan_billing_cycle == 'quaterly') {
-            $plan_expiry_date = Carbon::parse($date)->addMonths(4);
-        }
-
-        if ($plan_billing_cycle == 'yearly') {
-            $plan_expiry_date = Carbon::parse($date)->addYear();
-        }
-
-        return $plan_expiry_date->toDateString();
-    }
-
-    public function updateImages(array $attributes)
-    {
-        $validator = Validator::make($attributes, [
-            'tenant_id' => 'required',
-            'logo_url' => 'nullable|url',
-            'favicon_url' => 'nullable|url',
-        ]);
-
-        if ($validator->fails()) {
-            $this->errors = $validator->errors()->all();
-            throw new \Exception("Validation error");
-        }
-
-        $tenant = Tenant::findOrFail($attributes['tenant_id']);
-
-        if (isset($attributes['logo_url'])) {
-            $tenant->logo_url = $attributes['logo_url'];
-        }
-
-        if (isset($attributes['favicon_url'])) {
-            $tenant->favicon_url = $attributes['favicon_url'];
-        }
-
-        $tenant->save();
-
-        return $tenant;
     }
 
     public function configureSetup(array $params)

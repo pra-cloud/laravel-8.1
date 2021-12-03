@@ -20,28 +20,34 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
 
     public function subscribe($customer_id, array $itemPriceIds = null)
     {
-        $items = [];
-
         # If no item price ids are passed, then we will use the default item price ids
         if (is_null($itemPriceIds)) {
             foreach ($this->getDefaultPlans() as $plan) {
-                $items["subscriptionItems"][] = [
+                $items["subscriptionItems"] = [[
                     "itemPriceId" => $plan['item_price_id'][$this->getDefaultCurrency()],
-                ];
+                ]];
+                $subscription = Subscription::createWithItems($customer_id,  $items);
             }
+            return true;
+        }
+        # If item price ids are passed, then we will use the item price ids passed
+        if (sizeof($itemPriceIds) > 0) {
+            foreach ($itemPriceIds as $priceId) {
+                $items["subscriptionItems"] = [[
+                    "itemPriceId" => $priceId,
+                ]];
+                $subscription = Subscription::createWithItems($customer_id,  $items);
+            }
+            return true;
         }
 
-        $result = Subscription::createWithItems($customer_id,  $items);
-
-        $subscription = $result->subscription();
-        dd($subscription);
-        $customer = $result->customer();
+        return false;
     }
 
     public function createCustomer(CustomerDTO $customer)
     {
         $result = Customer::create(array(
-            "id" => $customer->customerId,
+            // "id" => $customer->customerId,
             "email" => $customer->email,
             "firstName" => $customer->firstName,
             "lastName" => "",

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TenantBillingDetail extends Model
 {
     protected $fillable = [
-        'tenant_id','billing_name', 'billing_email', 'billing_phone', 'billing_address','billing_provider', 'billing_provider_customer_id'
+        'tenant_id', 'billing_name', 'billing_email', 'billing_phone', 'billing_address',  'billing_provider', 'billing_provider_customer_id'
     ];
 
     /**

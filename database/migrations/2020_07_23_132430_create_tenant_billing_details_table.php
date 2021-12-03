@@ -20,6 +20,8 @@ class CreateTenantBillingDetailsTable extends Migration
             $table->string('billing_email', 45);
             $table->string('billing_phone', 45);
             $table->string('billing_address');
+            $table->string('billing_provider')->nullable();
+            $table->string('billing_provider_customer_id')->unique()->nullable();
             $table->timestamps();
         });
     }
