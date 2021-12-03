@@ -2,47 +2,63 @@
 
 namespace App\Modules\Billing;
 
+use App\Modules\Billing\Abstracts\AbstractBilling;
+use App\Modules\Billing\DataTransferObjects\CustomerDTO;
 use App\Modules\Billing\Interfaces\BillingProviderInterface;
 
-class ChargeBee implements BillingProviderInterface
+use ChargeBee\ChargeBee\Environment;
+use ChargeBee\ChargeBee\Models\Customer;
+use ChargeBee\ChargeBee\Models\Subscription;
+
+class ChargeBee extends AbstractBilling implements BillingProviderInterface
 {
-    public $CONFIG;
-
-    function __construct( array $config )
+    function __construct($config)
     {
-        $this->CONFIG = $config;
-        \ChargeBee_Environment::configure($config['site_key'], $config['key']);
+        parent::__construct($config);
+        Environment::configure($this->config['site_key'], $this->config['key']);
     }
 
-    public function subscribe($customer_id, string $planId = null): array
+    public function subscribe($customer_id, array $itemPriceIds = null)
     {
+        $items = [];
 
-        $result = \ChargeBee_Subscription::createWithItems($customer_id, array(
-            "planId" => $planId ?? $this->CONFIG['default_plan_id'], 
-          ));
+        # If no item price ids are passed, then we will use the default item price ids
+        if (is_null($itemPriceIds)) {
+            foreach ($this->getDefaultPlans() as $plan) {
+                $items["subscriptionItems"][] = [
+                    "itemPriceId" => $plan['item_price_id'][$this->getDefaultCurrency()],
+                ];
+            }
+        }
 
-          $subscription = $result->subscription();
-          $customer = $result->customer();
+        $result = Subscription::createWithItems($customer_id,  $items);
+
+        $subscription = $result->subscription();
+        dd($subscription);
+        $customer = $result->customer();
     }
 
-    public function createCustomer(array $attributes)
+    public function createCustomer(CustomerDTO $customer)
     {
-        $result = \ChargeBee_Customer::create(array(
-            // "id" => $attributes['id'], 
-            "email" => $attributes['email'], 
-            "firstName" => $attributes['tenant_billing_detail']['billing_name'], 
+        $result = Customer::create(array(
+            "id" => $customer->customerId,
+            "email" => $customer->email,
+            "firstName" => $customer->firstName,
             "lastName" => "",
             "billingAddress" => array(
-              "firstName" => $attributes['tenant_billing_detail']['billing_name'],
-              "lastName" => "",
-              "city" => $attributes['city'],
-              "country" => $attributes['country']
-              )
-            ));
+                "firstName" => $customer->firstName,
+                "lastName" => "",
+                "city" => $customer->city,
+                "country" => $customer->country
+            )
+        ));
 
-          $customer = $result->customer();
-
-          return $customer->id;
+        try {
+            $customer = $result->customer();
+            return $customer->id;
+        } catch (\Exception $e) {
+            throw new \Exception("Error chargebee creating customer: " . $e->getMessage());
+        }
     }
 
     public function fetch(array $attributes): array

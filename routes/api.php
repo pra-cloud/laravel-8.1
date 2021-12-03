@@ -7,10 +7,6 @@ Route::get('/', function () {
 });
 
 /**
- * Tenant Module Routes
- */
-
-/**
  * Tenant Routes
  */
 Route::group(['prefix' => '/tenant'], function () {
@@ -40,18 +36,6 @@ Route::group(['prefix' => '/tenant'], function () {
     Route::post('/images', 'TenantController@updateImages');
     Route::post('/configure-setup', 'TenantController@configureSetup');
     Route::get('/exists', 'TenantController@tenantExists');
-});
-
-/**
- * SAAS Plan Routes
- */
-Route::group(['prefix' => '/saas-plan'], function () {
-    Route::post('/create', 'SaasPlanController@create');
-    Route::post('/update', 'SaasPlanController@update');
-    Route::get('/list', 'SaasPlanController@list');
-    Route::get('/view', 'SaasPlanController@view');
-    Route::post('/delete', 'SaasPlanController@delete');
-    Route::get('/list-billing-cycles', 'SaasPlanController@listPlanBillingCycle');
 });
 
 /**

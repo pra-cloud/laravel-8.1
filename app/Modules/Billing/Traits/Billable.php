@@ -2,8 +2,8 @@
 
 namespace App\Modules\Billing\Traits;
 
-use App\Models\TenantSubscription;
 use App\Modules\Billing\Billing;
+use App\Modules\Billing\DataTransferObjects\CustomerDTO;
 use Exception;
 
 // $this->subscription->create([
@@ -17,28 +17,32 @@ use Exception;
 // ]);
 trait Billable
 {
-    public function subscribe( $planId = null )
+    public function subscribe($provider = false, array $planIds = null)
     {
-        $billing = Billing::init();
-        $provider = Billing::getDefaultProvider();
+        $billing_provider = Billing::init($provider);
 
         $customer_id = $this->subscription->billing_provider_customer_id ?? false;
 
+        # Create New Customer on Billing Provider if not exists
         if (!$customer_id) {
-            $customer_id = $billing->createCustomer( $this->toArray() );
-     
-            $this->subscription()->create([
+            $customer_dto = new CustomerDTO([
+                'customerId' => $this->id,
+                'email' => $this->email,
+                'firstName' => $this->tenantBillingDetail->billing_name,
+                'lastName' => '',
+                'city' => $this->city,
+                'country' => $this->country,
+            ]);
+
+            $customer_id = $billing_provider->createCustomer($customer_dto);
+
+            $this->update([
                 'tenant_id' => $this->id,
-                'billing_provider' => $provider,
+                'billing_provider' => $billing_provider->getProviderName(),
                 'billing_provider_customer_id' => $customer_id,
             ]);
         }
-
-        $billing->subscribe( $customer_id );
-    }
-
-    public function subscription()
-    {
-        return $this->hasOne(TenantSubscription::class);
+        # Subscribe Customer to Plans on Billing Provider
+        $billing_provider->subscribe($customer_id, $planIds);
     }
 }

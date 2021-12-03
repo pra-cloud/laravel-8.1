@@ -16,9 +16,8 @@ class SaasModulesSeeder extends Seeder
     {
         $saas_modules = [
             ['module_name' => 'web_portal', 'active' => 1],
-            ['module_name' => 'app_order', 'active' => 1],
+            ['module_name' => 'app_ordering', 'active' => 1],
             ['module_name' => 'app_merchant', 'active' => 1],
-            ['module_name' => 'autozod', 'active' => 1],
         ];
         SaasModule::truncate();
         SaasModule::insert($saas_modules);

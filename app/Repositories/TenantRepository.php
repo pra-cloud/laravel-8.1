@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Repositories;
 
+use App\Modules\Billing\Billing;
+use App\Modules\Billing\DataTransferObjects\CustomerDTO;
 use App\Tenant;
 use Carbon\Carbon;
 use App\Rules\Domain;
@@ -8,7 +11,6 @@ use App\TenantModule;
 use App\TenantBillingDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\SaasPlanRepository;
 use Illuminate\Support\Facades\Validator;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
 use Illuminate\Validation\Rule;
@@ -16,12 +18,7 @@ use Illuminate\Validation\Rule;
 class TenantRepository extends BaseRepository
 {
     use HelpersServiceTrait;
-    private $SAAS_PLAN_REPOSITORY;
 
-    public function __construct(SaasPlanRepository $saasPlanRepository)
-    {
-        $this->SAAS_PLAN_REPOSITORY = $saasPlanRepository;
-    }
     /**
      * Save Tenant Details and
      * Tenant Billing Details related to Tenant
@@ -41,16 +38,15 @@ class TenantRepository extends BaseRepository
         }, "Invalid country");
 
         $validator = Validator::make($attributes, [
-            'domain'                => ['nullable','unique:tenants', new Domain],
-            'admin_domain'          => ['nullable','unique:tenants', new Domain],
+            'domain'                => ['nullable', 'unique:tenants', new Domain],
+            'admin_domain'          => ['nullable', 'unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => ['required', 'email', 'unique:tenants'],
             'mobile'                => 'required',
             'city'                  => 'required',
-            'country'               => 'required',
+            'country'               => 'required|country_exists',
             'status'                => 'required|boolean',
             'business_type'         => 'required|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
-            'saas_plan_id'          => 'nullable',
             'plan_start_date'       => 'nullable|date',
             'plan_billing_cycle'    => 'nullable',
             'tenant_billing_detail.billing_name'    => 'required',
@@ -79,19 +75,17 @@ class TenantRepository extends BaseRepository
             'country'               => $attributes['country'],
             'status'                => $attributes['status'],
             'business_type'         => $attributes['business_type'],
-            'saas_plan_id'          => $attributes['saas_plan_id'] ?? null,
             'plan_expiry_date'      => $attributes['plan_expiry_date'] ?? null,
             'plan_billing_cycle'      => $attributes['plan_billing_cycle'] ?? null,
         ];
 
         $tenant = null;
-        
+
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
             if (is_null($tenant_details['domain'])) {
                 $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
                 $tenant->save();
-                $tenant->refresh();
             }
             $tenant_billing_details = [
                 'tenant_id'             => $tenant->id,
@@ -102,17 +96,15 @@ class TenantRepository extends BaseRepository
             ];
 
             TenantBillingDetail::create($tenant_billing_details);
-            if ($tenant->saas_plan_id) {
-                $saas_plan = $this->SAAS_PLAN_REPOSITORY->fetch([ 'id' => $tenant->saas_plan_id ]);
-                
-                foreach ($saas_plan['modules'] as $module) {
-                    $tenant_module = new TenantModule();
-                    $tenant_module->tenant_id = $tenant->id;
-                    $tenant_module->saas_module_id = $module['module_id'];
-                    $tenant_module->module_limit = $module['module_limit'];
-                    $tenant_module->save();
-                }
-            }
+            $tenant->refresh();
+
+            $tenant->subscribe();
+
+            // $tenant_module = new TenantModule();
+            // $tenant_module->tenant_id = $tenant->id;
+            // $tenant_module->saas_module_id = $module['module_id'];
+            // $tenant_module->module_limit = $module['module_limit'];
+            // $tenant_module->save();
         });
 
         return $tenant;
@@ -135,7 +127,6 @@ class TenantRepository extends BaseRepository
             'country'               => 'required',
             'status'                => 'required|boolean',
             'business_type' => ['required', Rule::in($business_types)],
-            'saas_plan_id'          => 'nullable',
             'plan_expiry_date'      => 'nullable|date',
             'plan_billing_cycle'    => 'nullable',
             'tenant_billing_detail.billing_name'    => 'required',
@@ -159,7 +150,6 @@ class TenantRepository extends BaseRepository
         $tenant->city                   = $attributes['city'];
         $tenant->status                 = $attributes['status'];
         $tenant->business_type          = $attributes['business_type'];
-        $tenant->saas_plan_id           = $attributes['saas_plan_id'] ?? null;
         $tenant->plan_expiry_date       = $attributes['plan_expiry_date'] ?? null;
         $tenant->plan_billing_cycle     = $attributes['plan_billing_cycle'] ?? null;
         $tenant->save();
@@ -388,7 +378,7 @@ class TenantRepository extends BaseRepository
             "exists" => $tenant_exists
         ];
     }
-    
+
     public function updateDomain(array $attributes)
     {
         $validator = Validator::make($attributes, [
@@ -396,12 +386,12 @@ class TenantRepository extends BaseRepository
             'domain' => ['nullable', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
             'admin_domain' => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"]
         ]);
-        
+
         if ($validator->fails()) {
             $this->errors = $validator->errors()->all();
             throw new \Exception("Validation error");
         }
-        
+
         $validated_values = $validator->validated();
         $response['tenant_id'] = $validated_values['tenant_id'];
 
@@ -424,11 +414,11 @@ class TenantRepository extends BaseRepository
             if (isset($validated_values['domain'])) {
                 $db_response = Tenant::where('id', $validated_values['tenant_id'])->update(['domain' => $validated_values['domain']]);
                 $response['updated_domain'] = $validated_values['domain'];
-                
+
                 if ($db_response != true) {
                     return $response;
                 }
-                
+
                 return $response;
             }
 
@@ -439,11 +429,11 @@ class TenantRepository extends BaseRepository
                 if ($db_response != true) {
                     return $response;
                 }
-        
+
                 return $this->successResponse("Domain: {$validated_values['admin_domain']} updated successfully!", $response);
             }
         }
-        
+
         return $response;
     }
 
@@ -473,7 +463,7 @@ class TenantRepository extends BaseRepository
         }
 
         $validated = $validator->validated();
-        
+
         //Create tenant
         $tenant = $this->save([
             'name' => $validated['tenant_name'],
