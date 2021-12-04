@@ -8,7 +8,7 @@ use App\Tenant;
 use Carbon\Carbon;
 use App\Rules\Domain;
 use App\TenantModule;
-use App\TenantBillingDetail;
+use App\TenantBilling;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -90,18 +90,12 @@ class TenantRepository extends BaseRepository
                 'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
                 'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
             ];
-            TenantBillingDetail::create($tenant_billing_details);
+            TenantBilling::create($tenant_billing_details);
 
             $tenant->refresh();
 
             # Subscribe tenant to billing provider
             $tenant->subscribe($attributes['billing_provider'] ?? null);
-
-            // $tenant_module = new TenantModule();
-            // $tenant_module->tenant_id = $tenant->id;
-            // $tenant_module->saas_module_id = $module['module_id'];
-            // $tenant_module->module_limit = $module['module_limit'];
-            // $tenant_module->save();
         });
 
         return $tenant;
@@ -395,7 +389,6 @@ class TenantRepository extends BaseRepository
         $validator = Validator::make($params, [
             'user_name' => 'required|string',
             'email' => ['required', 'email', 'unique:tenants'],
-            'password' => 'required|string',
             'mobile' => 'required',
             'tenant_name' => 'required|string',
             'business_type' => ['required', Rule::in($business_types)],

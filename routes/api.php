@@ -44,3 +44,6 @@ Route::group(['prefix' => '/tenant'], function () {
 Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
 });
+
+// Webhook for Billing Provider 
+Route::any('/webhook/billing/{provider}', 'WebhookBillingProviderController@handle');

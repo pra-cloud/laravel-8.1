@@ -8,9 +8,9 @@ interface BillingProviderInterface
 {
     /**
      * Subscribe customer to a plan.
-     * if planId is null, then customer will be subscribed to the default plans of the billing provider.
+     * Customer will be subscribed to the default plans of the billing provider.
      */
-    public function subscribe(string $customerId, array $planId = null);
+    public function subscribe(string $customerId);
 
     /**
      * Create a new customer in the billing provider.
@@ -21,4 +21,6 @@ interface BillingProviderInterface
     public function fetch(array $attributes): array;
 
     public function getProviderName(): string;
+
+    public function processWebhook(array $payload);
 }

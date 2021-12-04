@@ -31,5 +31,7 @@ trait Billable
         }
         # Subscribe Customer to Plans on Billing Provider
         $billing_provider->subscribe($customer_id, $planIds);
+        # Everything went fine
+        return true;
     }
 }

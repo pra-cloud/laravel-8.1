@@ -16,9 +16,9 @@ class AbstractBilling
         return $this->config['provider'];
     }
 
-    public function getDefaultPlans(): array
+    public function getPlans(): array
     {
-        return $this->config['default_plans'];
+        return $this->config['plans'];
     }
 
     public function getDefaultCurrency(): string

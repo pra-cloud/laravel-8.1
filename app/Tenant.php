@@ -16,7 +16,7 @@ class Tenant extends Model
         'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status',
     ];
 
-    protected $with = ['billing', 'tenantModules'];
+    protected $with = ['billing', 'saasModules'];
 
     /**
      * One to one relation between
@@ -24,12 +24,12 @@ class Tenant extends Model
      */
     public function billing()
     {
-        return $this->hasOne(TenantBillingDetail::class);
+        return $this->hasOne(TenantBilling::class);
     }
 
-    public function tenantModules()
+    public function saasModules()
     {
-        return $this->hasManyThrough(SaasModule::class, TenantModule::class, 'saas_module_id', 'id', 'id', 'saas_module_id');
+        return $this->hasManyThrough(SaasModule::class, TenantModule::class, 'tenant_id', 'id', 'id', 'saas_module_id');
     }
 
     public function getSlugOptions(): SlugOptions

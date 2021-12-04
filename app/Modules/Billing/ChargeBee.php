@@ -2,6 +2,7 @@
 
 namespace App\Modules\Billing;
 
+use App\Events\TenantSubscribed;
 use App\Modules\Billing\Abstracts\AbstractBilling;
 use App\Modules\Billing\DataTransferObjects\CustomerDTO;
 use App\Modules\Billing\Interfaces\BillingProviderInterface;
@@ -18,27 +19,19 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
         Environment::configure($this->config['site_key'], $this->config['key']);
     }
 
-    public function subscribe($customer_id, array $itemPriceIds = null)
+    public function subscribe($customer_id)
     {
-        # If no item price ids are passed, then we will use the default item price ids
-        if (is_null($itemPriceIds)) {
-            foreach ($this->getDefaultPlans() as $plan) {
-                $items["subscriptionItems"] = [[
-                    "itemPriceId" => $plan['item_price_id'][$this->getDefaultCurrency()],
-                ]];
-                $subscription = Subscription::createWithItems($customer_id,  $items);
-            }
-            return true;
+        $saas_modules = [];
+        foreach ($this->getPlans() as $plan) {
+            $items["subscriptionItems"] = [[
+                "itemPriceId" => $plan['default_item_price_id'][$this->getDefaultCurrency()],
+            ]];
+            $subscription = Subscription::createWithItems($customer_id,  $items);
+            $saas_modules[] = $plan['saas_modules'];
         }
-        # If item price ids are passed, then we will use the item price ids passed
-        if (sizeof($itemPriceIds) > 0) {
-            foreach ($itemPriceIds as $priceId) {
-                $items["subscriptionItems"] = [[
-                    "itemPriceId" => $priceId,
-                ]];
-                $subscription = Subscription::createWithItems($customer_id,  $items);
-            }
-            return true;
+
+        if (sizeof($saas_modules) > 0) {
+            event(new TenantSubscribed($customer_id, $saas_modules));
         }
 
         return false;
@@ -70,5 +63,13 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
     public function fetch(array $attributes): array
     {
         return [];
+    }
+
+    /**
+     * Process Chargebee Webhooks
+     * @param array $payload
+     */
+    public function processWebhook(array $payload)
+    {
     }
 }
