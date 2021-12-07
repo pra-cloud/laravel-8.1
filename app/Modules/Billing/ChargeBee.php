@@ -10,6 +10,7 @@ use App\Modules\Billing\Interfaces\BillingProviderInterface;
 use ChargeBee\ChargeBee\Environment;
 use ChargeBee\ChargeBee\Models\Customer;
 use ChargeBee\ChargeBee\Models\Subscription;
+use ChargeBee\ChargeBee\Models\PortalSession;
 
 class ChargeBee extends AbstractBilling implements BillingProviderInterface
 {
@@ -63,6 +64,17 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
     public function fetch(array $attributes): array
     {
         return [];
+    }
+
+    public function setPortalSessionToken($customer_id)
+    {
+        $result = PortalSession::create(array(
+            "customer" => array(
+                "id" => $customer_id
+            )
+        ));
+        $portalSession = $result->portalSession();
+        return $portalSession->getValues(); // send the output in a json format
     }
 
     /**

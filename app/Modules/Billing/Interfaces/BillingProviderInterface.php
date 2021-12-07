@@ -23,4 +23,6 @@ interface BillingProviderInterface
     public function getProviderName(): string;
 
     public function processWebhook(array $payload);
+
+    public function setPortalSessionToken(array $params);
 }

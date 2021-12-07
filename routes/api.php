@@ -12,15 +12,12 @@ Route::get('/', function () {
 Route::group(['prefix' => '/tenant'], function () {
     Route::post('/onboarding', 'TenantController@onboarding');
     Route::post('/create', 'TenantController@create');
-
     // Update
     Route::post('/update', 'TenantController@update');
     Route::post('/update/domain', 'TenantController@updateDomain');
-
     // List
     Route::get('/list', 'TenantController@list');
     Route::get('/list/business-types', 'TenantController@listBusinessTypes');
-
     // View
     Route::get('/view', 'TenantController@view');
     Route::get('/view/public', 'TenantController@viewPublic');
@@ -44,6 +41,11 @@ Route::group(['prefix' => '/tenant'], function () {
 Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
 });
+
+/**
+ * Billing Provider Specific Routes
+ */
+Route::get('/auth/billing/sessionToken', 'AuthBillingController@handle');
 
 // Webhook for Billing Provider 
 Route::any('/webhook/billing/{provider}', 'WebhookBillingProviderController@handle');
