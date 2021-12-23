@@ -69,6 +69,7 @@ class TenantRepository extends BaseRepository
             'country'               => $attributes['country'],
             'status'                => $attributes['status'],
             'business_type'         => $attributes['business_type'],
+            'is_open'               => true,
         ];
 
         $tenant = null;
