@@ -4,7 +4,7 @@ namespace App\Modules\Billing\DataTransferObjects;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class CustomerDTO extends DataTransferObject
+class CustomerDto extends DataTransferObject
 {
    public string $customerId;
    public string $email;

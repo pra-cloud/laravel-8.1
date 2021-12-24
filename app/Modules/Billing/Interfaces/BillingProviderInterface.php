@@ -2,7 +2,7 @@
 
 namespace App\Modules\Billing\Interfaces;
 
-use App\Modules\Billing\DataTransferObjects\CustomerDTO;
+use App\Modules\Billing\DataTransferObjects\CustomerDto;
 
 interface BillingProviderInterface
 {
@@ -14,9 +14,9 @@ interface BillingProviderInterface
 
     /**
      * Create a new customer in the billing provider.
-     * @param CustomerDTO $customerDTO
+     * @param CustomerDto $CustomerDto
      */
-    public function createCustomer(CustomerDTO $customer);
+    public function createCustomer(CustomerDto $customer);
 
     public function fetch(array $attributes): array;
 

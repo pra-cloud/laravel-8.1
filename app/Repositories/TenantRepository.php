@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Modules\Billing\Billing;
-use App\Modules\Billing\DataTransferObjects\CustomerDTO;
+use App\Modules\Billing\DataTransferObjects\CustomerDto;
 use App\Tenant;
 use Carbon\Carbon;
 use App\Rules\Domain;

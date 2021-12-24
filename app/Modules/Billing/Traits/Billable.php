@@ -3,7 +3,7 @@
 namespace App\Modules\Billing\Traits;
 
 use App\Modules\Billing\Billing;
-use App\Modules\Billing\DataTransferObjects\CustomerDTO;
+use App\Modules\Billing\DataTransferObjects\CustomerDto;
 
 trait Billable
 {
@@ -13,7 +13,7 @@ trait Billable
         $customer_id = $this->billing->billing_provider_customer_id ?? false;
         # Create New Customer on Billing Provider if not exists
         if (!$customer_id) {
-            $customer_dto = new CustomerDTO([
+            $customer_dto = new CustomerDto([
                 'customerId' => $this->id,
                 'email' => $this->email,
                 'firstName' => $this->billing->billing_name,

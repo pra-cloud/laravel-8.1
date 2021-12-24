@@ -4,7 +4,7 @@ namespace App\Modules\Billing;
 
 use App\Events\TenantSubscribed;
 use App\Modules\Billing\Abstracts\AbstractBilling;
-use App\Modules\Billing\DataTransferObjects\CustomerDTO;
+use App\Modules\Billing\DataTransferObjects\CustomerDto;
 use App\Modules\Billing\Interfaces\BillingProviderInterface;
 
 use ChargeBee\ChargeBee\Environment;
@@ -38,7 +38,7 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
         return false;
     }
 
-    public function createCustomer(CustomerDTO $customer)
+    public function createCustomer(CustomerDto $customer)
     {
         $result = Customer::create(array(
             // "id" => $customer->customerId,
