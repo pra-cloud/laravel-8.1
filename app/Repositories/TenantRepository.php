@@ -412,6 +412,7 @@ class TenantRepository extends BaseRepository
             'city' => $validated['city'],
             'country' => $validated['country'],
             'status' => true,
+            'is_open' => true,
             'business_type' => $validated['business_type'],
             'tenant_billing_detail' => [
                 'billing_name' => $validated['tenant_name'],
