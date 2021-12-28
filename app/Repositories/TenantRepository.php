@@ -60,7 +60,7 @@ class TenantRepository extends BaseRepository
         }
 
         $tenant_details = [
-            'domain'                => $attributes['domain'] ?? null,
+            'domain'                => $this->parseDomain($attributes['domain']) ?? null,
             'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
@@ -132,7 +132,7 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
-        $tenant->domain                 = $attributes['domain'] ?? null;
+        $tenant->domain                 = $this->parseDomain($attributes['domain']) ?? null;
         $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
@@ -229,6 +229,8 @@ class TenantRepository extends BaseRepository
             throw new \Exception("Validation error");
         }
 
+        $attributes['domain'] = $this->parseDomain($attributes['domain']);
+        dd($attributes['domain']);
         $tenant = Tenant::setEagerLoads([])->select('id')->where('domain', $attributes['domain'])->first();
 
         if (!$tenant) {
@@ -238,9 +240,16 @@ class TenantRepository extends BaseRepository
         return ['tenant_id' => $tenant->id];
     }
 
-    public function isValidDomain($domain)
+    // parseDomain
+    public function parseDomain($domain)
     {
-        return preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/', $domain);
+        $domain_parts = explode('.', $domain);
+        if (count($domain_parts) > 2) {
+            return $domain;
+        }
+        // insert element to the beginning of the array
+        array_unshift($domain_parts, 'www');
+        return implode('.', $domain_parts);
     }
 
     /**

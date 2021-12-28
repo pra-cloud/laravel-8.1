@@ -6,9 +6,7 @@ Route::get('/', function () {
     return "Tenant Service";
 });
 
-/**
- * Tenant Routes
- */
+# Tenant Routes
 Route::group(['prefix' => '/tenant'], function () {
     Route::post('/onboarding', 'TenantController@onboarding');
     Route::post('/create', 'TenantController@create');
@@ -35,17 +33,13 @@ Route::group(['prefix' => '/tenant'], function () {
     Route::get('/exists', 'TenantController@tenantExists');
 });
 
-/**
- * SAAS Modules Routes
- */
+# SAAS Modules Routes
 Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
 });
 
-/**
- * Billing Provider Specific Routes
- */
+# Billing Provider Specific Routes
 Route::get('/auth/billing/sessionToken', 'AuthBillingController@handle');
 
-// Webhook for Billing Provider 
+# Webhook for Billing Provider 
 Route::any('/webhook/billing/{provider}', 'WebhookBillingProviderController@handle');
