@@ -230,7 +230,7 @@ class TenantRepository extends BaseRepository
         }
 
         $attributes['domain'] = $this->parseDomain($attributes['domain']);
-        dd($attributes['domain']);
+
         $tenant = Tenant::setEagerLoads([])->select('id')->where('domain', $attributes['domain'])->first();
 
         if (!$tenant) {
