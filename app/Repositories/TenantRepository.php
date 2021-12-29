@@ -60,7 +60,7 @@ class TenantRepository extends BaseRepository
         }
 
         $tenant_details = [
-            'domain'                => $this->parseDomain($attributes['domain']) ?? null,
+            'domain'                => $this->parseDomain($attributes['domain'] ?? null),
             'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
@@ -132,7 +132,7 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
-        $tenant->domain                 = $this->parseDomain($attributes['domain']) ?? null;
+        $tenant->domain                 = $this->parseDomain($attributes['domain'] ?? null);
         $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
