@@ -21,8 +21,10 @@ Route::group(['prefix' => '/tenant'], function () {
     Route::get('/view/public', 'TenantController@viewPublic');
 
     Route::get('/status', 'TenantController@fetchTenantStatus');
+
     Route::get('/getTenantIdByAdminDomain', 'TenantController@getTenantIdByAdminDomain');
     Route::get('/getTenantIdByDomain', 'TenantController@getTenantIdByDomain');
+    Route::get('/getDomainsByTenantId', 'TenantController@getDomainsByTenantId');
 
     // Delete
     Route::post('/delete', 'TenantController@delete');

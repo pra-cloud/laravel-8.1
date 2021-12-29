@@ -240,6 +240,22 @@ class TenantRepository extends BaseRepository
         return ['tenant_id' => $tenant->id];
     }
 
+    public function getDomainsByTenantId($attributes)
+    {
+        $validator = Validator::make($attributes, [
+            'tenant_id' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+
+        $tenant = Tenant::setEagerLoads([])->select('id', 'domain', 'admin_domain')->findOrFail($attributes['tenant_id']);
+
+        return $tenant->toArray();
+    }
+
     // parseDomain
     public function parseDomain($domain)
     {

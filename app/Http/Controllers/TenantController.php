@@ -165,6 +165,17 @@ class TenantController extends Controller
         }
     }
 
+    public function getDomainsByTenantId(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->getDomainsByTenantId($request->all());
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
+
     public function fetchTenantStatus(Request $request)
     {
         try {
