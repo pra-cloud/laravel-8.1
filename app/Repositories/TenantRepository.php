@@ -163,10 +163,33 @@ class TenantRepository extends BaseRepository
      * Fetch list of Tenants
      * with Tenant Billing Details
      */
-    public function fetchAll(array $attributes = [])
+    public function fetchAll(array $attributes)
     {
-        $tenants = Tenant::where($attributes)->get();
-        return $tenants;
+        $validator = Validator::make($attributes, [
+            'list_type' => 'nullable|string|in:default,tenant_names',
+            'tenant_ids' => 'nullable|array',
+            'tenant_ids.*' => 'required_with:tenant_ids|integer',
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+        $tenants = Tenant::query();
+        $validated = $validator->validated();
+        if (isset($validated['tenant_ids']) && !empty($validated['tenant_ids']) && !is_null($validated['tenant_ids'])) {
+            $validated['tenant_ids'] = $this->castNumerics($validated['tenant_ids']);
+            $tenants->whereIn('id', $validated['tenant_ids']);
+        }
+
+        if (isset($validated['list_type']) && $validated['list_type'] == 'tenant_names') {
+            $tenants = $tenants->select([
+                'id',
+                'name',
+            ])->get();
+            return $tenants;
+        }
+        return $tenants->get();
     }
 
     /**

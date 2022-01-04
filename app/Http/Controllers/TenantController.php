@@ -52,10 +52,10 @@ class TenantController extends Controller
      * List of Tenants
      * with Tenant Billing Details
      */
-    public function list()
+    public function list(Request $request)
     {
         try {
-            $response = $this->TENANT_REPOSITORY->fetchAll();
+            $response = $this->TENANT_REPOSITORY->fetchAll($request->all());
             return $this->successResponse(null, $response);
         } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();

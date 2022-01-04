@@ -14,4 +14,14 @@ abstract class BaseRepository
     {
         return $this->errors;
     }
+
+    public function castNumerics($items)
+    {
+        return array_map(function ($item) {
+            if (is_numeric($item)) {
+                $item = intval($item);
+            }
+            return $item;
+        }, $items);
+    }
 }
