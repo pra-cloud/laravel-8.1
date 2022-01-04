@@ -42,7 +42,7 @@ class TenantRepository extends BaseRepository
             'domain'                => ['nullable', 'unique:tenants', new Domain],
             'admin_domain'          => ['nullable', 'unique:tenants', new Domain],
             'name'                  => 'required',
-            'email'                 => ['required', 'email', 'unique:tenants'],
+            'email'                 => 'required|email',
             'mobile'                => 'required',
             'city'                  => 'required',
             'country'               => 'required|country_exists',
@@ -113,7 +113,7 @@ class TenantRepository extends BaseRepository
             'domain'                => ['nullable', new Domain, "unique:tenants,domain,{$attributes['tenant_id']},id"],
             'admin_domain'          => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
-            'email'                 => ['required', 'email', "unique:tenants,email,{$attributes['tenant_id']},id"],
+            'email'                 => 'required|email',
             'mobile'                => 'required',
             'city'                  => 'required',
             'country'               => 'required',
@@ -437,7 +437,7 @@ class TenantRepository extends BaseRepository
 
         $validator = Validator::make($params, [
             'user_name' => 'required|string',
-            'email' => ['required', 'email', 'unique:tenants'],
+            'email' => 'required|email',
             'mobile' => 'required',
             'tenant_name' => 'required|string',
             'business_type' => ['required', Rule::in($business_types)],

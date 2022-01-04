@@ -19,7 +19,7 @@ class CreateTenantsTable extends Migration
             $table->string('admin_domain')->nullable()->unique();
             $table->string('slug');
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('mobile');
             $table->string('city');
             $table->string('country');
