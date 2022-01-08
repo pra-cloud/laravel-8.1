@@ -16,13 +16,18 @@ class AbstractBilling
         return $this->config['provider'];
     }
 
-    public function getPlans(): array
+    public function getEnv(): string
     {
-        return $this->config['plans'];
+        return config('billing.env');
     }
 
     public function getDefaultCurrency(): string
     {
         return $this->config['default_currency'];
+    }
+
+    public function getDefaultPlanPriceIds(string $currency = null): array
+    {
+        return [];
     }
 }

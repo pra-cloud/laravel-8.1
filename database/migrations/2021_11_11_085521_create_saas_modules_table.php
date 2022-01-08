@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsOpenColumnTenantTable extends Migration
+class CreateSaasModulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddIsOpenColumnTenantTable extends Migration
      */
     public function up()
     {
-        Schema::table('tenants', function (Blueprint $table) {
-            $table->tinyInteger('is_open')->default(0);
+        Schema::create('saas_modules', function (Blueprint $table) {
+            $table->id();
+            $table->string('module_name')->unique();
+            $table->boolean('active')->default(0);
         });
     }
 
@@ -25,8 +27,6 @@ class AddIsOpenColumnTenantTable extends Migration
      */
     public function down()
     {
-        Schema::table('tenants', function (Blueprint $table) {
-            $table->dropColumn('is_open');
-        });
+        Schema::dropIfExists('saas_modules');
     }
 }

@@ -38,7 +38,6 @@ class TenantRepository extends BaseRepository
         }, "Invalid country");
 
         $validator = Validator::make($attributes, [
-            'billing_provider'      => 'nullable',
             'domain'                => ['nullable', 'unique:tenants', new Domain],
             'admin_domain'          => ['nullable', 'unique:tenants', new Domain],
             'name'                  => 'required',
@@ -76,13 +75,11 @@ class TenantRepository extends BaseRepository
 
         \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
-
             # Generate unique domain from slug if not any domain has been provided
             if (is_null($tenant_details['domain'])) {
                 $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
                 $tenant->save();
             }
-
             # Tenant Billing Details
             $tenant_billing_details = [
                 'tenant_id'             => $tenant->id,
@@ -92,11 +89,10 @@ class TenantRepository extends BaseRepository
                 'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
             ];
             TenantBilling::create($tenant_billing_details);
-
+            # Get updated tenant model wth billing details
             $tenant->refresh();
-
-            # Subscribe tenant to billing provider
-            $tenant->subscribe($attributes['billing_provider'] ?? null);
+            # Subscribe tenant to default billing provider
+            $tenant->subscribe();
         });
 
         return $tenant;
@@ -141,12 +137,7 @@ class TenantRepository extends BaseRepository
         $tenant->status                 = $attributes['status'];
         $tenant->business_type          = $attributes['business_type'];
         $tenant->save();
-        if (is_null($tenant->domain)) {
-            $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
-            $tenant->save();
-            $tenant->refresh();
-        }
-        // dd($tenant->slug);
+
         $tenant->billing->billing_name        = $attributes['tenant_billing_detail']['billing_name'];
         $tenant->billing->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
         $tenant->billing->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
@@ -209,10 +200,7 @@ class TenantRepository extends BaseRepository
 
         $attributes = $validator->validated();
 
-        $tenant = Tenant::where($attributes)->firstOrFail();
-        if ($tenant) {
-            return $tenant;
-        }
+        return Tenant::where($attributes)->firstOrFail();
     }
 
     public function fetchTenantStatus(array $attributes)
@@ -282,6 +270,8 @@ class TenantRepository extends BaseRepository
     // parseDomain
     public function parseDomain($domain)
     {
+        if (is_null($domain)) return null;
+
         $domain_parts = explode('.', $domain);
         if (count($domain_parts) > 2) {
             return $domain;
@@ -428,7 +418,9 @@ class TenantRepository extends BaseRepository
 
     public function getUniqueTenantDomain($slug)
     {
-        return "$slug.hyperzod.app";
+        if (config('app.env') == 'prod') return "$slug.hyperzod.app";
+        if (config('app.env') == 'dev') return "$slug.hyperzod.dev";
+        return "$slug.hyperzod.local";
     }
 
     public function onboarding(array $params)

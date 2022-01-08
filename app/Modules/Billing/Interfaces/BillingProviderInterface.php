@@ -7,10 +7,13 @@ use App\Modules\Billing\DataTransferObjects\CustomerDto;
 interface BillingProviderInterface
 {
     /**
-     * Subscribe customer to a plan.
-     * Customer will be subscribed to the default plans of the billing provider.
+     * Subscribe customer to plans.
+     *
+     * @param string $customerId
+     * @param array $planIds
+     * @return void
      */
-    public function subscribe(string $customerId);
+    public function subscribe(string $customerId, array $planIds);
 
     /**
      * Create a new customer in the billing provider.

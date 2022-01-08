@@ -39,6 +39,8 @@ class SubscribeTenantToSaasModule
             $rows[] = [
                 'tenant_id' => $tenant_billing->tenant_id,
                 'saas_module_id' => $saas_module->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         }
         TenantModule::insert($rows);

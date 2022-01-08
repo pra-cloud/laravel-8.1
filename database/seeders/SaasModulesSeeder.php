@@ -15,7 +15,8 @@ class SaasModulesSeeder extends Seeder
     public function run()
     {
         $saas_modules = [
-            ['module_name' => 'web_portal', 'active' => 1],
+            ['module_name' => 'admin_panel', 'active' => 1],
+            ['module_name' => 'web_ordering', 'active' => 1],
             ['module_name' => 'app_ordering', 'active' => 1],
             ['module_name' => 'app_merchant', 'active' => 1],
         ];

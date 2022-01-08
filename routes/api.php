@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Billing\AuthBillingController;
+use App\Http\Controllers\Billing\TenantBillingController;
+use App\Http\Controllers\Billing\WebhookBillingProviderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,8 +43,11 @@ Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
 });
 
-# Billing Provider Specific Routes
-Route::get('/auth/billing/sessionToken', 'AuthBillingController@handle');
-
-# Webhook for Billing Provider 
-Route::any('/webhook/billing/{provider}', 'WebhookBillingProviderController@handle');
+# Billing Routes
+Route::group(['prefix' => '/billing', 'middleware' => 'has-tenant-id'], function () {
+    Route::get('/tenant/plans', [TenantBillingController::class, 'listPlansForTenant']);
+    # Auth Billing Provider Routes
+    Route::get('/auth/sessionToken', [AuthBillingController::class, 'handle']);
+    # Webhook Billing Provider Routes
+    Route::any('/webhook/{provider}', [WebhookBillingProviderController::class, 'handle']);
+});

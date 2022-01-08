@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Billing;
 
+use App\Http\Controllers\Controller;
 use App\Modules\Billing\Billing;
 use Illuminate\Http\Request;
 

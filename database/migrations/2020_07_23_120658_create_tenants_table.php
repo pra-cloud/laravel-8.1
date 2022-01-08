@@ -23,9 +23,10 @@ class CreateTenantsTable extends Migration
             $table->string('mobile');
             $table->string('city');
             $table->string('country');
-            $table->string('business_type');
+            $table->string('business_type')->index();
             $table->tinyInteger('is_setup_configured')->default(0);
-            $table->tinyInteger('status');
+            $table->tinyInteger('is_open')->default(0);
+            $table->tinyInteger('status')->default(0)->index();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -13,7 +13,7 @@ class Tenant extends Model
     use SoftDeletes, HasSlug, Billable;
 
     protected $fillable = [
-        'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status', 'is_open', 'comment'
+        'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status', 'is_open',
     ];
 
     protected $with = ['billing', 'saasModules'];

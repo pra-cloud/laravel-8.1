@@ -33,6 +33,6 @@ class CreateTenantBillingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenant_billing_details');
+        Schema::dropIfExists('tenant_billings');
     }
 }

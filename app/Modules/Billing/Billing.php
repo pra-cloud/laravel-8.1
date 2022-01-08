@@ -4,16 +4,14 @@ namespace App\Modules\Billing;
 
 class Billing
 {
-    public static function init($provider = false)
+    public static function init(string $provider = null)
     {
-        if (!$provider) {
-            $provider = self::getDefaultProvider();
-        }
+        $provider = $provider ?? self::getDefaultProvider();
 
         $config = config('billing.providers.' . $provider);
         $config['provider'] = $provider;
-        $class = self::providerClass($provider);
 
+        $class = self::providerClass($provider);
         return new $class($config);
     }
 

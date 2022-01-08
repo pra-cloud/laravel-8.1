@@ -7,7 +7,7 @@ use App\Modules\Billing\DataTransferObjects\CustomerDto;
 
 trait Billable
 {
-    public function subscribe($provider = false, array $planIds = null)
+    public function subscribe(string $provider = null, array $planIds = null)
     {
         $billing_provider = Billing::init($provider);
         $customer_id = $this->billing->billing_provider_customer_id ?? false;
@@ -28,6 +28,10 @@ trait Billable
                 'billing_provider' => $billing_provider->getProviderName(),
                 'billing_provider_customer_id' => $customer_id,
             ]);
+        }
+        # Get default Plan
+        if (is_null($planIds)) {
+            $planIds = $billing_provider->getDefaultPlanPriceIds();
         }
         # Subscribe Customer to Plans on Billing Provider
         $billing_provider->subscribe($customer_id, $planIds);

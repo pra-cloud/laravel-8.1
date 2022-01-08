@@ -5,12 +5,14 @@ namespace App\Modules\Billing;
 use App\Events\TenantSubscribed;
 use App\Modules\Billing\Abstracts\AbstractBilling;
 use App\Modules\Billing\DataTransferObjects\CustomerDto;
+use App\Modules\Billing\Exceptions\BillingProviderException;
 use App\Modules\Billing\Interfaces\BillingProviderInterface;
 
 use ChargeBee\ChargeBee\Environment;
 use ChargeBee\ChargeBee\Models\Customer;
 use ChargeBee\ChargeBee\Models\Subscription;
 use ChargeBee\ChargeBee\Models\PortalSession;
+use ChargeBee\ChargeBee\Models\HostedPage;
 
 class ChargeBee extends AbstractBilling implements BillingProviderInterface
 {
@@ -20,22 +22,46 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
         Environment::configure($this->config['site_key'], $this->config['key']);
     }
 
-    public function subscribe($customer_id)
+    public function subscribe(string $customerId, array $itemPriceIds)
     {
         $saas_modules = [];
-        foreach ($this->getPlans() as $plan) {
-            $items["subscriptionItems"] = [[
-                "itemPriceId" => $plan['default_item_price_id'][$this->getDefaultCurrency()],
-            ]];
-            $subscription = Subscription::createWithItems($customer_id,  $items);
-            $saas_modules[] = $plan['saas_modules'];
+        $items["subscriptionItems"] = [];
+        foreach ($itemPriceIds as $itemPriceId) {
+            $items["subscriptionItems"][] = [
+                "itemPriceId" => $itemPriceId,
+            ];
+            $saas_modules[] = $this->getSaasModulesByItemPriceId($itemPriceId);
+        }
+        try {
+            $subscription = Subscription::createWithItems($customerId,  $items);
+        } catch (\Exception $e) {
+            throw new BillingProviderException("ChargeBee: " . $e->getMessage());
         }
 
         if (sizeof($saas_modules) > 0) {
-            event(new TenantSubscribed($customer_id, $saas_modules));
+            event(new TenantSubscribed($customerId, $saas_modules));
         }
 
+        \Log::debug($saas_modules, $items, $subscription);
+
         return false;
+    }
+
+    public function getDefaultPlanPriceIds(string $currency = null): array
+    {
+        $currency = $currency ?? $this->getDefaultCurrency();
+        return $this->config['default_item_price_ids'][$currency];
+    }
+
+    public function getSaasModulesByItemPriceId($itemPriceId): array
+    {
+        $saas_modules = [];
+        foreach ($this->config['saas_modules'][$this->getEnv()] as $saas_module => $itemPriceIds) {
+            if (in_array($itemPriceId, $itemPriceIds)) {
+                $saas_modules[] = $saas_module;
+            }
+        }
+        return $saas_modules;
     }
 
     public function createCustomer(CustomerDto $customer)
@@ -66,11 +92,11 @@ class ChargeBee extends AbstractBilling implements BillingProviderInterface
         return [];
     }
 
-    public function setPortalSessionToken($customer_id)
+    public function setPortalSessionToken($customerId)
     {
         $result = PortalSession::create(array(
             "customer" => array(
-                "id" => $customer_id
+                "id" => $customerId
             )
         ));
         $portalSession = $result->portalSession();
