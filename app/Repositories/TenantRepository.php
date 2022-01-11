@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Rules\Domain;
 use App\TenantModule;
 use App\TenantBilling;
+use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -232,7 +233,7 @@ class TenantRepository extends BaseRepository
     public function getTenantIdByDomain($attributes)
     {
         $validator = Validator::make($attributes, [
-            'domain'          => ['required', new Domain],
+            'domain' => ['required', new Domain],
         ]);
 
         if ($validator->fails()) {
@@ -243,6 +244,15 @@ class TenantRepository extends BaseRepository
         $attributes['domain'] = $this->parseDomain($attributes['domain']);
 
         $tenant = Tenant::setEagerLoads([])->select('id')->where('domain', $attributes['domain'])->first();
+
+        # Check if domain is a subdomain of any tenant like tenant.hyperzod.app
+        if (!$tenant) {
+            $nativeStoreDomain = HyperzodServiceFunctions::frontendStoreDomain();
+            if (strpos($attributes['domain'], $nativeStoreDomain) !== false) {
+                $slug = explode(".", $attributes['domain'])[0];
+                $tenant = Tenant::setEagerLoads([])->select('id')->where('slug', $slug)->first();
+            }
+        }
 
         if (!$tenant) {
             throw new \Exception("Tenant not found by this domain");
@@ -262,7 +272,7 @@ class TenantRepository extends BaseRepository
             throw new \Exception("Validation error");
         }
 
-        $tenant = Tenant::setEagerLoads([])->select('id', 'domain', 'admin_domain')->findOrFail($attributes['tenant_id']);
+        $tenant = Tenant::setEagerLoads([])->select('id', 'slug', 'domain', 'admin_domain')->findOrFail($attributes['tenant_id']);
 
         return $tenant->toArray();
     }

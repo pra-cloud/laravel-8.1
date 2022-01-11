@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Modules\Billing\Traits\Billable;
+use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
@@ -17,6 +18,8 @@ class Tenant extends Model
     ];
 
     protected $with = ['billing', 'saasModules'];
+
+    protected $appends = ['native_domain'];
 
     /**
      * One to one relation between
@@ -37,5 +40,11 @@ class Tenant extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
+    }
+
+    public function getNativeDomainAttribute()
+    {
+        $domain = HyperzodServiceFunctions::frontendStoreDomain();
+        return $this->slug . "." . $domain;
     }
 }
