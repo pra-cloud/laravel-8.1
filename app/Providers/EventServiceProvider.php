@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Events\TenantSubscribed;
+use App\Listeners\PublishEventsToMq;
+use App\Events\DeleteTenantApiKeyEvent;
+use App\Events\GenerateApiKeyForTenantEvent;
 use App\Listeners\SubscribeTenantToSaasModule;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,12 @@ class EventServiceProvider extends ServiceProvider
         TenantSubscribed::class => [
             SubscribeTenantToSaasModule::class,
         ],
+        DeleteTenantApiKeyEvent::class => [
+            PublishEventsToMq::class
+        ],
+        GenerateApiKeyForTenantEvent::class => [
+            PublishEventsToMq::class
+        ]
     ];
 
     /**

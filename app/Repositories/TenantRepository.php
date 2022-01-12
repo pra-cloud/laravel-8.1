@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Events\DeleteTenantApiKeyEvent;
+use App\Events\GenerateApiKeyForTenantEvent;
 use App\Modules\Billing\Billing;
 use App\Modules\Billing\DataTransferObjects\CustomerDto;
 use App\Tenant;
@@ -74,7 +76,7 @@ class TenantRepository extends BaseRepository
 
         $tenant = null;
 
-        \DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
+        DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
             $tenant = Tenant::create($tenant_details);
             # Generate unique domain from slug if not any domain has been provided
             if (is_null($tenant_details['domain'])) {
@@ -322,6 +324,9 @@ class TenantRepository extends BaseRepository
         }
 
         if ($tenant->forceDelete()) {
+            event(new DeleteTenantApiKeyEvent([
+                "tenant_id" => $id
+            ]));
             return 'Tenant has been deleted successfully.';
         }
         throw new \Exception("Error in deleting tenant.");
@@ -475,7 +480,9 @@ class TenantRepository extends BaseRepository
         if (!$tenant) {
             throw new \Exception("Error while creating tenant");
         }
-
+        event(new GenerateApiKeyForTenantEvent([
+            'tenant_id' => $tenant->id
+        ]));
         return $tenant;
     }
 }
