@@ -42,12 +42,3 @@ Route::group(['prefix' => '/tenant'], function () {
 Route::group(['prefix' => '/saas-module'], function () {
     Route::get('list', 'SaasModuleController@list');
 });
-
-# Billing Routes
-Route::group(['prefix' => '/billing', 'middleware' => 'has-tenant-id'], function () {
-    Route::get('/tenant/plans', [TenantBillingController::class, 'listPlansForTenant']);
-    # Auth Billing Provider Routes
-    Route::get('/auth/sessionToken', [AuthBillingController::class, 'handle']);
-    # Webhook Billing Provider Routes
-    Route::any('/webhook/{provider}', [WebhookBillingProviderController::class, 'handle']);
-});

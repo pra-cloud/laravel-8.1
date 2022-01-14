@@ -4,16 +4,9 @@ namespace App\Repositories;
 
 use App\Events\DeleteTenantApiKeyEvent;
 use App\Events\GenerateApiKeyForTenantEvent;
-use App\Modules\Billing\Billing;
-use App\Modules\Billing\DataTransferObjects\CustomerDto;
 use App\Tenant;
-use Carbon\Carbon;
 use App\Rules\Domain;
-use App\TenantModule;
-use App\TenantBilling;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
 use Illuminate\Validation\Rule;
@@ -50,10 +43,6 @@ class TenantRepository extends BaseRepository
             'country'               => 'required|country_exists',
             'status'                => 'required|boolean',
             'business_type'         => 'required|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
-            'tenant_billing_detail.billing_name'    => 'required',
-            'tenant_billing_detail.billing_email'   => 'required|email',
-            'tenant_billing_detail.billing_phone'   => 'required',
-            'tenant_billing_detail.billing_address' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -74,29 +63,13 @@ class TenantRepository extends BaseRepository
             'is_open'               => true,
         ];
 
-        $tenant = null;
+        $tenant = Tenant::create($tenant_details);
 
-        DB::transaction(function () use ($tenant_details, $attributes, &$tenant) {
-            $tenant = Tenant::create($tenant_details);
-            # Generate unique domain from slug if not any domain has been provided
-            if (is_null($tenant_details['domain'])) {
-                $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
-                $tenant->save();
-            }
-            # Tenant Billing Details
-            $tenant_billing_details = [
-                'tenant_id'             => $tenant->id,
-                'billing_name'          => $attributes['tenant_billing_detail']['billing_name'],
-                'billing_email'         => $attributes['tenant_billing_detail']['billing_email'],
-                'billing_phone'         => $attributes['tenant_billing_detail']['billing_phone'],
-                'billing_address'       => $attributes['tenant_billing_detail']['billing_address'],
-            ];
-            TenantBilling::create($tenant_billing_details);
-            # Get updated tenant model wth billing details
-            $tenant->refresh();
-            # Subscribe tenant to default billing provider
-            $tenant->subscribe();
-        });
+        # Generate unique domain from slug if not any domain has been provided
+        if (is_null($tenant_details['domain'])) {
+            $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
+            $tenant->save();
+        }
 
         return $tenant;
     }
@@ -118,10 +91,6 @@ class TenantRepository extends BaseRepository
             'country'               => 'required',
             'status'                => 'required|boolean',
             'business_type' => ['required', Rule::in($business_types)],
-            'tenant_billing_detail.billing_name'    => 'required',
-            'tenant_billing_detail.billing_email'   => 'required|email',
-            'tenant_billing_detail.billing_phone'   => 'required',
-            'tenant_billing_detail.billing_address' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -141,15 +110,10 @@ class TenantRepository extends BaseRepository
         $tenant->business_type          = $attributes['business_type'];
         $tenant->save();
 
-        $tenant->billing->billing_name        = $attributes['tenant_billing_detail']['billing_name'];
-        $tenant->billing->billing_email       = $attributes['tenant_billing_detail']['billing_email'];
-        $tenant->billing->billing_phone       = $attributes['tenant_billing_detail']['billing_phone'];
-        $tenant->billing->billing_address     = $attributes['tenant_billing_detail']['billing_address'];
-        $tenant->billing->save();
-
         if ($tenant) {
             return $tenant;
         }
+
         throw new \Exception("Error updating tenant");
     }
 
@@ -469,12 +433,6 @@ class TenantRepository extends BaseRepository
             'status' => true,
             'is_open' => true,
             'business_type' => $validated['business_type'],
-            'tenant_billing_detail' => [
-                'billing_name' => $validated['tenant_name'],
-                'billing_email' => $validated['email'],
-                'billing_phone' => $validated['mobile'],
-                'billing_address' => $validated['city'],
-            ],
         ]);
 
         if (!$tenant) {

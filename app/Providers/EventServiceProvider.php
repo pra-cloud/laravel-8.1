@@ -17,9 +17,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        TenantSubscribed::class => [
-            SubscribeTenantToSaasModule::class,
-        ],
+        // TenantSubscribed::class => [
+        //     SubscribeTenantToSaasModule::class,
+        // ],
         DeleteTenantApiKeyEvent::class => [
             PublishEventsToMq::class
         ],

@@ -2,11 +2,13 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "chargebee/chargebee-php": "^3.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -15,7 +17,6 @@
         "laravel/tinker": "^2.5",
         "mjaschen/phpgeo": "^3.2",
         "predis/predis": "^1.1",
-        "spatie/data-transfer-object": "^3.7",
         "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {
@@ -64,8 +65,8 @@
     "prefer-stable": true,
     "repositories": [
         {
-          "type": "git",
-          "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git"
+            "type": "git",
+            "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git"
         }
     ]
 }
