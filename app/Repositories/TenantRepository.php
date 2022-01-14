@@ -17,7 +17,6 @@ class TenantRepository extends BaseRepository
 
     /**
      * Save Tenant Details and
-     * Tenant Billing Details related to Tenant
      */
     public function save(array $attributes)
     {
@@ -76,7 +75,6 @@ class TenantRepository extends BaseRepository
 
     /**
      * Update Tenant Details and
-     * Tenant Billing Details related to Tenant
      */
     public function update(array $attributes)
     {
@@ -119,7 +117,7 @@ class TenantRepository extends BaseRepository
 
     /**
      * Fetch list of Tenants
-     * with Tenant Billing Details
+     s
      */
     public function fetchAll(array $attributes)
     {
@@ -152,7 +150,7 @@ class TenantRepository extends BaseRepository
 
     /**
      * Fetch Tenant Details
-     * with Tenant Billing Details
+     s
      */
     public function fetch(array $attributes)
     {
@@ -259,7 +257,7 @@ class TenantRepository extends BaseRepository
 
     /**
      * Soft Delete Tenant
-     * with Tenant Billing Details
+     s
      */
     public function destroy($id)
     {
@@ -277,7 +275,7 @@ class TenantRepository extends BaseRepository
 
     /**
      * Force Delete Tenant
-     * with Tenant Billing Details
+     s
      */
     public function forceDestroy($id)
     {

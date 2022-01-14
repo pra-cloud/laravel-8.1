@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Controllers\Billing\AuthBillingController;
-use App\Http\Controllers\Billing\TenantBillingController;
-use App\Http\Controllers\Billing\WebhookBillingProviderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

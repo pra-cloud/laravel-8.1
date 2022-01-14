@@ -20,7 +20,7 @@ class TenantController extends Controller
 
     /**
      * Create Tenant
-     * with Tenant Billing Detail
+     
      */
     public function create(Request $request)
     {
@@ -35,7 +35,7 @@ class TenantController extends Controller
 
     /**
      * Edit Tenant
-     * with Tenant Billing Detail
+     
      */
     public function update(Request $request)
     {
@@ -50,7 +50,7 @@ class TenantController extends Controller
 
     /**
      * List of Tenants
-     * with Tenant Billing Details
+     s
      */
     public function list(Request $request)
     {
@@ -82,7 +82,7 @@ class TenantController extends Controller
 
     /**
      * View Tenant Details
-     * with Tenant Billing Detail
+     
      */
     public function view(Request $request)
     {
@@ -108,7 +108,7 @@ class TenantController extends Controller
 
     /**
      * Delete Tenant
-     * with Tenant Billing Detail
+     
      */
     public function delete(Request $request)
     {
