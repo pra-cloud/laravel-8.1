@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Events\DeleteTenantApiKeyEvent;
-use App\Events\GenerateApiKeyForTenantEvent;
 use App\Tenant;
 use App\Rules\Domain;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
@@ -286,9 +284,6 @@ class TenantRepository extends BaseRepository
         }
 
         if ($tenant->forceDelete()) {
-            event(new DeleteTenantApiKeyEvent([
-                "tenant_id" => $id
-            ]));
             return 'Tenant has been deleted successfully.';
         }
         throw new \Exception("Error in deleting tenant.");
@@ -436,9 +431,6 @@ class TenantRepository extends BaseRepository
         if (!$tenant) {
             throw new \Exception("Error while creating tenant");
         }
-        event(new GenerateApiKeyForTenantEvent([
-            'tenant_id' => $tenant->id
-        ]));
         return $tenant;
     }
 }
