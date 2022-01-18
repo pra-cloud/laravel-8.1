@@ -4,18 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
-use App\Repositories\SettingsRepository;
-use GrahamCampbell\ResultType\Success;
 
 class TenantController extends Controller
 {
     private $TENANT_REPOSITORY;
-    private $SETTINGS_REPOSITORY;
 
-    public function __construct(SettingsRepository $SettingsRepository, TenantRepository $TenantRepository)
+    public function __construct(TenantRepository $TenantRepository)
     {
         $this->TENANT_REPOSITORY = $TenantRepository;
-        $this->SETTINGS_REPOSITORY = $SettingsRepository;
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace App\Modules\Mq\Callbacks;
 
-use App\SaasModule;
-use App\TenantModule;
+use App\Models\SaasModule;
+use App\Models\TenantModule;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Arr;
@@ -20,6 +20,7 @@ class SubscribeTenantToSaasModule
         # Delete all existing tenant modules
         TenantModule::where('tenant_id', $data['tenant_id'])->delete();
         # Add new saas modules to tenant modules
+        $rows = [];
         foreach ($saas_modules as $saas_module) {
             $rows[] = [
                 'tenant_id' => $data['tenant_id'],

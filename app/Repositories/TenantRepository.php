@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Tenant;
+use App\Models\Tenant;
 use App\Rules\Domain;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Facades\Validator;
@@ -106,16 +106,11 @@ class TenantRepository extends BaseRepository
         $tenant->business_type          = $attributes['business_type'];
         $tenant->save();
 
-        if ($tenant) {
-            return $tenant;
-        }
-
-        throw new \Exception("Error updating tenant");
+        return $tenant;
     }
 
     /**
      * Fetch list of Tenants
-     s
      */
     public function fetchAll(array $attributes = [])
     {
