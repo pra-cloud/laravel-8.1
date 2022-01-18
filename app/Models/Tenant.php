@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Database\Eloquent\Model;

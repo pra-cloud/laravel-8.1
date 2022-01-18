@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Repositories;
 
-use App\SaasModule;
+use App\Models\SaasModule;
 
 class SaasModuleRepository extends BaseRepository
 {

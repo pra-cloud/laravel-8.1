@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\SaasModule;
+use App\Models\SaasModule;
 use Illuminate\Database\Seeder;
 
 class SaasModulesSeeder extends Seeder

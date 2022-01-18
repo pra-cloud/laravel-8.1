@@ -2,7 +2,7 @@
 
 namespace App\Modules\Mq\Callbacks;
 
-use App\Tenant;
+use App\Models\Tenant;
 
 class TenantOpenStatusUpdatedCallback
 {
@@ -12,9 +12,6 @@ class TenantOpenStatusUpdatedCallback
          echo "Open status: $data[is_open] for tenant: $data[tenant_id]";
          $tenant = Tenant::find($data["tenant_id"]);
          $tenant->is_open = $data["is_open"];
-         if (isset($data["comment"])) {
-            $tenant->comment = $data["comment"];
-         }
          $tenant->save();
       }
    }
