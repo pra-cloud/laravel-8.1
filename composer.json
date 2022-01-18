@@ -14,6 +14,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "hyperzodtech/hyperzod-service-functions": "master",
         "laravel/framework": "^8.40",
+        "laravel/octane": "^1.2",
         "laravel/tinker": "^2.5",
         "mjaschen/phpgeo": "^3.2",
         "predis/predis": "^1.1",
