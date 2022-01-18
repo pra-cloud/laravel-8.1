@@ -230,7 +230,7 @@ class TenantController extends Controller
     public function listByIds(Request $request)
     {
         try {
-            $response = $this->TENANT_REPOSITORY->listByIds($request->id);
+            $response = $this->TENANT_REPOSITORY->listByIds($request->all());
             return $this->successResponse(null, $response);
         } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();
