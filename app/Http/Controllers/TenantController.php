@@ -52,10 +52,10 @@ class TenantController extends Controller
      * List of Tenants
      s
      */
-    public function list(Request $request)
+    public function list()
     {
         try {
-            $response = $this->TENANT_REPOSITORY->fetchAll($request->all());
+            $response = $this->TENANT_REPOSITORY->fetchAll();
             return $this->successResponse(null, $response);
         } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();
@@ -224,6 +224,17 @@ class TenantController extends Controller
     {
         try {
             $response = $this->TENANT_REPOSITORY->forceDestroy($request->id);
+            return $this->successResponse(null, $response);
+        } catch (\Exception $e) {
+            $errors = $this->TENANT_REPOSITORY->getErrors();
+            return $this->errorResponse($e->getMessage(), $errors);
+        }
+    }
+
+    public function listByIds(Request $request)
+    {
+        try {
+            $response = $this->TENANT_REPOSITORY->listByIds($request->id);
             return $this->successResponse(null, $response);
         } catch (\Exception $e) {
             $errors = $this->TENANT_REPOSITORY->getErrors();

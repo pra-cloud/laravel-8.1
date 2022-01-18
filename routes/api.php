@@ -14,7 +14,8 @@ Route::group(['prefix' => '/tenant'], function () {
     Route::post('/update', 'TenantController@update');
     Route::post('/update/domain', 'TenantController@updateDomain');
     // List
-    Route::get('/list', 'TenantController@list');
+    // Route::get('/list', 'TenantController@list');
+    Route::get('/listByIds', 'TenantController@listByIds');
     Route::get('/list/business-types', 'TenantController@listBusinessTypes');
     // View
     Route::get('/view', 'TenantController@view');
