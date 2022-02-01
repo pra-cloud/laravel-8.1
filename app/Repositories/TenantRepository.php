@@ -181,13 +181,13 @@ class TenantRepository extends BaseRepository
             throw new \Exception("Validation error");
         }
 
-        $tenant = Tenant::setEagerLoads([])->select('id')->where('admin_domain', $attributes['admin_domain'])->first();
+        $tenant = Tenant::setEagerLoads([])->select($this->tenant_public_details)->where('admin_domain', $attributes['admin_domain'])->first();
 
         if (!$tenant) {
             throw new \Exception("Tenant not found by this admin domain");
         }
 
-        return ['tenant_id' => $tenant->id];
+        return $tenant;
     }
 
     public function getTenantIdByDomain($attributes)
@@ -430,5 +430,21 @@ class TenantRepository extends BaseRepository
             throw new \Exception("Error while creating tenant");
         }
         return $tenant;
+    }
+
+    public function viewPublic(array $params)
+    {
+        $validator = Validator::make($params, [
+            'id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+            throw new \Exception("Validation error");
+        }
+
+        $validated = $validator->validated();
+
+        return Tenant::select($this->tenant_public_details)->findOrFail($validated['id']);
     }
 }

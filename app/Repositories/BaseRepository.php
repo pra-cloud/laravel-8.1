@@ -10,6 +10,8 @@ abstract class BaseRepository
 
     public $errors = null;
 
+    public $tenant_public_details = ['id', 'domain', 'admin_domain', 'name', 'is_open', 'status'];
+
     public function getErrors()
     {
         return $this->errors;
