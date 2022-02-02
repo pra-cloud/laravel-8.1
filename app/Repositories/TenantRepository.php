@@ -445,6 +445,6 @@ class TenantRepository extends BaseRepository
 
         $validated = $validator->validated();
 
-        return Tenant::select($this->tenant_public_details)->where('id', $validated['id'])->firstOrFail();
+        return Tenant::select($this->tenant_public_details)->where('id', $validated['tenant_id'])->firstOrFail();
     }
 }
