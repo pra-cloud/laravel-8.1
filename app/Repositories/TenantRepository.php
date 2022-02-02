@@ -435,7 +435,7 @@ class TenantRepository extends BaseRepository
     public function viewPublic(array $params)
     {
         $validator = Validator::make($params, [
-            'id' => 'required|integer',
+            'tenant_id' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -445,6 +445,6 @@ class TenantRepository extends BaseRepository
 
         $validated = $validator->validated();
 
-        return Tenant::select($this->tenant_public_details)->findOrFail($validated['id']);
+        return Tenant::select($this->tenant_public_details)->where('id', $validated['id'])->firstOrFail();
     }
 }
