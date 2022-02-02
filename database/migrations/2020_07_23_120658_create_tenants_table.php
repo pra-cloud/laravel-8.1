@@ -14,7 +14,7 @@ class CreateTenantsTable extends Migration
     public function up()
     {
         Schema::create('tenants', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(1000);
             $table->string('domain')->nullable()->unique('domain');
             $table->string('admin_domain')->nullable()->unique();
             $table->string('slug');
