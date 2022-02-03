@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
+use Hyperzod\HyperzodServiceFunctions\Traits\SettingsServiceTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
@@ -10,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Tenant extends Model
 {
-    use SoftDeletes, HasSlug;
+    use SoftDeletes, HasSlug, SettingsServiceTrait;
 
     protected $fillable = [
         'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status', 'is_open',
@@ -18,7 +19,7 @@ class Tenant extends Model
 
     protected $with = ['saasModules'];
 
-    protected $appends = ['native_domain'];
+    protected $appends = ['native_domain', 'admin_logo'];
 
     public function saasModules()
     {
@@ -36,5 +37,10 @@ class Tenant extends Model
     {
         $domain = HyperzodServiceFunctions::frontendStoreDomain();
         return $this->slug . "." . $domain;
+    }
+
+    public function getAdminLogoAttribute()
+    {
+        return $this->settingsByKeys('tenant', ['admin_logo_url'], null, null, $this->id);
     }
 }
