@@ -41,6 +41,10 @@ class Tenant extends Model
 
     public function getAdminLogoAttribute()
     {
-        return $this->settingsByKeys('tenant', ['admin_logo_url'], null, null, $this->id);
+        $setting = $this->settingsByKeys('tenant', ['admin_logo_url'], null, null, $this->id);
+        if ($setting && isset($setting['admin_logo_url']) && $setting['admin_logo_url']) {
+            return $setting['admin_logo_url'];
+        }
+        return null;
     }
 }
