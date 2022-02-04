@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('TENANT_DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,11 +46,11 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('TENANT_DB_HOST', '127.0.0.1'),
-            'port' => env('TENANT_DB_PORT', '3306'),
-            'database' => env('TENANT_DB_DATABASE', 'tenant_hyperzod_'),
-            'username' => env('TENANT_DB_USERNAME', 'tenant_hyperzod_'),
-            'password' => env('TENANT_DB_PASSWORD', 'ZZmEbjRD8Z3jRdJd'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'tenant_hyperzod_'),
+            'username' => env('DB_USERNAME', 'tenant_hyperzod_'),
+            'password' => env('DB_PASSWORD', 'ZZmEbjRD8Z3jRdJd'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -123,7 +123,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [
