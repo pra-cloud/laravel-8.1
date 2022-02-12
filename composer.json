@@ -18,7 +18,6 @@
         "laravel/tinker": "^2.5",
         "mjaschen/phpgeo": "^3.2",
         "predis/predis": "^1.1",
-        "sentry/sentry-laravel": "^2.11",
         "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {

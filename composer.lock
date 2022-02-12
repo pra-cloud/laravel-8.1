@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "402a837f321d8f129161974477783957",
+    "content-hash": "6f7bcfc2223219d956c7f5dd38b39b5e",
     "packages": [
         {
             "name": "alignwebs/saga-server-client-php",
@@ -1197,14 +1197,15 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "e19d9eac15e7f320f86d29b0f12a84cf5bf96687"
+                "reference": "f99c64b09afa5655a5ec60747069edd0db59e3af"
             },
             "require": {
                 "alignwebs/saga-server-client-php": "dev-main",
                 "illuminate/support": "*",
                 "php": "^8.0",
                 "php-amqplib/php-amqplib": "^3.0",
-                "php-http/guzzle7-adapter": "^1.0"
+                "php-http/guzzle7-adapter": "^1.0",
+                "sentry/sentry-laravel": "^2.11"
             },
             "default-branch": true,
             "type": "library",
@@ -1252,7 +1253,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2022-02-12T10:11:33+00:00"
+            "time": "2022-02-12T11:58:06+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
