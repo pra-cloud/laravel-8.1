@@ -2,10 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return "Tenant Service";
-});
-
 # Tenant Routes
 Route::group(['prefix' => '/tenant'], function () {
     Route::post('/onboarding', 'TenantController@onboarding');
@@ -31,7 +27,6 @@ Route::group(['prefix' => '/tenant'], function () {
     Route::post('/delete', 'TenantController@delete');
     Route::post('/delete-force', 'TenantController@forceDestroy');
 
-    Route::post('/images', 'TenantController@updateImages');
     Route::post('/configure-setup', 'TenantController@configureSetup');
     Route::get('/exists', 'TenantController@tenantExists');
 });
