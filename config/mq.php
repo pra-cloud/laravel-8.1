@@ -1,5 +1,7 @@
 <?php
 
+use Hyperzod\HyperzodServiceFunctions\Enums\Mq\TenantMqEnum;
+
 return [
   'connection' => [
     'host' => env('AMQP_HOST', 'localhost'),
@@ -10,17 +12,12 @@ return [
   ],
   'queue_config' => [
     [
-      'exchange' => 'tenant_exchange',
+      'exchange' => TenantMqEnum::EXCHANGE,
       'queues' => [
         [
-          "name" => "tenant.open",
-          "binding_key" => "tenant.updated.open",
+          "name" => "tenant.isopen",
+          "binding_key" => TenantMqEnum::TENANT_UPDATED_ISOPEN,
           "callback" => \App\Modules\Mq\Callbacks\TenantOpenStatusUpdatedCallback::class,
-        ],
-        [
-          "name" => "tenant.billing",
-          "binding_key" => "tenant.billing.subscribed",
-          "callback" => \App\Modules\Mq\Callbacks\SubscribeTenantToSaasModule::class,
         ],
       ]
     ]
