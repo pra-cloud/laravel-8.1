@@ -11,8 +11,10 @@ class TenantOpenStatusUpdatedCallback
       if (isset($data["tenant_id"]) && isset($data["is_open"])) {
          echo "Open status: $data[is_open] for tenant: $data[tenant_id]";
          $tenant = Tenant::find($data["tenant_id"]);
-         $tenant->is_open = $data["is_open"];
-         $tenant->save();
+         if ($tenant) {
+            $tenant->is_open = $data["is_open"];
+            $tenant->save();
+         }
       }
    }
 }
