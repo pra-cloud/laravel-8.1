@@ -1201,7 +1201,7 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "c6dffdbbc3edfcdb9f5502a4fed928d013db159f"
+                "reference": "39794b769df3e8cdefbac568836ab49a3b1ca9f2"
             },
             "require": {
                 "alignwebs/saga-server-client-php": "dev-main",
@@ -1257,7 +1257,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2022-03-01T08:45:27+00:00"
+            "time": "2022-03-01T12:00:37+00:00"
         },
         {
             "name": "jasny/persist-sql-query",
