@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
+use Hyperzod\HyperzodServiceFunctions\Enums\HttpHeaderKeyEnum;
 
 class TenantController extends Controller
 {
@@ -225,5 +227,21 @@ class TenantController extends Controller
             $errors = $this->TENANT_REPOSITORY->getErrors();
             return $this->errorResponse($e->getMessage(), $errors);
         }
+    }
+
+    public function validate()
+    {
+        $validated = request()->validate([
+            HttpHeaderKeyEnum::TENANT => 'required'
+        ]);
+
+        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status')
+            ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
+            ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
+            ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
+            ->first()->setAppends([]);
+
+
+        return $this->successResponse(null, $tenant);
     }
 }
