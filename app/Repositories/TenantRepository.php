@@ -138,6 +138,9 @@ class TenantRepository extends BaseRepository
             $tenants = $tenants->select([
                 'id',
                 'name',
+                'slug',
+                'status',
+                'business_type',
             ])->get();
             return $tenants;
         }

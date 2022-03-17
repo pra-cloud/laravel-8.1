@@ -239,9 +239,9 @@ class TenantController extends Controller
             ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
-            ->first()->setAppends([]);
+            ->firstOrFail();
 
 
-        return $this->successResponse(null, $tenant);
+        return $this->successResponse(null, $tenant->setAppends([]));
     }
 }
