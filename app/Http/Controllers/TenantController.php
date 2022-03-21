@@ -248,7 +248,11 @@ class TenantController extends Controller
             $tenant->where('domain', $validated[HttpHeaderKeyEnum::TENANT])->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT]);
         }
 
-        $tenant = $tenant->firstOrFail();
+        $tenant = $tenant->first();
+
+        if (!$tenant) {
+            return $this->errorResponse("Invalid domain", null, 404, true);
+        }
 
         return $this->successResponse(null, $tenant->setAppends([]));
     }
