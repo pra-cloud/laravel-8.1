@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
 use Hyperzod\HyperzodServiceFunctions\Enums\HttpHeaderKeyEnum;
+use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 
 class TenantController extends Controller
 {
@@ -235,12 +236,19 @@ class TenantController extends Controller
             HttpHeaderKeyEnum::TENANT => 'required'
         ]);
 
-        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status')
-            ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
-            ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
-            ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
-            ->firstOrFail();
+        $domain = $validated[HttpHeaderKeyEnum::TENANT];
 
+        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status');
+
+        # Check if domain is from subdomain of hyperzod then extract the slug
+        if (strpos($domain, HyperzodServiceFunctions::hyperzodAppDomain()) > -1) {
+            $slug = explode('.', $domain)[0];
+            $tenant->where('slug', $slug);
+        } else {
+            $tenant->where('domain', $validated[HttpHeaderKeyEnum::TENANT])->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT]);
+        }
+
+        $tenant = $tenant->firstOrFail();
 
         return $this->successResponse(null, $tenant->setAppends([]));
     }
