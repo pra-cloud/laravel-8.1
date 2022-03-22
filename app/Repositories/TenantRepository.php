@@ -311,26 +311,6 @@ class TenantRepository extends BaseRepository
         return $tenant;
     }
 
-    public function tenantExists(array $params)
-    {
-        $validator = Validator::make($params, [
-            'email' => 'required|email'
-        ]);
-
-        if ($validator->fails()) {
-            $this->errors = $validator->errors()->all();
-            throw new \Exception("Validation error");
-        }
-
-        $validated = $validator->validated();
-
-        $tenant_exists = Tenant::where('email', $validated['email'])->exists();
-
-        return [
-            "exists" => $tenant_exists
-        ];
-    }
-
     public function updateDomain(array $attributes)
     {
         $validator = Validator::make($attributes, [

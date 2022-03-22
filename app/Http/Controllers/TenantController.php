@@ -186,17 +186,6 @@ class TenantController extends Controller
         }
     }
 
-    public function tenantExists(Request $request)
-    {
-        try {
-            $response = $this->TENANT_REPOSITORY->tenantExists($request->all());
-            return $this->successResponse(null, $response);
-        } catch (\Exception $e) {
-            $errors = $this->TENANT_REPOSITORY->getErrors();
-            return $this->errorResponse($e->getMessage(), $errors);
-        }
-    }
-
     public function onboarding(Request $request)
     {
         try {
