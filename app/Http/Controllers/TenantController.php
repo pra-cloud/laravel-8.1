@@ -243,9 +243,18 @@ class TenantController extends Controller
         # Check if domain is from subdomain of hyperzod then extract the slug
         if (strpos($domain, HyperzodServiceFunctions::hyperzodAppDomain()) > -1) {
             $slug = explode('.', $domain)[0];
-            $tenant->where('slug', $slug);
+
+            # HttpHeader is a slug
+            if (! strpos($validated[HttpHeaderKeyEnum::TENANT], '.')) {
+                $tenant->where('slug', $slug);
+            }
+
         } else {
-            $tenant->where('domain', $validated[HttpHeaderKeyEnum::TENANT])->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT]);
+            # HttpHeader is a domain
+            if (strpos($validated[HttpHeaderKeyEnum::TENANT], '.')) {
+                $tenant->where('domain', $validated[HttpHeaderKeyEnum::TENANT])->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT]);
+            }
+
         }
 
         $tenant = $tenant->first();
