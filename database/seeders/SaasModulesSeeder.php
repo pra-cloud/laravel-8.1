@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\SaasModule;
+use Hyperzod\HyperzodServiceFunctions\Enums\SaasModuleEnum;
 use Illuminate\Database\Seeder;
 
 class SaasModulesSeeder extends Seeder
@@ -15,10 +16,10 @@ class SaasModulesSeeder extends Seeder
     public function run()
     {
         $saas_modules = [
-            ['module_name' => 'admin_panel', 'active' => 1],
-            ['module_name' => 'web_ordering', 'active' => 1],
-            ['module_name' => 'app_ordering', 'active' => 1],
-            ['module_name' => 'app_merchant', 'active' => 1],
+            ['module_name' => SaasModuleEnum::WEB_ORDERING, 'active' => 1],
+            ['module_name' => SaasModuleEnum::APP_ORDERING, 'active' => 1],
+            ['module_name' => SaasModuleEnum::APP_MERCHANT, 'active' => 1],
+            ['module_name' => SaasModuleEnum::APP_DRIVER, 'active' => 1],
         ];
         SaasModule::truncate();
         SaasModule::insert($saas_modules);
