@@ -1071,7 +1071,7 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "0547d3c64aa8362de3ee7f8654005b25395a3622"
+                "reference": "0a4d58d94890b643dc2d86adfbbf49a9648a9b67"
             },
             "require": {
                 "alignwebs/saga-server-client-php": "dev-main",
@@ -1127,7 +1127,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2022-03-21T17:47:21+00:00"
+            "time": "2022-03-22T07:49:21+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
