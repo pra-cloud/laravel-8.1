@@ -35,7 +35,7 @@ class Tenant extends Model
 
     public function getNativeDomainAttribute()
     {
-        $domain = HyperzodServiceFunctions::frontendStoreDomain();
+        $domain = HyperzodServiceFunctions::hyperzodAppDomain();
         return $this->slug . "." . $domain;
     }
 
