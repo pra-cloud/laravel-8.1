@@ -235,31 +235,12 @@ class TenantController extends Controller
         $validated = request()->validate([
             HttpHeaderKeyEnum::TENANT => 'required'
         ]);
+
         $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status')
             ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->first();
-
-        // $domain = $validated[HttpHeaderKeyEnum::TENANT];
-        // $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status');
-
-        // # Check if domain is from subdomain of hyperzod then extract the slug
-        // if (strpos($domain, HyperzodServiceFunctions::hyperzodAppDomain()) > -1) {
-        //     $slug = explode('.', $domain)[0];
-
-        //     # HttpHeader is a slug
-        //     if (!strpos($validated[HttpHeaderKeyEnum::TENANT], '.')) {
-        //         $tenant->where('slug', $slug);
-        //     }
-        // } else {
-        //     # HttpHeader is a domain
-        //     if (strpos($validated[HttpHeaderKeyEnum::TENANT], '.')) {
-        //         $tenant->where('domain', $validated[HttpHeaderKeyEnum::TENANT])->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT]);
-        //     }
-        // }
-
-        // $tenant = $tenant->first();
 
         if (!$tenant) {
             return $this->errorResponse("Invalid domain", null, 404, true);
