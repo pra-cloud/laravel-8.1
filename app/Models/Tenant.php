@@ -19,7 +19,7 @@ class Tenant extends Model
 
     protected $with = ['saasModules'];
 
-    protected $appends = ['native_domain', 'admin_logo'];
+    protected $appends = ['native_domain'];
 
     public function saasModules()
     {
@@ -37,14 +37,5 @@ class Tenant extends Model
     {
         $domain = HyperzodServiceFunctions::hyperzodAppDomain();
         return $this->slug . "." . $domain;
-    }
-
-    public function getAdminLogoAttribute()
-    {
-        $setting = $this->settingsByKeys('tenant', ['admin_logo_url'], null, null, $this->id);
-        if ($setting && isset($setting['admin_logo_url']) && $setting['admin_logo_url']) {
-            return $setting['admin_logo_url'];
-        }
-        return null;
     }
 }

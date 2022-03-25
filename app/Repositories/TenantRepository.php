@@ -8,6 +8,7 @@ use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Facades\Validator;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class TenantRepository extends BaseRepository
 {
@@ -320,8 +321,7 @@ class TenantRepository extends BaseRepository
         ]);
 
         if ($validator->fails()) {
-            $this->errors = $validator->errors()->all();
-            throw new \Exception("Validation error");
+            throw new ValidationException($validator);
         }
 
         $validated_values = $validator->validated();
