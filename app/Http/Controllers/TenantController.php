@@ -220,7 +220,7 @@ class TenantController extends Controller
             HttpHeaderKeyEnum::TENANT => 'required'
         ]);
 
-        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'native_domain', 'name', 'slug', 'status', 'is_open')
+        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
             ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
@@ -230,6 +230,6 @@ class TenantController extends Controller
             return $this->errorResponse("Invalid domain", null, 404, true);
         }
 
-        return $this->successResponse(null, $tenant->setAppends([]));
+        return $this->successResponse(null, $tenant->setAppends(['native_domain']));
     }
 }
