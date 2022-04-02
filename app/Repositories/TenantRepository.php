@@ -372,7 +372,7 @@ class TenantRepository extends BaseRepository
     public function getUniqueTenantDomain($slug)
     {
         if (config('app.env') == 'prod') return "$slug.hyperzod.app";
-        if (config('app.env') == 'dev') return "$slug.hyperzod.dev";
+        if (config('app.env') == 'dev') return "$slug.hyperzod.shop";
         return "$slug.hyperzod.local";
     }
 
