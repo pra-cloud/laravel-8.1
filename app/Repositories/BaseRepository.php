@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use Hyperzod\HyperzodServiceFunctions\Traits\ApiResponseTrait;
@@ -10,7 +11,7 @@ abstract class BaseRepository
 
     public $errors = null;
 
-    public $tenant_public_details = ['id', 'domain', 'admin_domain', 'name', 'is_open', 'status'];
+    public $tenant_public_details = ['id', 'slug', 'domain', 'admin_domain', 'name', 'is_open', 'status'];
 
     public function getErrors()
     {
