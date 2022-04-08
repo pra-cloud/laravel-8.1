@@ -230,6 +230,6 @@ class TenantController extends Controller
             return $this->errorResponse("Invalid domain", null, 404, true);
         }
 
-        return $this->successResponse(null, $tenant->setAppends(['native_domain']));
+        return $this->successResponse(null, $tenant->setAppends(['native_domain_ordering', 'native_domain_admin']));
     }
 }
