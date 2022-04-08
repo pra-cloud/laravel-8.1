@@ -19,7 +19,7 @@ class Tenant extends Model
 
     protected $with = ['saasModules'];
 
-    protected $appends = ['native_domain'];
+    protected $appends = ['native_domain_ordering', 'native_domain_admin'];
 
     public function saasModules()
     {
@@ -33,9 +33,14 @@ class Tenant extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function getNativeDomainAttribute()
+    public function getNativeDomainOrderingAttribute()
     {
         $domain = HyperzodServiceFunctions::hyperzodAppDomain();
         return $this->slug . "." . $domain;
+    }
+
+    public function getNativeDomainAdminAttribute()
+    {
+        return HyperzodServiceFunctions::prepareNativeTenantAdminDomainUrl($this->slug);
     }
 }
