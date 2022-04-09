@@ -28,7 +28,7 @@ return [
       'queues' => [
         [
           "name" => "tenant.billing",
-          "binding_key" => BillingMqEnum::BILLING_SUBSCRIBED_TENANT,
+          "binding_key" => BillingMqEnum::TENANT_BILLING_SUBSCRIPTION_UPDATED,
           "callback" => \App\Modules\Mq\Callbacks\SubscribeTenantToSaasModule::class,
         ],
       ]
