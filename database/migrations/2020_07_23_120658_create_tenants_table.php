@@ -20,10 +20,10 @@ class CreateTenantsTable extends Migration
             $table->string('slug')->unique();
             $table->string('name');
             $table->string('email');
-            $table->string('mobile');
-            $table->string('city');
-            $table->string('country');
-            $table->string('business_type')->index();
+            $table->string('mobile')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->string('business_type')->index()->nullable();
             $table->tinyInteger('is_setup_configured')->default(0);
             $table->tinyInteger('is_open')->default(0);
             $table->tinyInteger('status')->default(0)->index();

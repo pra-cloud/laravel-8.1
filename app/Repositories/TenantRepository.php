@@ -36,11 +36,11 @@ class TenantRepository extends BaseRepository
             'admin_domain'          => ['nullable', 'unique:tenants', new Domain],
             'name'                  => 'required',
             'email'                 => 'required|email',
-            'mobile'                => 'required',
-            'city'                  => 'required',
-            'country'               => 'required|country_exists',
+            'mobile'                => 'nullable',
+            'city'                  => 'nullable',
+            'country'               => 'nullable|country_exists',
             'status'                => 'required|boolean',
-            'business_type'         => 'required|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
+            'business_type'         => 'nullable|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
         ]);
 
         if ($validator->fails()) {
@@ -53,11 +53,11 @@ class TenantRepository extends BaseRepository
             'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
-            'mobile'                => $attributes['mobile'],
-            'city'                  => $attributes['city'],
-            'country'               => $attributes['country'],
+            'mobile'                => $attributes['mobile'] ?? null,
+            'city'                  => $attributes['city'] ?? null,
+            'country'               => $attributes['country'] ?? null,
             'status'                => $attributes['status'],
-            'business_type'         => $attributes['business_type'],
+            'business_type'         => $attributes['business_type'] ?? null,
             'is_open'               => true,
         ];
 
@@ -83,11 +83,11 @@ class TenantRepository extends BaseRepository
             'admin_domain'          => ['nullable', new Domain, "unique:tenants,admin_domain,{$attributes['tenant_id']},id"],
             'name'                  => 'required',
             'email'                 => 'required|email',
-            'mobile'                => 'required',
-            'city'                  => 'required',
-            'country'               => 'required',
+            'mobile'                => 'nullable',
+            'city'                  => 'nullable',
+            'country'               => 'nullable',
             'status'                => 'required|boolean',
-            'business_type' => ['required', Rule::in($business_types)],
+            'business_type' => ['nullable', Rule::in($business_types)],
         ]);
 
         if ($validator->fails()) {
@@ -101,10 +101,11 @@ class TenantRepository extends BaseRepository
         $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
-        $tenant->mobile                 = $attributes['mobile'];
-        $tenant->city                   = $attributes['city'];
+        $tenant->mobile                 = $attributes['mobile'] ?? null;
+        $tenant->city                   = $attributes['city'] ?? null;
+        $tenant->country                = $attributes['country'] ?? null;
         $tenant->status                 = $attributes['status'];
-        $tenant->business_type          = $attributes['business_type'];
+        $tenant->business_type          = $attributes['business_type'] ?? null;
         $tenant->save();
 
         return $tenant;
@@ -382,12 +383,12 @@ class TenantRepository extends BaseRepository
 
         $validator = Validator::make($params, [
             'user_name' => 'required|string',
-            'email' => 'required|email',
-            'mobile' => 'required',
             'tenant_name' => 'required|string',
-            'business_type' => ['required', Rule::in($business_types)],
-            'city' => 'required',
-            'country' => 'required',
+            'email' => 'required|email',
+            'mobile' => 'nullable',
+            'business_type' => ['nullable', Rule::in($business_types)],
+            'city' => 'nullable',
+            'country' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -401,12 +402,12 @@ class TenantRepository extends BaseRepository
         $tenant = $this->save([
             'name' => $validated['tenant_name'],
             'email' => $validated['email'],
-            'mobile' => $validated['mobile'],
-            'city' => $validated['city'],
-            'country' => $validated['country'],
+            'mobile' => $validated['mobile'] ?? null,
+            'city' => $validated['city'] ?? null,
+            'country' => $validated['country'] ?? null,
+            'business_type' => $validated['business_type'] ?? null,
             'status' => true,
             'is_open' => true,
-            'business_type' => $validated['business_type'],
         ]);
 
         if (!$tenant) {
