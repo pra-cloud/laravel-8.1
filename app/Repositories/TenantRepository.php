@@ -38,7 +38,7 @@ class TenantRepository extends BaseRepository
             'email'                 => 'required|email',
             'mobile'                => 'nullable',
             'city'                  => 'nullable',
-            'country'               => 'nullable|country_exists',
+            'country'               => 'required|country_exists',
             'status'                => 'required|boolean',
             'business_type'         => 'nullable|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
         ]);
@@ -55,7 +55,7 @@ class TenantRepository extends BaseRepository
             'email'                 => $attributes['email'],
             'mobile'                => $attributes['mobile'] ?? null,
             'city'                  => $attributes['city'] ?? null,
-            'country'               => $attributes['country'] ?? null,
+            'country'               => $attributes['country'],
             'status'                => $attributes['status'],
             'business_type'         => $attributes['business_type'] ?? null,
             'is_open'               => true,
@@ -85,7 +85,7 @@ class TenantRepository extends BaseRepository
             'email'                 => 'required|email',
             'mobile'                => 'nullable',
             'city'                  => 'nullable',
-            'country'               => 'nullable',
+            'country'               => 'required',
             'status'                => 'required|boolean',
             'business_type' => ['nullable', Rule::in($business_types)],
         ]);
@@ -103,7 +103,7 @@ class TenantRepository extends BaseRepository
         $tenant->email                  = $attributes['email'];
         $tenant->mobile                 = $attributes['mobile'] ?? null;
         $tenant->city                   = $attributes['city'] ?? null;
-        $tenant->country                = $attributes['country'] ?? null;
+        $tenant->country                = $attributes['country'];
         $tenant->status                 = $attributes['status'];
         $tenant->business_type          = $attributes['business_type'] ?? null;
         $tenant->save();
@@ -388,7 +388,7 @@ class TenantRepository extends BaseRepository
             'mobile' => 'nullable',
             'business_type' => ['nullable', Rule::in($business_types)],
             'city' => 'nullable',
-            'country' => 'nullable',
+            'country' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -404,7 +404,7 @@ class TenantRepository extends BaseRepository
             'email' => $validated['email'],
             'mobile' => $validated['mobile'] ?? null,
             'city' => $validated['city'] ?? null,
-            'country' => $validated['country'] ?? null,
+            'country' => $validated['country'],
             'business_type' => $validated['business_type'] ?? null,
             'status' => true,
             'is_open' => true,

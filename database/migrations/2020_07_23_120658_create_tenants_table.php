@@ -22,7 +22,7 @@ class CreateTenantsTable extends Migration
             $table->string('email');
             $table->string('mobile')->nullable();
             $table->string('city')->nullable();
-            $table->string('country')->nullable();
+            $table->string('country');
             $table->string('business_type')->index()->nullable();
             $table->tinyInteger('is_setup_configured')->default(0);
             $table->tinyInteger('is_open')->default(0);
