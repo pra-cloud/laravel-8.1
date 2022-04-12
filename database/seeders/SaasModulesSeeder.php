@@ -16,6 +16,7 @@ class SaasModulesSeeder extends Seeder
     public function run()
     {
         $saas_modules = [
+            ['module_name' => SaasModuleEnum::ADMIN, 'active' => 1],
             ['module_name' => SaasModuleEnum::WEB_ORDERING, 'active' => 1],
             ['module_name' => SaasModuleEnum::APP_ORDERING, 'active' => 1],
             ['module_name' => SaasModuleEnum::APP_MERCHANT, 'active' => 1],
