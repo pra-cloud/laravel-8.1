@@ -385,7 +385,7 @@ class TenantRepository extends BaseRepository
             'user_name' => 'required|string',
             'tenant_name' => 'required|string',
             'email' => 'required|email',
-            'mobile' => 'nullable',
+            'mobile' => 'required',
             'business_type' => ['nullable', Rule::in($business_types)],
             'city' => 'nullable',
             'country' => 'required',
