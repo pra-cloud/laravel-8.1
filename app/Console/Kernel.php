@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\ResolveDomain;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Hyperzod\HyperzodServiceFunctions\Mq\Commands\ConsumeMQ;
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         ConsumeMQ::class,
+        ResolveDomain::class,
     ];
 
     /**

@@ -7,6 +7,7 @@ use App\Rules\Domain;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Facades\Validator;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -68,6 +69,9 @@ class TenantRepository extends BaseRepository
             $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
             $tenant->save();
         }
+
+        # Resolve domain
+        Artisan::queue('domain:resolve', ['domain' => $tenant->domain]);
 
         return $tenant;
     }
@@ -334,6 +338,10 @@ class TenantRepository extends BaseRepository
                 'admin_domain' => $validated_values['admin_domain']
             ]);
 
+            # Resolve domain
+            Artisan::queue('domain:resolve', ['domain' => $validated_values['domain']]);
+            Artisan::queue('domain:resolve', ['domain' => $validated_values['admin_domain']]);
+
             $response['updated_domain'] = $validated_values['domain'];
             $response['updated_admin_domain'] = $validated_values['admin_domain'];
 
@@ -346,6 +354,10 @@ class TenantRepository extends BaseRepository
         if (isset($validated_values['domain']) || isset($validated_values['admin_domain'])) {
             if (isset($validated_values['domain'])) {
                 $db_response = Tenant::where('id', $validated_values['tenant_id'])->update(['domain' => $validated_values['domain']]);
+
+                # Resolve domain
+                Artisan::queue('domain:resolve', ['domain' => $validated_values['domain']]);
+
                 $response['updated_domain'] = $validated_values['domain'];
 
                 if ($db_response != true) {
@@ -357,6 +369,10 @@ class TenantRepository extends BaseRepository
 
             if (isset($validated_values['admin_domain'])) {
                 $db_response = Tenant::where('id', $validated_values['tenant_id'])->update(['admin_domain' => $validated_values['admin_domain']]);
+
+                # Resolve domain
+                Artisan::queue('domain:resolve', ['domain' => $validated_values['admin_domain']]);
+
                 $response['updated_admin_domain'] = $validated_values['admin_domain'];
 
                 if ($db_response != true) {
