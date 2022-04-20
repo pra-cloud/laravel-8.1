@@ -220,8 +220,16 @@ class TenantController extends Controller
             HttpHeaderKeyEnum::TENANT => 'required'
         ]);
 
-        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
-            ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
+        // Check if X-Tenant is a domain without www. and redirect 301 to the same domain with www.
+        $assumed_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
+        if (count($assumed_domain) == 2) {
+            $redirect_target = "https://www." . $validated[HttpHeaderKeyEnum::TENANT];
+            return $this->successResponse("Redirect to {$redirect_target}", [
+                'redirect_target' => $redirect_target
+            ], 301, true);
+        }
+
+        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->first();
