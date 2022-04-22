@@ -225,7 +225,7 @@ class TenantController extends Controller
         if (count($assumed_domain) == 2) {
             $redirect_target = "https://www." . $validated[HttpHeaderKeyEnum::TENANT];
             return $this->successResponse("Redirect to {$redirect_target}", [
-                'redirect_target' => $redirect_target
+                'redirect_to' => $redirect_target
             ], 301, true);
         }
 
