@@ -21,6 +21,11 @@ class Tenant extends Model
 
     protected $appends = ['native_domain_ordering', 'native_domain_admin'];
 
+    protected $casts = [
+        'is_setup_configured' => 'boolean',
+        'is_open' => 'boolean',
+    ];
+
     public function saasModules()
     {
         return $this->hasManyThrough(SaasModule::class, TenantModule::class, 'tenant_id', 'id', 'id', 'saas_module_id');
