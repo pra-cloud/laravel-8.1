@@ -229,7 +229,8 @@ class TenantController extends Controller
             ], 301, true);
         }
 
-        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
+        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
+            ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->first();
@@ -238,6 +239,8 @@ class TenantController extends Controller
             return $this->errorResponse("Invalid domain", null, 404, true);
         }
 
-        return $this->successResponse(null, $tenant->setAppends(['native_domain_ordering', 'native_domain_admin']));
+        $tenant['saas_modules'] = $tenant->saasModules()->pluck('module_name');
+
+        return $this->successResponse(null, $tenant);
     }
 }

@@ -17,7 +17,7 @@ class Tenant extends Model
         'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status', 'is_open',
     ];
 
-    protected $with = ['saasModules'];
+    protected $with = [];
 
     protected $appends = ['native_domain_ordering', 'native_domain_admin'];
 
