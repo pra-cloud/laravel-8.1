@@ -230,7 +230,8 @@ class TenantController extends Controller
         }
 
         $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
-            ->where('domain', $validated[HttpHeaderKeyEnum::TENANT])
+            ->where('id', $validated[HttpHeaderKeyEnum::TENANT])
+            ->OrWhere('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->first();
