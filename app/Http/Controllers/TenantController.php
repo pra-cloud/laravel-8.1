@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
 use Hyperzod\HyperzodServiceFunctions\Enums\HttpHeaderKeyEnum;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
+use Illuminate\Support\Str;
 
 class TenantController extends Controller
 {
@@ -227,6 +228,16 @@ class TenantController extends Controller
             return $this->successResponse("Redirect to {$redirect_target}", [
                 'redirect_to' => $redirect_target
             ], 301, true);
+        }
+
+        // Parse slug if its a native ordering domain - {slug}.{hyperzodOrderingAppNativeDomain()}
+        $has_native_ordering_domain = Str::contains(
+            $validated[HttpHeaderKeyEnum::TENANT],
+            HyperzodServiceFunctions::hyperzodOrderingAppNativeDomain()
+        );
+        if ($has_native_ordering_domain) {
+            $native_ordering_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
+            $validated[HttpHeaderKeyEnum::TENANT] = $native_ordering_domain[0];
         }
 
         $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
