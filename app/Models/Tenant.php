@@ -40,7 +40,7 @@ class Tenant extends Model
 
     public function getNativeDomainOrderingAttribute()
     {
-        $domain = HyperzodServiceFunctions::hyperzodAppDomain();
+        $domain = HyperzodServiceFunctions::hyperzodOrderingAppNativeDomain();
         return $this->slug . "." . $domain;
     }
 

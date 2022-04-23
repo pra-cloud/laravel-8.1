@@ -1195,7 +1195,7 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "de37f275e82373b388fa881f530dc58bd6049f70"
+                "reference": "f78c827c20c40678f38519244fb73d72d20be7cd"
             },
             "require": {
                 "alignwebs/saga-server-client-php": "dev-main",
@@ -1252,7 +1252,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2022-04-13T08:51:34+00:00"
+            "time": "2022-04-23T20:40:48+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -1414,16 +1414,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.83.8",
+            "version": "v8.83.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "cf430301ad17656b3d918995bcdd0454c3c119b9"
+                "reference": "ac6e16bb56510eda2e373c6365d5c92da3fd559d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/cf430301ad17656b3d918995bcdd0454c3c119b9",
-                "reference": "cf430301ad17656b3d918995bcdd0454c3c119b9",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/ac6e16bb56510eda2e373c6365d5c92da3fd559d",
+                "reference": "ac6e16bb56510eda2e373c6365d5c92da3fd559d",
                 "shasum": ""
             },
             "require": {
@@ -1583,7 +1583,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2022-04-12T13:49:56+00:00"
+            "time": "2022-04-19T15:01:38+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -2148,16 +2148,16 @@
         },
         {
             "name": "league/mime-type-detection",
-            "version": "1.10.0",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/mime-type-detection.git",
-                "reference": "3e4a35d756eedc67096f30240a68a3149120dae7"
+                "reference": "ff6248ea87a9f116e78edd6002e39e5128a0d4dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/3e4a35d756eedc67096f30240a68a3149120dae7",
-                "reference": "3e4a35d756eedc67096f30240a68a3149120dae7",
+                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/ff6248ea87a9f116e78edd6002e39e5128a0d4dd",
+                "reference": "ff6248ea87a9f116e78edd6002e39e5128a0d4dd",
                 "shasum": ""
             },
             "require": {
@@ -2188,7 +2188,7 @@
             "description": "Mime-type detection for Flysystem",
             "support": {
                 "issues": "https://github.com/thephpleague/mime-type-detection/issues",
-                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.10.0"
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.11.0"
             },
             "funding": [
                 {
@@ -2200,7 +2200,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-11T12:49:04+00:00"
+            "time": "2022-04-17T13:12:02+00:00"
         },
         {
             "name": "mjaschen/phpgeo",
@@ -8752,16 +8752,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.13.9",
+            "version": "v1.13.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "7bb294fe99fc42c3b1bee83fb667cd7698b3c385"
+                "reference": "cbf55e1a392724313f7726c38578b5e008df6a0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/7bb294fe99fc42c3b1bee83fb667cd7698b3c385",
-                "reference": "7bb294fe99fc42c3b1bee83fb667cd7698b3c385",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/cbf55e1a392724313f7726c38578b5e008df6a0f",
+                "reference": "cbf55e1a392724313f7726c38578b5e008df6a0f",
                 "shasum": ""
             },
             "require": {
@@ -8808,7 +8808,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2022-04-04T15:21:51+00:00"
+            "time": "2022-04-14T18:29:22+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -9466,16 +9466,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.5.6",
+            "version": "1.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "799dd8c2d2c9c704bb55d2078078cb970cf0f6d1"
+                "reference": "7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/799dd8c2d2c9c704bb55d2078078cb970cf0f6d1",
-                "reference": "799dd8c2d2c9c704bb55d2078078cb970cf0f6d1",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac",
+                "reference": "7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac",
                 "shasum": ""
             },
             "require": {
@@ -9501,7 +9501,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.5.6"
+                "source": "https://github.com/phpstan/phpstan/tree/1.5.7"
             },
             "funding": [
                 {
@@ -9521,7 +9521,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-15T11:13:37+00:00"
+            "time": "2022-04-20T12:20:27+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
