@@ -5,12 +5,11 @@ use Illuminate\Support\Facades\Route;
 # Tenant Routes
 Route::group(['prefix' => '/tenant'], function () {
     Route::post('/onboarding', 'TenantController@onboarding');
-    // Route::post('/create', 'TenantController@create');
     // Update
     Route::post('/update', 'TenantController@update');
     Route::post('/update/domain', 'TenantController@updateDomain');
     // List
-    // Route::get('/list', 'TenantController@list');
+    Route::get('/list', 'TenantController@list');
     Route::get('/listByIds', 'TenantController@listByIds');
     Route::get('/list/business-types', 'TenantController@listBusinessTypes');
     // View
