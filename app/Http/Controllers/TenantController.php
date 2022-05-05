@@ -215,10 +215,10 @@ class TenantController extends Controller
             ], 301, true);
         }
 
-        // Parse slug if its a native ordering domain - {slug}.{hyperzodOrderingAppNativeDomain()}
+        // Parse slug if its a native ordering domain - {slug}.{hyperzodOrderingAppNativeDomainTLD()}
         $has_native_ordering_domain = Str::contains(
             $validated[HttpHeaderKeyEnum::TENANT],
-            HyperzodServiceFunctions::hyperzodOrderingAppNativeDomain()
+            HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD()
         );
         if ($has_native_ordering_domain) {
             $native_ordering_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
