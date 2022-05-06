@@ -8,6 +8,7 @@ use App\Repositories\TenantRepository;
 use Hyperzod\HyperzodServiceFunctions\Enums\HttpHeaderKeyEnum;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Str;
+use Arubacao\TldChecker\Validator as TldValidator;
 
 class TenantController extends Controller
 {
@@ -209,10 +210,13 @@ class TenantController extends Controller
         // Check if X-Tenant is a domain without www. and redirect 301 to the same domain with www.
         $assumed_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
         if (count($assumed_domain) == 2) {
-            $redirect_target = "https://www." . $validated[HttpHeaderKeyEnum::TENANT];
-            return $this->successResponse("Redirect to {$redirect_target}", [
-                'redirect_to' => $redirect_target
-            ], 301, true);
+            // Check if assumed domain end with a valid TLD
+            if (TldValidator::isTld($assumed_domain[1])) {
+                $redirect_target = "https://www." . strtolower($validated[HttpHeaderKeyEnum::TENANT]);
+                return $this->successResponse("Redirecting to {$redirect_target}", [
+                    'redirect_to' => $redirect_target
+                ], 301, true);
+            }
         }
 
         // Parse slug if its a native ordering domain - {slug}.{hyperzodOrderingAppNativeDomainTLD()}

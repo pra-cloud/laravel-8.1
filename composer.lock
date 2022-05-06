@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1dc5b4cdeef59f9e0681f080e07e54c8",
+    "content-hash": "23505f8ad6a10ed31947f4523ae1c472",
     "packages": [
         {
             "name": "alignwebs/saga-server-client-php",
@@ -55,6 +55,69 @@
                 "source": "https://github.com/alignwebs/saga-server-client-php/tree/main"
             },
             "time": "2022-01-31T16:33:36+00:00"
+        },
+        {
+            "name": "arubacao/tld-checker",
+            "version": "1.2.126",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/arubacao/tld-checker.git",
+                "reference": "8793bf399fdf58d83c89106621d7b7b0e53d5e85"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/arubacao/tld-checker/zipball/8793bf399fdf58d83c89106621d7b7b0e53d5e85",
+                "reference": "8793bf399fdf58d83c89106621d7b7b0e53d5e85",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "php": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.0|^4.0|^5.0|^6.0",
+                "phpunit/phpunit": "~4.8.36 || >=5.7.21"
+            },
+            "suggest": {
+                "illuminate/validation": "Required for Laravel validation"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Arubacao\\TldChecker\\TldCheckerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Arubacao\\TldChecker\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christopher Lass",
+                    "homepage": "https://c-lass.com/"
+                }
+            ],
+            "description": "Top Level Domain (TLD) validation library for PHP",
+            "homepage": "https://github.com/arubacao/tld-checker",
+            "keywords": [
+                "domain",
+                "email",
+                "tld",
+                "tld-checker",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/arubacao/tld-checker/issues",
+                "source": "https://github.com/arubacao/tld-checker/tree/1.2.126"
+            },
+            "time": "2022-05-01T04:01:38+00:00"
         },
         {
             "name": "asm89/stack-cors",
@@ -1195,7 +1258,7 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "9d869e869c790456f103ee882b717d00eab61470"
+                "reference": "1e31e46141b92282ba9ff99175fb1db9c9fff90d"
             },
             "require": {
                 "alignwebs/saga-server-client-php": "dev-main",
@@ -1252,7 +1315,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2022-05-05T11:47:53+00:00"
+            "time": "2022-05-05T12:55:36+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
