@@ -13,7 +13,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "hyperzodtech/hyperzod-service-functions": "master",
+        "hyperzodtech/hyperzod-service-functions": "dev-master",
         "laravel/framework": "^8.40",
         "laravel/horizon": "^5.9",
         "laravel/octane": "^1.2",
