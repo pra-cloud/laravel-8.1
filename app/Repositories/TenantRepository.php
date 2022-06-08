@@ -10,6 +10,7 @@ use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 
 class TenantRepository extends BaseRepository
 {
@@ -388,7 +389,18 @@ class TenantRepository extends BaseRepository
 
     public function getUniqueTenantDomain($slug)
     {
-        return $slug . "." . HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
+        $domain = $slug . "." . HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
+
+        $validator = Validator::make(['domain' => $domain], [
+            'domain' => [new Domain],
+        ]);
+
+        if ($validator->fails()) {
+            $slug = Str::random(6);
+            $domain = $slug . "." . HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
+        }
+
+        return $domain;
     }
 
     public function onboarding(array $params)
