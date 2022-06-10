@@ -64,18 +64,23 @@ class TenantRepository extends BaseRepository
         ];
 
         $tenant = Tenant::create($tenant_details);
-
+        \Log::info("slug", $tenant->slug);
         # Validate if slug generated is a valid string, if not generate a new random string
         if (is_numeric($tenant->slug)) {
             $tenant->slug = Str::random(8);
             $tenant->save();
+            \Log::info("slug", $tenant->slug);
         }
+
+        \Log::info("slug", $tenant->slug);
 
         # Generate unique domain from slug if not any domain has been provided
         if (is_null($tenant_details['domain'])) {
             $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
             $tenant->save();
         }
+
+        \Log::info("slug", $tenant->slug);
 
         # Resolve domain
         Artisan::queue('domain:resolve', ['domain' => $tenant->domain]);
