@@ -36,10 +36,10 @@ class TenantRepository extends BaseRepository
         $validator = Validator::make($attributes, [
             'domain'                => ['nullable', 'unique:tenants', new Domain],
             'admin_domain'          => ['nullable', 'unique:tenants', new Domain],
-            'name'                  => 'required',
+            'name'                  => 'required|string|max:100',
             'email'                 => 'required|email',
             'mobile'                => 'nullable',
-            'city'                  => 'nullable',
+            'city'                  => 'nullable|string',
             'country'               => 'required|country_exists',
             'status'                => 'required|boolean',
             'business_type'         => 'nullable|string|in:food_delivery,grocery_delivery,bakery_delivery,pet_food_delivery,bouquet_delivery,stationary_delivery,accessories_delivery,clothing_delivery,beverages_delivery',
@@ -65,6 +65,12 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::create($tenant_details);
 
+        # Validate if slug generate is a valid string
+        if (is_numeric($tenant->slug)) {
+            $tenant->slug = Str::random(8);
+            $tenant->save();
+        }
+
         # Generate unique domain from slug if not any domain has been provided
         if (is_null($tenant_details['domain'])) {
             $tenant->domain = $this->getUniqueTenantDomain($tenant->slug);
@@ -72,7 +78,7 @@ class TenantRepository extends BaseRepository
         }
 
         # Resolve domain
-        Artisan::queue('domain:resolve', ['domain' => $tenant->domain]);
+        //Artisan::queue('domain:resolve', ['domain' => $tenant->domain]);
 
         return $tenant;
     }
@@ -387,20 +393,9 @@ class TenantRepository extends BaseRepository
         return $response;
     }
 
-    public function getUniqueTenantDomain($slug)
+    public function getUniqueTenantDomain(string $slug)
     {
-        $domain = $slug . "." . HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
-
-        $validator = Validator::make(['domain' => $domain], [
-            'domain' => [new Domain],
-        ]);
-
-        if ($validator->fails()) {
-            $slug = Str::random(6);
-            $domain = $slug . "." . HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
-        }
-
-        return $domain;
+        return $slug . "." . HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
     }
 
     public function onboarding(array $params)
