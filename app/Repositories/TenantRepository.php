@@ -65,7 +65,7 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::create($tenant_details);
 
-        # Validate if slug generate is a valid string
+        # Validate if slug generated is a valid string, if not generate a new random string
         if (is_numeric($tenant->slug)) {
             $tenant->slug = Str::random(8);
             $tenant->save();

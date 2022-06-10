@@ -39,6 +39,11 @@ class Tenant extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
+    public function setSlugAttribute($value)
+    {
+        $this->attributes['slug'] = strtolower($value);
+    }
+
     public function getNativeDomainOrderingAttribute()
     {
         $domain = HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
