@@ -78,7 +78,7 @@ class TenantRepository extends BaseRepository
         }
 
         # Resolve domain
-        //Artisan::queue('domain:resolve', ['domain' => $tenant->domain]);
+        Artisan::queue('domain:resolve', ['domain' => $tenant->domain]);
 
         return $tenant;
     }
