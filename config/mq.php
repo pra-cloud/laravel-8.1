@@ -27,9 +27,14 @@ return [
       'exchange' => BillingMqEnum::EXCHANGE,
       'queues' => [
         [
-          "name" => "tenant.billing",
-          "binding_key" => BillingMqEnum::TENANT_BILLING_SUBSCRIPTION_UPDATED,
+          "name" => "tenant.billing.subscribed",
+          "binding_key" => BillingMqEnum::BILLING_TENANT_SUBSCRIBED,
           "callback" => \App\Modules\Mq\Callbacks\SubscribeTenantToSaasModule::class,
+        ],
+        [
+          "name" => "tenant.billing.unsubscribed",
+          "binding_key" => BillingMqEnum::BILLING_TENANT_UNSUBSCRIBED,
+          "callback" => \App\Modules\Mq\Callbacks\UnsubscribeTenantToSaasModule::class,
         ],
       ]
     ]

@@ -13,6 +13,7 @@ class SubscribeTenantToSaasModule
 {
     public function handle($data)
     {
+        \Log::debug("SubscribeTenantToSaasModule");
         $saas_modules = Arr::flatten($data['saas_modules']);
 
         # Get SaaS modules
