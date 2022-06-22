@@ -31,6 +31,11 @@ class Tenant extends Model
         return $this->hasManyThrough(SaasModule::class, TenantModule::class, 'tenant_id', 'id', 'id', 'saas_module_id');
     }
 
+    public function tenantModules()
+    {
+        return $this->hasMany(TenantModule::class);
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
