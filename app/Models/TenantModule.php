@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hyperzod\HyperzodServiceFunctions\Enums\StatusEnum;
 use Hyperzod\HyperzodServiceFunctions\Enums\TerminologyEnum;
 use Illuminate\Database\Eloquent\Model;
 

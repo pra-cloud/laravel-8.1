@@ -29,6 +29,8 @@ Route::group(['prefix' => '/tenant'], function () {
     Route::post('/delete-force', 'TenantController@forceDestroy');
 
     Route::post('/configure-setup', 'TenantController@configureSetup');
+
+    Route::get('/modules', 'TenantController@listTenantSaasModules');
 });
 
 # SAAS Modules Routes

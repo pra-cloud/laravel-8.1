@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tenant;
+use App\Models\TenantModule;
 use Illuminate\Http\Request;
 use App\Repositories\TenantRepository;
 use Hyperzod\HyperzodServiceFunctions\Enums\HttpHeaderKeyEnum;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Str;
 use Arubacao\TldChecker\Validator as TldValidator;
+use Hyperzod\HyperzodServiceFunctions\Enums\SaasModuleEnum;
+use Hyperzod\HyperzodServiceFunctions\Enums\TerminologyEnum;
+use Hyperzod\HyperzodServiceFunctions\Helpers\SaasModuleHelper;
 
 class TenantController extends Controller
 {
@@ -243,5 +247,23 @@ class TenantController extends Controller
         $tenant['saas_modules'] = $tenant->saasModules()->pluck('module_name');
 
         return $this->successResponse(null, $tenant);
+    }
+
+    public function listTenantSaasModules()
+    {
+        $validated = request()->validate([
+            TerminologyEnum::TENANT_ID => 'required|integer',
+        ]);
+
+        $saas_modules = collect(SaasModuleHelper::list());
+        $rows = TenantModule::with('saasModule')->tenant($validated[TerminologyEnum::TENANT_ID])->get();
+
+        $saas_modules = $saas_modules->map(function ($module) use ($rows) {
+            $module_is_active = $rows->where('saasModule.module_name', $module['id'])->first();
+            $module['active'] = (bool) $module_is_active;
+            return $module;
+        });
+
+        return $this->successResponse(null, $saas_modules);
     }
 }
