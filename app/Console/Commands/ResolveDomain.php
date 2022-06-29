@@ -20,6 +20,9 @@ class ResolveDomain extends Command
         $domain = $this->argument('domain');
         $domain = "https://" . $domain;
         // send get request to domain
-        Http::timeout(1)->get($domain);
+        try {
+            Http::timeout(1)->get($domain);
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+        }
     }
 }
