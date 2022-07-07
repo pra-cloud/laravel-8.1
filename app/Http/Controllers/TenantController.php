@@ -233,7 +233,7 @@ class TenantController extends Controller
             $validated[HttpHeaderKeyEnum::TENANT] = $native_ordering_domain[0];
         }
 
-        $tenant = Tenant::with('saasModules')->select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
+        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
             ->where('id', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('domain', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
