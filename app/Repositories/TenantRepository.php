@@ -404,7 +404,7 @@ class TenantRepository extends BaseRepository
 
         $validator = Validator::make($params, [
             'user_name' => 'required|string',
-            'tenant_name' => 'required|string',
+            'tenant_name' => 'required|string|max:30',
             'email' => 'required|email',
             'mobile' => 'required',
             'business_type' => ['nullable', Rule::in($business_types)],
