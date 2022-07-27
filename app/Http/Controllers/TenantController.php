@@ -212,16 +212,16 @@ class TenantController extends Controller
         ]);
 
         // Check if X-Tenant is a domain without www. and redirect 301 to the same domain with www.
-        $assumed_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
-        if (count($assumed_domain) == 2) {
-            // Check if assumed domain end with a valid TLD
-            if (TldValidator::isTld($assumed_domain[1])) {
-                $redirect_target = "https://www." . strtolower($validated[HttpHeaderKeyEnum::TENANT]);
-                return $this->successResponse("Redirecting to {$redirect_target}", [
-                    'redirect_to' => $redirect_target
-                ], 301, true);
-            }
-        }
+        // $assumed_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
+        // if (count($assumed_domain) == 2) {
+        //     // Check if assumed domain end with a valid TLD
+        //     if (TldValidator::isTld($assumed_domain[1])) {
+        //         $redirect_target = "https://www." . strtolower($validated[HttpHeaderKeyEnum::TENANT]);
+        //         return $this->successResponse("Redirecting to {$redirect_target}", [
+        //             'redirect_to' => $redirect_target
+        //         ], 301, true);
+        //     }
+        // }
 
         // Parse slug if its a native ordering domain - {slug}.{hyperzodOrderingAppNativeDomainTLD()}
         $has_native_ordering_domain = Str::contains(
