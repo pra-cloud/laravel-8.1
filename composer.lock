@@ -1258,7 +1258,7 @@
             "source": {
                 "type": "git",
                 "url": "https://alignwebs@bitbucket.org/hyperzodtech/service-functions-package.git",
-                "reference": "bb5b27858c83fd14bf4a055918959be905bd1f4c"
+                "reference": "2e0f08d704e138aabd3ed5841c58b139d8be644d"
             },
             "require": {
                 "alignwebs/saga-server-client-php": "dev-main",
@@ -1315,7 +1315,7 @@
                 "hyperzod-service-functions",
                 "hyperzodtech"
             ],
-            "time": "2022-08-01T10:04:15+00:00"
+            "time": "2022-08-01T12:13:54+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
