@@ -167,7 +167,7 @@ class TenantRepository extends BaseRepository
     public function fetch(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'id' => ['nullable'],
+            'id' => ['required'],
         ]);
 
         if ($validator->fails()) {
