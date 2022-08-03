@@ -33,7 +33,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate()
     {
-        Gate::define('viewHorizon', function ($user = false) {
+        Gate::define('viewHorizon', function ($user = null) {
             return true;
         });
     }
