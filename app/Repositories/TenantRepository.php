@@ -175,9 +175,9 @@ class TenantRepository extends BaseRepository
             throw new \Exception("Validation error");
         }
 
-        $attributes = $validator->validated();
+        $validated = $validator->validated();
 
-        return Tenant::where($attributes)->firstOrFail();
+        return Tenant::findOrFail($validated[TerminologyEnum::TENANT_ID]);
     }
 
     public function fetchTenantStatus(array $attributes)
