@@ -186,11 +186,23 @@ return [
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
+            'mq' => [
+                'connection' => 'redis',
+                'queue' => ['mq_queue'],
+                'balance' => 'auto',
+                'maxProcesses' => 1
+            ],
         ],
 
         'dev' => [
             'supervisor-1' => [
                 'maxProcesses' => 3,
+            ],
+            'mq' => [
+                'connection' => 'redis',
+                'queue' => ['mq_queue'],
+                'balance' => 'auto',
+                'maxProcesses' => 1
             ],
         ],
 
