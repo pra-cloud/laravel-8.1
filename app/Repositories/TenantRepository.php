@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Tenant;
 use App\Rules\Domain;
+use Hyperzod\HyperzodServiceFunctions\Enums\TerminologyEnum;
 use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Facades\Validator;
 use Hyperzod\HyperzodServiceFunctions\Traits\HelpersServiceTrait;
@@ -51,7 +52,7 @@ class TenantRepository extends BaseRepository
         }
 
         $tenant_details = [
-            'domain'                => $this->parseDomain($attributes['domain'] ?? null),
+            'domain'                => $attributes['domain'] ?? null,
             'admin_domain'          => $attributes['admin_domain'] ?? null,
             'name'                  => $attributes['name'],
             'email'                 => $attributes['email'],
@@ -108,7 +109,7 @@ class TenantRepository extends BaseRepository
 
         $tenant = Tenant::findOrFail($attributes['tenant_id']);
 
-        $tenant->domain                 = $this->parseDomain($attributes['domain'] ?? null);
+        $tenant->domain                 = $attributes['domain'] ?? null;
         $tenant->admin_domain           = $attributes['admin_domain'] ?? null;
         $tenant->name                   = $attributes['name'];
         $tenant->email                  = $attributes['email'];
@@ -162,12 +163,11 @@ class TenantRepository extends BaseRepository
 
     /**
      * Fetch Tenant Details
-     s
      */
     public function fetch(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'id' => ['required'],
+            TerminologyEnum::TENANT_ID => ['required'],
         ]);
 
         if ($validator->fails()) {
@@ -217,13 +217,11 @@ class TenantRepository extends BaseRepository
             throw new \Exception("Validation error");
         }
 
-        $attributes['domain'] = $this->parseDomain($attributes['domain']);
-
         $tenant = Tenant::setEagerLoads([])->select('id')->where('domain', $attributes['domain'])->first();
 
         # Check if domain is a subdomain of any tenant like tenant.hyperzod.app
         if (!$tenant) {
-            $nativeStoreDomain = HyperzodServiceFunctions::frontendStoreDomain();
+            $nativeStoreDomain = HyperzodServiceFunctions::hyperzodOrderingAppNativeDomainTLD();
             if (strpos($attributes['domain'], $nativeStoreDomain) !== false) {
                 $slug = explode(".", $attributes['domain'])[0];
                 $tenant = Tenant::setEagerLoads([])->select('id')->where('slug', $slug)->first();
@@ -251,20 +249,6 @@ class TenantRepository extends BaseRepository
         $tenant = Tenant::setEagerLoads([])->select('id', 'slug', 'domain', 'admin_domain')->findOrFail($attributes['tenant_id']);
 
         return $tenant->toArray();
-    }
-
-    // parseDomain
-    public function parseDomain($domain)
-    {
-        if (is_null($domain)) return null;
-
-        $domain_parts = explode('.', $domain);
-        if (count($domain_parts) > 2) {
-            return $domain;
-        }
-        // insert element to the beginning of the array
-        array_unshift($domain_parts, 'www');
-        return implode('.', $domain_parts);
     }
 
     /**
