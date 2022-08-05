@@ -23,6 +23,7 @@ class ResolveDomain extends Command
         try {
             Http::timeout(1)->get($domain);
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
         }
     }
 }
