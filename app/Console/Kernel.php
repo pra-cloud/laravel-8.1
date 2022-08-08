@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('telescope:prune --hours=72')->everyMinute();
+        $schedule->command('telescope:prune --hours=72')->daily();
     }
 
     /**
