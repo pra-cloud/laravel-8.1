@@ -204,6 +204,12 @@ return [
                 'balance' => 'auto',
                 'maxProcesses' => 1
             ],
+            'testing' => [
+                'connection' => 'redis',
+                'queue' => ['testing_queue'],
+                'balance' => 'auto',
+                'maxProcesses' => 1
+            ],
         ],
 
         'local' => [
