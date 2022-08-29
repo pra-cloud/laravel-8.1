@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-
+use App\Events\TenantCreated;
+use App\Listeners\PublishTenantCreatedToMQ;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,7 +13,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [];
+    protected $listen = [
+        TenantCreated::class => [
+            PublishTenantCreatedToMQ::class,
+        ]
+    ];
 
     /**
      * Register any events for your application.

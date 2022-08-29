@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Events\TenantCreated;
 use App\Models\Tenant;
 use App\Rules\Domain;
 use Hyperzod\HyperzodServiceFunctions\Enums\TerminologyEnum;
@@ -418,6 +419,9 @@ class TenantRepository extends BaseRepository
         if (!$tenant) {
             throw new \Exception("Error while creating tenant");
         }
+
+        event(new TenantCreated($tenant));
+
         return $tenant;
     }
 
