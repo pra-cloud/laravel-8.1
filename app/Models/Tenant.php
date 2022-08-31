@@ -59,6 +59,6 @@ class Tenant extends Model
 
     public function getNativeDomainAdminAttribute()
     {
-        return HyperzodServiceFunctions::prepareNativeTenantAdminDomainUrl($this->slug);
+        return HyperzodServiceFunctions::hyperzodTenantAdminAppNativeDomain($this->slug);
     }
 }
