@@ -14,14 +14,28 @@ class Tenant extends Model
     use SoftDeletes, HasSlug, SettingsServiceTrait;
 
     protected $fillable = [
-        'domain', 'admin_domain', 'name', 'slug', 'email', 'mobile', 'city', 'country', 'business_type', 'is_setup_configured', 'status', 'is_open',
+        'domain',
+        'admin_domain',
+        'name',
+        'slug',
+        'email',
+        'mobile',
+        'city',
+        'country',
+        'business_type',
+        'is_setup_configured',
+        'status',
+        'is_open',
     ];
 
     protected $with = [
-        'saasModules'
+        'saasModules',
     ];
 
-    protected $appends = ['native_domain_ordering', 'native_domain_admin'];
+    protected $appends = [
+        'native_domain_ordering',
+        'native_domain_admin',
+    ];
 
     protected $casts = [
         'is_setup_configured' => 'boolean',
@@ -59,6 +73,6 @@ class Tenant extends Model
 
     public function getNativeDomainAdminAttribute()
     {
-        return HyperzodServiceFunctions::prepareNativeTenantAdminDomainUrl($this->slug);
+        return HyperzodServiceFunctions::hyperzodTenantAdminAppNativeDomain($this->slug);
     }
 }
