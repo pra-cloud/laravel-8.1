@@ -233,6 +233,16 @@ class TenantController extends Controller
             $validated[HttpHeaderKeyEnum::TENANT] = $native_ordering_domain[0];
         }
 
+        // Parse slug if its a native tenant domain - {slug}.{hyperzodTenantAdminAppNativeDomainTLD()}
+        $has_native_tenant_admin_domain = Str::contains(
+            $validated[HttpHeaderKeyEnum::TENANT],
+            HyperzodServiceFunctions::hyperzodTenantAdminAppNativeDomainTLD()
+        );
+        if ($has_native_tenant_admin_domain) {
+            $native_tenant_admin_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
+            $validated[HttpHeaderKeyEnum::TENANT] = $native_tenant_admin_domain[0];
+        }
+
         $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
             ->where('id', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('domain', $validated[HttpHeaderKeyEnum::TENANT])
