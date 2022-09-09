@@ -237,7 +237,7 @@ class TenantController extends Controller
             $native_ordering_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
             $validated[HttpHeaderKeyEnum::TENANT] = $native_ordering_domain[0];
 
-            $tenant = $tenantQuery->where('domain', $validated[HttpHeaderKeyEnum::TENANT])->first();
+            $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])->first();
             return $produceResponse($tenant, 'domain');
         }
 
