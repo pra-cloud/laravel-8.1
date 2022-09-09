@@ -250,7 +250,7 @@ class TenantController extends Controller
             $native_tenant_admin_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
             $validated[HttpHeaderKeyEnum::TENANT] = $native_tenant_admin_domain[0];
 
-            $tenant = $tenantQuery->where('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])->first();
+            $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])->first();
             return $produceResponse($tenant, 'admin_domain');
         }
 
