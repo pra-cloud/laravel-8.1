@@ -254,14 +254,10 @@ class TenantController extends Controller
             return $produceResponse($tenant, 'admin_domain');
         }
 
-        if (!$tenant) {
-            $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])
-                ->OrWhere('domain', $validated[HttpHeaderKeyEnum::TENANT])
-                ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])->first();
-            return $produceResponse($tenant, 'slug,domain,admin_domain');
-        }
-
-        return $this->errorResponse("Reached EOF", null, 404, true);
+        $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])
+            ->OrWhere('domain', $validated[HttpHeaderKeyEnum::TENANT])
+            ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])->first();
+        return $produceResponse($tenant, 'slug,domain,admin_domain');
     }
 
     public function listTenantSaasModules()
