@@ -207,21 +207,26 @@ class TenantController extends Controller
 
     public function validate()
     {
+        $produceResponse = function ($tenant, $where_condition) {
+            if (!$tenant) {
+                return $this->errorResponse("Invalid tenant", ['where_condition' => $where_condition], 404, true);
+            }
+            $tenant['saas_modules'] = $tenant->saasModules()->pluck('module_name');
+            return $this->successResponse(null, $tenant);
+        };
+
         $validated = request()->validate([
             HttpHeaderKeyEnum::TENANT => 'required'
         ]);
 
-        // Check if X-Tenant is a domain without www. and redirect 301 to the same domain with www.
-        // $assumed_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
-        // if (count($assumed_domain) == 2) {
-        //     // Check if assumed domain end with a valid TLD
-        //     if (TldValidator::isTld($assumed_domain[1])) {
-        //         $redirect_target = "https://www." . strtolower($validated[HttpHeaderKeyEnum::TENANT]);
-        //         return $this->successResponse("Redirecting to {$redirect_target}", [
-        //             'redirect_to' => $redirect_target
-        //         ], 301, true);
-        //     }
-        // }
+        $tenant = false;
+        $tenantQuery = Tenant::query()->select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open');
+
+        // If x tenant header is integer, then it is a tenant id
+        if (is_numeric($validated[HttpHeaderKeyEnum::TENANT])) {
+            $tenant = $tenantQuery->where('id', $validated[HttpHeaderKeyEnum::TENANT])->first();
+            return $produceResponse($tenant, 'id');
+        }
 
         // Parse slug if its a native ordering domain - {slug}.{hyperzodOrderingAppNativeDomainTLD()}
         $has_native_ordering_domain = Str::contains(
@@ -231,6 +236,9 @@ class TenantController extends Controller
         if ($has_native_ordering_domain) {
             $native_ordering_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
             $validated[HttpHeaderKeyEnum::TENANT] = $native_ordering_domain[0];
+
+            $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])->first();
+            return $produceResponse($tenant, 'domain');
         }
 
         // Parse slug if its a native tenant domain - {slug}.{hyperzodTenantAdminAppNativeDomainTLD()}
@@ -241,22 +249,15 @@ class TenantController extends Controller
         if ($has_native_tenant_admin_domain) {
             $native_tenant_admin_domain = explode(".", $validated[HttpHeaderKeyEnum::TENANT]);
             $validated[HttpHeaderKeyEnum::TENANT] = $native_tenant_admin_domain[0];
+
+            $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])->first();
+            return $produceResponse($tenant, 'admin_domain');
         }
 
-        $tenant = Tenant::select('id', 'domain', 'admin_domain', 'name', 'slug', 'status', 'is_open')
-            ->where('id', $validated[HttpHeaderKeyEnum::TENANT])
+        $tenant = $tenantQuery->where('slug', $validated[HttpHeaderKeyEnum::TENANT])
             ->OrWhere('domain', $validated[HttpHeaderKeyEnum::TENANT])
-            ->OrWhere('slug', $validated[HttpHeaderKeyEnum::TENANT])
-            ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])
-            ->first();
-
-        if (!$tenant) {
-            return $this->errorResponse("Invalid domain", null, 404, true);
-        }
-
-        $tenant['saas_modules'] = $tenant->saasModules()->pluck('module_name');
-
-        return $this->successResponse(null, $tenant);
+            ->OrWhere('admin_domain', $validated[HttpHeaderKeyEnum::TENANT])->first();
+        return $produceResponse($tenant, 'slug,domain,admin_domain');
     }
 
     public function listTenantSaasModules()
