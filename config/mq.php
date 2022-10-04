@@ -37,6 +37,11 @@ return [
           "binding_key" => BillingMqEnum::BILLING_TENANT_UNSUBSCRIBED,
           "callback" => \App\Modules\Mq\Callbacks\UnsubscribeTenantToSaasModule::class,
         ],
+      ]
+    ],
+    [
+      'exchange' => SettingMqEnum::EXCHANGE,
+      'queues' => [
         [
           "name" => "tenant.update.name",
           "binding_key" => SettingMqEnum::SETTING_UPDATED_SITE_SETTINGS,
