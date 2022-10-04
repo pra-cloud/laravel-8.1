@@ -1,6 +1,7 @@
 <?php
 
 use Hyperzod\HyperzodServiceFunctions\Enums\Mq\BillingMqEnum;
+use Hyperzod\HyperzodServiceFunctions\Enums\Mq\SettingMqEnum;
 use Hyperzod\HyperzodServiceFunctions\Enums\Mq\TenantMqEnum;
 
 return [
@@ -36,6 +37,11 @@ return [
           "binding_key" => BillingMqEnum::BILLING_TENANT_UNSUBSCRIBED,
           "callback" => \App\Modules\Mq\Callbacks\UnsubscribeTenantToSaasModule::class,
         ],
+        [
+          "name" => "tenant.update.name",
+          "binding_key" => SettingMqEnum::SETTING_UPDATED_SITE_SETTINGS,
+          "callback" => \App\Modules\Mq\Callbacks\UpdateTenantNameMqCallback::class,
+        ]
       ]
     ]
   ]
