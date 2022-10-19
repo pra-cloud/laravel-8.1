@@ -11,6 +11,7 @@ use Hyperzod\HyperzodServiceFunctions\HyperzodServiceFunctions;
 use Illuminate\Support\Str;
 use Arubacao\TldChecker\Validator as TldValidator;
 use Hyperzod\HyperzodServiceFunctions\Enums\SaasModuleEnum;
+use Hyperzod\HyperzodServiceFunctions\Enums\StatusEnum;
 use Hyperzod\HyperzodServiceFunctions\Enums\TerminologyEnum;
 use Hyperzod\HyperzodServiceFunctions\Helpers\SaasModuleHelper;
 
@@ -210,6 +211,9 @@ class TenantController extends Controller
         $produceResponse = function ($tenant, $where_condition) {
             if (!$tenant) {
                 return $this->errorResponse("Invalid tenant", ['where_condition' => $where_condition], 404, true);
+            }
+            if ($tenant->status == StatusEnum::INACTIVE) {
+                return $this->errorResponse("Tenant is Inactive", ['where_condition' => $where_condition], 400, true);
             }
             $tenant['saas_modules'] = $tenant->saasModules()->pluck('module_name');
             return $this->successResponse(null, $tenant);
